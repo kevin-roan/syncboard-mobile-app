@@ -1,23 +1,15 @@
 import React, { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
+import { Button, Text, TextInput } from "react-native-paper";
 import { supabase } from "@/lib/supabase";
-import { Button, Input } from "@rneui/themed";
+import { Link, useRouter } from "expo-router";
 
-export default function Auth() {
+export default function SignUp() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  async function signInWithEmail() {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  }
 
   async function signUpWithEmail() {
     setLoading(true);
@@ -29,28 +21,29 @@ export default function Auth() {
       password: password,
     });
 
-    if (error) Alert.alert(error.message);
-    if (!session)
+    if (error) {
+      Alert.alert(error.message);
+    } else if (!session) {
       Alert.alert("Please check your inbox for email verification!");
+    }
     setLoading(false);
   }
 
   return (
     <View style={styles.container}>
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input
+        <TextInput
           label="Email"
-          leftIcon={{ type: "font-awesome", name: "envelope" }}
           onChangeText={(text) => setEmail(text)}
           value={email}
           placeholder="email@address.com"
           autoCapitalize={"none"}
+          keyboardType="email-address"
         />
       </View>
       <View style={styles.verticallySpaced}>
-        <Input
+        <TextInput
           label="Password"
-          leftIcon={{ type: "font-awesome", name: "lock" }}
           onChangeText={(text) => setPassword(text)}
           value={password}
           secureTextEntry={true}
@@ -60,18 +53,17 @@ export default function Auth() {
       </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button
-          title="Sign in"
+          mode="contained"
           disabled={loading}
-          onPress={() => signInWithEmail()}
-        />
+          onPress={signUpWithEmail}
+          icon="login"
+        >
+          Sign Up
+        </Button>
       </View>
-      <View style={styles.verticallySpaced}>
-        <Button
-          title="Sign up"
-          disabled={loading}
-          onPress={() => signUpWithEmail()}
-        />
-      </View>
+      <Text>
+        Already have an account ? <Link href={"/signin"}>Log In</Link>
+      </Text>
     </View>
   );
 }

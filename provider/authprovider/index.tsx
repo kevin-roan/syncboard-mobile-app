@@ -1,11 +1,15 @@
 import "react-native-url-polyfill/auto";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import { supabase } from "@/lib/supabase";
-import Auth from "./login";
-import { View, Text } from "react-native";
 import { Session } from "@supabase/supabase-js";
 
-export default function App() {
+interface Props {
+  children: React.ReactNode;
+}
+
+const AuthContext = createContext(null);
+
+const AuthProvider: React.FC<Props> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
@@ -19,9 +23,8 @@ export default function App() {
   }, []);
 
   return (
-    <View>
-      <Auth />
-      {session && session.user && <Text>{session.user.id}</Text>}
-    </View>
+    <AuthContext.Provider value={session}>{children}</AuthContext.Provider>
   );
-}
+};
+
+export default AuthProvider;
