@@ -4,6 +4,7 @@ import ScreenLayout from "@/provider/screenlayout";
 import { AppProvider } from "@/context/appctx";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PaperProvider } from "react-native-paper";
+import { LogBox } from "react-native";
 
 export default function Root() {
   return (
@@ -23,6 +24,8 @@ const RootLayout = () => {
   const { authenticated, loading } = useAuth();
 
   console.log("authenticated", authenticated);
+  LogBox.ignoreAllLogs();
+
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={authenticated}>

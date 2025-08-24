@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function Layout() {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "home/index", title: "Home", focusedIcon: "home" },
+    { key: "dashboard/index", title: "Dashboard", focusedIcon: "home" },
     { key: "profile/index", title: "Profile", focusedIcon: "account" },
   ]);
 
@@ -22,7 +22,7 @@ export default function Layout() {
         />
       )}
     >
-      <Tabs.Screen name="home/index" />
+      <Tabs.Screen name="dashboard/index" />
       <Tabs.Screen name="profile/index" />
     </Tabs>
   );

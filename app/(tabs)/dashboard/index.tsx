@@ -18,8 +18,10 @@ import styles from "./styles";
 import { createProject, getProjects } from "@/app/services/projects";
 import { getWorkspaces } from "@/app/services/workspace";
 import ProjectCard from "@/components/ui/cards/projectcard";
+import WorkspaceDrawerModal from "@/components/ui/drawer/workspacedrawer";
+import { getDueTaskCount } from "@/app/services/task";
 
-const HomeScreen = () => {
+const Dashboard = () => {
   const router = useRouter();
   const { session } = useAuth();
   const { workspace, setWorkspace } = useApp();
@@ -27,22 +29,27 @@ const HomeScreen = () => {
   const [projectformVisible, setProjectformVisible] = useState<boolean>(false);
   const [projects, setProjects] = useState<string[]>([]);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
+  const [workspaces, setWorkspaces] = useState([]);
+  const [dashboardInfo, setDashboardInfo] = useState({
+    taskDue: 0,
+  });
 
   useEffect(() => {
     const fetchWorkspaceInfo = async () => {
       try {
         const data = await getWorkspaces();
+        setWorkspaces(data); // Store all workspaces
         if (data?.length > 0) {
-          // set the first workspace as default for now
           setWorkspace(data[0]);
         } else {
-          // no workspace found , create a workspace first
           router.push("/(modal)/createworkspace");
         }
       } catch (error) {
         Alert.alert("Error fetching workspaces");
       }
     };
+
     fetchWorkspaceInfo();
   }, []);
 
@@ -53,13 +60,23 @@ const HomeScreen = () => {
       console.log("fetched again");
       try {
         const data = await getProjects(workspace?.id);
-        // console.log("projects", JSON.stringify(data, null, 2));
         setProjects(data);
         setRefreshing(false);
       } catch (error: Error) {
         Alert.alert("Error fetching projects");
       }
     };
+
+    const fetchDashboardMetadata = async (workspaceId: string) => {
+      try {
+        const taskDue = await getDueTaskCount(workspaceId);
+        setDashboardInfo((prev) => ({ ...prev, taskDue }));
+      } catch (error) {
+        console.error("Error fetching dashboard metadata:", error);
+      }
+    };
+
+    fetchDashboardMetadata(workspace.id);
 
     fetchProjects();
   }, [workspace, refreshing]);
@@ -83,7 +100,13 @@ const HomeScreen = () => {
   };
 
   const handleProjectPress = (project: Project) => {
-    console.log("Project pressed:", project.name);
+    router.push({
+      pathname: `/dashboard/projects/${project.id}`,
+      params: {
+        id: project.id,
+        projectName: project.name,
+      },
+    });
   };
 
   const handleMenuPress = (project: Project) => {
@@ -102,13 +125,36 @@ const HomeScreen = () => {
     setRefreshing(true);
   };
 
+  const toggleDrawer = () => {
+    setDrawerVisible(!drawerVisible);
+  };
+
+  // Handle workspace switching
+  const handleWorkspaceChange = (workspaceId: string) => {
+    const selectedWorkspace = workspaces.find((ws) => ws.id === workspaceId);
+    if (selectedWorkspace) {
+      setWorkspace(selectedWorkspace);
+    }
+  };
+
   return (
     <>
       <Appbar.Header style={styles.header}>
-        <Appbar.Content title={workspace.name || "Dashboard"} />
+        <Appbar.Action icon="menu" onPress={toggleDrawer} />
+        <Appbar.Content title={workspace?.name || "Dashboard"} />
         <Appbar.Action icon="bell-outline" onPress={() => {}} />
         <Appbar.Action icon="account-circle" onPress={() => {}} />
       </Appbar.Header>
+
+      {/* Fixed WorkspaceDrawer */}
+      <WorkspaceDrawerModal
+        drawerVisible={drawerVisible} // ✅ Use state, not hardcoded true
+        toggleDrawer={toggleDrawer}
+        active={workspace?.id || "default"} // ✅ Pass string ID, not object
+        setActive={handleWorkspaceChange} // ✅ Handle workspace switching properly
+        router={router} // ✅ Pass real router
+        workspaces={workspaces} // ✅ Pass all workspaces
+      />
 
       <ScrollView
         style={styles.container}
@@ -132,7 +178,7 @@ const HomeScreen = () => {
             <Text style={styles.statLabel}>Active Projects</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>48</Text>
+            <Text style={styles.statNumber}>{dashboardInfo.taskDue}</Text>
             <Text style={styles.statLabel}>Tasks Due</Text>
           </View>
           <View style={styles.statCard}>
@@ -218,10 +264,10 @@ const HomeScreen = () => {
           textinputPlaceholder="Enter project name"
           onDismissCb={() => setProjectformVisible(false)}
           onSubmit={handleCreateProject}
-        ></ModalForm>
+        />
       </ScrollView>
     </>
   );
 };
 
-export default HomeScreen;
+export default Dashboard;
