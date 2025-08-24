@@ -2,22 +2,24 @@ import { Stack, useRouter } from "expo-router";
 import { AuthProvider, useAuth } from "@/context/authctx";
 import ScreenLayout from "@/provider/screenlayout";
 import { AppProvider } from "@/context/appctx";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { PaperProvider } from "react-native-paper";
 
 export default function Root() {
   return (
     <AuthProvider>
       <AppProvider>
-        <ScreenLayout>
-          <RootLayout />
-        </ScreenLayout>
+        <SafeAreaProvider>
+          <PaperProvider>
+            <RootLayout />
+          </PaperProvider>
+        </SafeAreaProvider>
       </AppProvider>
     </AuthProvider>
   );
 }
 
 const RootLayout = () => {
-  const router = useRouter();
-
   const { authenticated, loading } = useAuth();
 
   console.log("authenticated", authenticated);

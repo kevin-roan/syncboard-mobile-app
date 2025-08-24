@@ -149,7 +149,7 @@ export default function SignUp() {
           size={64}
           style={styles.logoIcon}
         />
-        <Text style={styles.appTitle}>Planor.app</Text>
+        <Text style={styles.appTitle}>ProjectHub</Text>
         <Text style={styles.appSubtitle}>
           Create your account to get started
         </Text>

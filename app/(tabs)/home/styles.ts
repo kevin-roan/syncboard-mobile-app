@@ -1,0 +1,182 @@
+import { StyleSheet } from "react-native";
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F7F2FA", // MD3 surface variant
+  },
+  header: {
+    backgroundColor: "#FFFBFE", // MD3 surface
+    elevation: 2,
+    shadowColor: "#6750A4",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  scrollContent: {
+    paddingVertical: 16,
+  },
+  welcomeSection: {
+    backgroundColor: "#FFFFFF",
+    marginHorizontal: 16,
+    marginBottom: 24,
+    borderRadius: 20,
+    padding: 24,
+    elevation: 4,
+    shadowColor: "#6750A4",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    borderWidth: 0.5,
+    borderColor: "rgba(103, 80, 164, 0.1)",
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: "#1A1A1A",
+    fontFamily: "Roboto",
+    marginBottom: 8,
+    letterSpacing: 0.2,
+  },
+  welcomeSubtext: {
+    fontSize: 16,
+    color: "#666666",
+    fontFamily: "Roboto",
+    lineHeight: 24,
+  },
+  statsSection: {
+    flexDirection: "row",
+    marginHorizontal: 16,
+    marginBottom: 24,
+    gap: 12,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 20,
+    alignItems: "center",
+    elevation: 3,
+    shadowColor: "#6750A4",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    borderWidth: 0.5,
+    borderColor: "rgba(103, 80, 164, 0.1)",
+  },
+  statNumber: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#6750A4",
+    fontFamily: "Roboto",
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: "#666666",
+    fontFamily: "Roboto",
+    textAlign: "center",
+    fontWeight: "500",
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginHorizontal: 16,
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#1A1A1A",
+    fontFamily: "Roboto",
+    letterSpacing: 0.2,
+  },
+  seeAllButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 16,
+    backgroundColor: "#F8F9FA",
+  },
+  seeAllText: {
+    fontSize: 14,
+    color: "#6750A4",
+    fontFamily: "Roboto",
+    fontWeight: "600",
+  },
+  emptyState: {
+    alignItems: "center",
+    paddingVertical: 40,
+    paddingHorizontal: 24,
+    marginHorizontal: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: "#E7E0EC",
+    borderStyle: "dashed",
+  },
+  emptyIcon: {
+    marginBottom: 16,
+    color: "#9E9E9E",
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#666666",
+    fontFamily: "Roboto",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: "#9E9E9E",
+    fontFamily: "Roboto",
+    textAlign: "center",
+    lineHeight: 20,
+  },
+  quickActionsSection: {
+    marginHorizontal: 16,
+    marginBottom: 24,
+  },
+  quickActions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  quickActionButton: {
+    flex: 1,
+    backgroundColor: "#6750A4",
+    borderRadius: 16,
+    padding: 20,
+    alignItems: "center",
+    elevation: 4,
+    shadowColor: "#6750A4",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+  },
+  quickActionIcon: {
+    color: "#FFFFFF",
+    marginBottom: 8,
+  },
+  quickActionText: {
+    fontSize: 14,
+    color: "#FFFFFF",
+    fontFamily: "Roboto",
+    fontWeight: "600",
+    textAlign: "center",
+  },
+});
+
+export default styles;
