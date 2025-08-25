@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  Alert,
-  FlatList,
-  View,
-  RefreshControl,
-  ScrollView,
-} from "react-native";
-import { Text, Appbar, Button } from "react-native-paper";
+import { Alert, FlatList, RefreshControl, View } from "react-native";
+import { Text, Appbar, Button, FAB } from "react-native-paper";
 import styles from "./styles";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useApp } from "@/context/appctx";
 import { createTask, getTasks } from "@/app/services/task";
 import ModalForm from "@/components/ui/modals/modalform";
 import { useAuth } from "@/context/authctx";
+import TaskCard from "@/components/ui/cards/taskcard";
 
 const Project = () => {
   const router = useRouter();
@@ -61,9 +56,12 @@ const Project = () => {
 
   const renderItem = ({ item, index }) => {
     return (
-      <View key={index}>
-        <Text style={{ color: "red" }}>{item.name}</Text>
-      </View>
+      <TaskCard
+        key={index}
+        title={item.name}
+        status="todo"
+        description="completed task descriptoin "
+      />
     );
   };
 
@@ -78,32 +76,39 @@ const Project = () => {
         <Appbar.Content title={projectName} />
         <Appbar.Action icon="dots-vertical" onPress={() => {}} />
       </Appbar.Header>
-      <ScrollView
-        contentContainerStyle={styles.container}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
+
+      <View style={{ backgroundColor: "white", flex: 1 }}>
         {tasks && tasks?.length <= 0 && (
           <Text variant="bodyMedium" style={styles.info}>
             You do not have any tasks yet.
           </Text>
         )}
-        <Button onPress={() => setTaskFormVisible(true)} mode="elevated">
-          Create Task
-        </Button>
-        <FlatList data={tasks} renderItem={renderItem} />
+
+        <FlatList
+          data={tasks}
+          renderItem={renderItem}
+          contentContainerStyle={styles.tasksContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+        />
 
         <ModalForm
           visible={taskFormVisible}
           title="Enter task name"
           textinputPlaceholder="Enter task name"
-          onDismissCb={() => false}
+          onDismissCb={() => setTaskFormVisible(false)}
           onSubmit={handleCreateTask}
         />
-      </ScrollView>
+        <FAB
+          icon="plus"
+          style={styles.fab}
+          onPress={() => setTaskFormVisible(true)}
+        />
+      </View>
     </>
   );
 };
 
 export default Project;
+
