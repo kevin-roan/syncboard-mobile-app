@@ -45,3 +45,25 @@ export async function getDueTaskCount(workspaceId: string) {
 
   return count || 0;
 }
+
+export async function updateTaskStatus(taskId: string, status: string) {
+  const { data, error } = await supabase
+    .from("tasks")
+    .update({ status })
+    .eq("id", taskId)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function deleteTaskById(taskId: string) {
+  const { data, error } = await supabase
+    .from("tasks")
+    .delete()
+    .eq("id", taskId);
+  if (error) throw error;
+  return data;
+}

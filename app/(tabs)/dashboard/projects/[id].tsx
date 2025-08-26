@@ -4,14 +4,19 @@ import { Text, Appbar, Button, FAB } from "react-native-paper";
 import styles from "./styles";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useApp } from "@/context/appctx";
-import { createTask, getTasks } from "@/app/services/task";
+import {
+  createTask,
+  deleteTaskById,
+  getTasks,
+  updateTaskStatus,
+} from "@/app/services/task";
 import ModalForm from "@/components/ui/modals/modalform";
 import { useAuth } from "@/context/authctx";
 import TaskCard from "@/components/ui/cards/taskcard";
 
 const Project = () => {
   const router = useRouter();
-  const { id, projectName } = useLocalSearchParams();
+  const { id: projectId, projectName } = useLocalSearchParams();
   const auth = useAuth();
   const { workspace } = useApp();
 
@@ -20,27 +25,32 @@ const Project = () => {
   const [tasks, setTasks] = useState([]);
   const [taskFormVisible, setTaskFormVisible] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const resp = await getTasks(id);
-        setTasks(resp);
-        setRefreshing(false);
-      } catch (error) {
-        console.log("error fetching tasks");
-        Alert.alert("error fetching tasks");
-      }
-    };
-
     fetchTasks();
-  }, [refreshing]);
+  }, [projectId]);
+
+  const fetchTasks = async () => {
+    try {
+      const resp = await getTasks(projectId);
+      setTasks(resp);
+    } catch (error) {
+      console.log("error fetching tasks", error);
+      Alert.alert("Error fetching tasks");
+    } finally {
+      setRefreshing(false); // always reset refreshing
+    }
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchTasks();
+  };
 
   const handleCreateTask = async (taskName: string) => {
     try {
       const payload = {
         name: taskName,
-        project_id: id,
+        project_id: projectId,
         created_by: userId,
       };
 
@@ -54,19 +64,39 @@ const Project = () => {
     }
   };
 
+  const handleUpdateTask = async (taskId: string, status: string) => {
+    try {
+      const resp = await updateTaskStatus(taskId, status);
+      handleRefresh();
+      console.log("task updated", resp);
+    } catch (error) {
+      console.log("error", error);
+      Alert.alert("Error updating the task");
+    }
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      const resp = await deleteTaskById(taskId);
+      handleRefresh();
+      console.log("task deleted successfully", resp);
+    } catch (error) {
+      Alert.alert("Error deleting task", error);
+    }
+  };
+
   const renderItem = ({ item, index }) => {
     return (
       <TaskCard
+        id={item.id}
         key={index}
         title={item.name}
-        status="todo"
+        status={item.status}
         description="completed task descriptoin "
+        onStatusChangeCb={handleUpdateTask}
+        handleDeleteTask={handleDeleteTask}
       />
     );
-  };
-
-  const handleRefresh = () => {
-    setRefreshing(true);
   };
 
   return (
@@ -111,4 +141,3 @@ const Project = () => {
 };
 
 export default Project;
-

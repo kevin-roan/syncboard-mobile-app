@@ -31,6 +31,10 @@ const styles = StyleSheet.create({
     fontSize: FONT.SMALL,
     color: Colors.subText,
   },
+  cardHead: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
 });
 
 export default styles;

@@ -103,7 +103,7 @@ const Dashboard = () => {
     router.push({
       pathname: `/dashboard/projects/${project.id}`,
       params: {
-        id: project.id,
+        // id: project.id,
         projectName: project.name,
       },
     });
@@ -148,12 +148,12 @@ const Dashboard = () => {
 
       {/* Fixed WorkspaceDrawer */}
       <WorkspaceDrawerModal
-        drawerVisible={drawerVisible} // ✅ Use state, not hardcoded true
+        drawerVisible={drawerVisible}
         toggleDrawer={toggleDrawer}
-        active={workspace?.id || "default"} // ✅ Pass string ID, not object
-        setActive={handleWorkspaceChange} // ✅ Handle workspace switching properly
-        router={router} // ✅ Pass real router
-        workspaces={workspaces} // ✅ Pass all workspaces
+        active={workspace?.id || "default"}
+        setActive={handleWorkspaceChange}
+        router={router}
+        workspaces={workspaces}
       />
 
       <ScrollView
@@ -213,7 +213,7 @@ const Dashboard = () => {
                 size={24}
                 style={styles.quickActionIcon}
               />
-              <Text style={styles.quickActionText}>Join Project</Text>
+              <Text style={styles.quickActionText}>Invite User</Text>
             </TouchableOpacity>
           </View>
         </View>
