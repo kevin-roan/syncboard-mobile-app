@@ -1,24 +1,29 @@
 import { StyleSheet } from "react-native";
 
+const colors = {
+  primary: "#6750A4",
+  secondary: "#F7F2FA",
+  text: "#1A1A1A",
+  subText: "#666666",
+};
+
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#FFFBFE", // MD3 surface
-    borderRadius: 12, // MD3 medium corner radius
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
     marginHorizontal: 16,
     marginVertical: 8,
-    elevation: 1,
-    shadowColor: "#000",
+    elevation: 2,
+    shadowColor: colors.primary,
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 2,
     },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    borderWidth: 1,
-    borderColor: "#E7E0EC", // MD3 outline variant
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   cardContent: {
-    padding: 16,
+    padding: 20,
   },
   header: {
     flexDirection: "row",
@@ -28,15 +33,15 @@ const styles = StyleSheet.create({
   },
   projectName: {
     fontSize: 18,
-    fontWeight: "500",
-    color: "#1D1B20", // MD3 on-surface
-    fontFamily: "Roboto",
+    fontWeight: "700",
+    color: colors.text,
     flex: 1,
     marginRight: 12,
     lineHeight: 24,
+    letterSpacing: 0.5,
   },
   statusChip: {
-    borderRadius: 8,
+    borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
     minWidth: 80,
@@ -44,47 +49,47 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 12,
-    fontWeight: "500",
-    fontFamily: "Roboto",
-    textTransform: "uppercase",
+    fontWeight: "600",
     letterSpacing: 0.5,
   },
   // Status-specific styles
   statusActive: {
-    backgroundColor: "#E8F5E8", // Light green background
+    backgroundColor: colors.secondary,
   },
   statusActiveText: {
-    color: "#1B5E20", // Dark green text
+    color: colors.primary,
   },
   statusPending: {
-    backgroundColor: "#FFF3E0", // Light orange background
+    backgroundColor: "#FFF8E1",
   },
   statusPendingText: {
-    color: "#E65100", // Dark orange text
+    color: "#F57F17",
   },
   statusCompleted: {
-    backgroundColor: "#E3F2FD", // Light blue background
+    backgroundColor: "#E8F5E8",
   },
   statusCompletedText: {
-    color: "#0D47A1", // Dark blue text
+    color: "#2E7D32",
   },
   statusOnHold: {
-    backgroundColor: "#F3E5F5", // Light purple background
+    backgroundColor: "#FFF3E0",
   },
   statusOnHoldText: {
-    color: "#4A148C", // Dark purple text
+    color: "#EF6C00",
   },
   statusCancelled: {
-    backgroundColor: "#FFEBEE", // Light red background
+    backgroundColor: "#FFEBEE",
   },
   statusCancelledText: {
-    color: "#B71C1C", // Dark red text
+    color: "#C62828",
   },
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 4,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#F0F0F0",
   },
   projectInfo: {
     flexDirection: "row",
@@ -93,9 +98,9 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 14,
-    color: "#79747E", // MD3 outline
-    fontFamily: "Roboto",
-    marginLeft: 4,
+    color: colors.subText,
+    fontWeight: "500",
+    marginLeft: 6,
   },
   infoItem: {
     flexDirection: "row",
@@ -103,11 +108,12 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   actionButton: {
-    padding: 8,
+    padding: 10,
     borderRadius: 20,
+    backgroundColor: colors.secondary,
   },
   actionIcon: {
-    color: "#79747E",
+    color: colors.subText,
   },
 });
 

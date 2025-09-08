@@ -13,6 +13,7 @@ import {
 import ModalForm from "@/components/ui/modals/modalform";
 import { useAuth } from "@/context/authctx";
 import TaskCard from "@/components/ui/cards/taskcard";
+import TaskFormModal from "@/app/(modal)/createpproject";
 
 const Project = () => {
   const router = useRouter();
@@ -46,14 +47,14 @@ const Project = () => {
     fetchTasks();
   };
 
-  const handleCreateTask = async (taskName: string) => {
+  const handleCreateTask = async (taskName: string, description: string) => {
     try {
       const payload = {
         name: taskName,
+        description: description,
         project_id: projectId,
         created_by: userId,
       };
-
       const data = await createTask(payload);
       setTaskFormVisible(false);
       setTasks((prev) => [...prev, data]);
@@ -92,7 +93,7 @@ const Project = () => {
         key={index}
         title={item.name}
         status={item.status}
-        description="completed task descriptoin "
+        description={item.description}
         onStatusChangeCb={handleUpdateTask}
         handleDeleteTask={handleDeleteTask}
       />
@@ -122,13 +123,23 @@ const Project = () => {
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }
         />
-
         <ModalForm
           visible={taskFormVisible}
           title="Enter task name"
+          descriptionPlaceholder="Enter Description"
           textinputPlaceholder="Enter task name"
           onDismissCb={() => setTaskFormVisible(false)}
           onSubmit={handleCreateTask}
+        />
+        <TaskFormModal
+          title="Create New Task"
+          visible={taskFormVisible}
+          onDismissCb={() => setTaskFormVisible(false)}
+          onSubmit={(formData) => {
+            console.log("Task Data:", formData);
+            // Handle task creation
+            // setModalVisible(false);
+          }}
         />
         <FAB
           icon="plus"

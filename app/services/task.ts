@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase";
 
 export async function createTask(payload: {
   name: string;
+  description?: string;
   project_id: string;
   created_by: string;
   status?: string;
@@ -9,6 +10,9 @@ export async function createTask(payload: {
   const insertData = { ...payload };
   if (insertData.status === undefined) {
     delete insertData.status;
+  }
+  if (insertData.description === undefined) {
+    delete insertData.description;
   }
 
   const { data, error } = await supabase

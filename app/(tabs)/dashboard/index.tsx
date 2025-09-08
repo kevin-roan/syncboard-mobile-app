@@ -20,17 +20,26 @@ import { getWorkspaces } from "@/app/services/workspace";
 import ProjectCard from "@/components/ui/cards/projectcard";
 import WorkspaceDrawerModal from "@/components/ui/drawer/workspacedrawer";
 import { getDueTaskCount } from "@/app/services/task";
+import InviteUserModal from "@/components/ui/modals/inviteuser";
+import { createInvitation } from "@/app/services/invitation";
+import { getWorkspaceUsers } from "@/app/services/workspace_members";
+import UserCard from "@/components/ui/cards/workspace_membercard";
 
 const Dashboard = () => {
   const router = useRouter();
   const { session } = useAuth();
   const { workspace, setWorkspace } = useApp();
 
+  const userId = session?.user?.id;
+
   const [projectformVisible, setProjectformVisible] = useState<boolean>(false);
   const [projects, setProjects] = useState<string[]>([]);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
   const [workspaces, setWorkspaces] = useState([]);
+  const [workspaceMembers, setWorkspaceMembers] = useState([]);
+  const [inviteUserModalVisible, setInviteModalVisible] =
+    useState<boolean>(false);
   const [dashboardInfo, setDashboardInfo] = useState({
     taskDue: 0,
   });
@@ -57,13 +66,23 @@ const Dashboard = () => {
     if (!workspace?.id) return;
 
     const fetchProjects = async () => {
-      console.log("fetched again");
       try {
         const data = await getProjects(workspace?.id);
         setProjects(data);
         setRefreshing(false);
       } catch (error: Error) {
+        console.log("error fetching projects", error);
         Alert.alert("Error fetching projects");
+      }
+    };
+
+    const fetchWorkspaceMemberList = async (workspaceId: string) => {
+      try {
+        const resp = await getWorkspaceUsers(workspaceId);
+        setWorkspaceMembers(resp);
+      } catch (error) {
+        console.log("error", error);
+        Alert.alert("Error fetching workpace members");
       }
     };
 
@@ -78,6 +97,7 @@ const Dashboard = () => {
 
     fetchDashboardMetadata(workspace.id);
 
+    fetchWorkspaceMemberList(workspace.id);
     fetchProjects();
   }, [workspace, refreshing]);
 
@@ -114,11 +134,32 @@ const Dashboard = () => {
   };
 
   const handleSeeAllProjects = () => {
-    console.log("See all projects");
+    router.push("/projectlist");
+    // console.log("See all projects");
   };
 
-  const handleJoinProject = () => {
-    console.log("Join existing project");
+  const handleInviteUser = async (email: string, role?: string) => {
+    if (!userId) {
+      Alert.alert("No user session found");
+      return;
+    }
+    try {
+      await createInvitation({
+        email,
+        role, // will be omitted if undefined, DB default applies
+        workspaceId: workspace.id,
+        invitedBy: userId,
+      });
+
+      Alert.alert(
+        "Invitation Sent! 🎉",
+        `Invitation sent to ${email} as ${role === "admin" ? "Admin" : "Member"}`,
+        [{ text: "Great!", onPress: () => setInviteModalVisible(false) }],
+      );
+    } catch (error) {
+      console.log("error", error);
+      Alert.alert("Error", "Failed to send invitation. Please try again.");
+    }
   };
 
   const handleRefresh = () => {
@@ -129,9 +170,8 @@ const Dashboard = () => {
     setDrawerVisible(!drawerVisible);
   };
 
-  // Handle workspace switching
   const handleWorkspaceChange = (workspaceId: string) => {
-    const selectedWorkspace = workspaces.find((ws) => ws.id === workspaceId);
+    const selectedWorkspace = workspaces.find((ws) => ws.id === workspaceId.id);
     if (selectedWorkspace) {
       setWorkspace(selectedWorkspace);
     }
@@ -206,7 +246,7 @@ const Dashboard = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.quickActionButton}
-              onPress={handleJoinProject}
+              onPress={() => setInviteModalVisible(true)}
             >
               <MaterialCommunityIcons
                 name="account-plus"
@@ -258,12 +298,85 @@ const Dashboard = () => {
             </Text>
           </View>
         )}
+
+        {/* workspace members List */}
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Workspace Members</Text>
+          <TouchableOpacity
+            style={styles.seeAllButton}
+            onPress={handleSeeAllProjects}
+          >
+            <Text style={styles.seeAllText}>See All</Text>
+          </TouchableOpacity>
+        </View>
+
+        {workspaceMembers.length > 0 ? (
+          <FlatList
+            data={workspaceMembers}
+            renderItem={({ item, index }) => {
+              return (
+                <UserCard
+                  role="Member"
+                  email="kevinron@afkjfd.com"
+                  joinedAt="393239, 23932"
+                  userName="keiviornap"
+                  key={index}
+                />
+              );
+            }}
+          />
+        ) : (
+          <View style={styles.emptyState}>
+            <MaterialCommunityIcons
+              name="human-handsup"
+              size={64}
+              style={styles.emptyIcon}
+            />
+            <Text style={styles.emptyTitle}>
+              Your workspace doesn't have any members yet.
+            </Text>
+
+            <TouchableOpacity
+              style={[
+                styles.quickActionButton,
+                {
+                  width: 200,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                },
+              ]}
+              onPress={() => setInviteModalVisible(true)}
+            >
+              <MaterialCommunityIcons
+                name="account-plus"
+                size={24}
+                style={[
+                  styles.quickActionIcon,
+                  {
+                    marginBottom: 0,
+                  },
+                ]}
+              />
+              <Text style={styles.quickActionText}>Invite User</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <ModalForm
           visible={projectformVisible}
           title="Enter project name"
           textinputPlaceholder="Enter project name"
           onDismissCb={() => setProjectformVisible(false)}
           onSubmit={handleCreateProject}
+        />
+
+        <InviteUserModal
+          visible={inviteUserModalVisible}
+          onDismissCb={() => setInviteModalVisible(false)}
+          onSubmit={handleInviteUser}
         />
       </ScrollView>
     </>

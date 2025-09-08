@@ -1,6 +1,5 @@
 import { Stack, useRouter } from "expo-router";
 import { AuthProvider, useAuth } from "@/context/authctx";
-import ScreenLayout from "@/provider/screenlayout";
 import { AppProvider } from "@/context/appctx";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PaperProvider } from "react-native-paper";
@@ -34,6 +33,14 @@ const RootLayout = () => {
           name="(modal)"
           options={{
             presentation: "modal",
+            headerShown: false,
+            gestureEnabled: true,
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="(screens)"
+          options={{
             headerShown: false,
             gestureEnabled: true,
             animationDuration: 300,

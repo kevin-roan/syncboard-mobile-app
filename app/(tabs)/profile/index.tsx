@@ -1,13 +1,39 @@
-import React from "react";
-import { Text, View, ScrollView, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Text,
+  View,
+  Alert,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { supabase } from "@/lib/supabase";
-import { Appbar, Button, Avatar, Divider } from "react-native-paper";
+import { Appbar, Button, Avatar } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAuth } from "@/context/authctx";
 import styles from "./styles";
+import { getProfile } from "@/app/services/profile";
 
 const Profile = () => {
+  const [user, setUser] = useState<unknown>(null);
   const { session } = useAuth();
+
+  const userId = session?.user?.id;
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!userId) return;
+      try {
+        const data = await getProfile(userId);
+        if (data?.length > 0) {
+          setUser(data[0]);
+        }
+      } catch (error) {
+        console.log("error fetching user profile", error);
+        Alert.alert("Error fetching user profile");
+      }
+    };
+    fetchProfile();
+  }, [userId]);
 
   async function signOut() {
     const { error } = await supabase.auth.signOut();
@@ -75,21 +101,34 @@ const Profile = () => {
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Profile Header Section */}
         <View style={styles.profileSection}>
-          <Avatar.Text
-            size={96}
-            label={session?.user?.email?.charAt(0).toUpperCase() || "U"}
-            style={styles.avatar}
-          />
-
+          {user && user?.avatar_url ? (
+            <Image
+              source={{
+                uri: user.avatar_url,
+              }}
+              alt={"user avatar"}
+              style={{
+                height: 96,
+                width: 96,
+                borderRadius: 100,
+              }}
+            />
+          ) : (
+            <Avatar.Text
+              size={96}
+              label={session?.user?.email?.charAt(0).toUpperCase() || "U"}
+              style={styles.avatar}
+            />
+          )}
           <Text style={styles.displayName}>
-            {session?.user?.user_metadata?.full_name || "User"}
+            {(user && user?.full_name) || "User"}
           </Text>
 
           <Text style={styles.email}>{session?.user?.email}</Text>
 
           <Text style={styles.memberSince}>
             Member since{" "}
-            {formatDate(session?.user?.created_at || new Date().toISOString())}
+            {formatDate(user?.created_at || new Date().toISOString())}
           </Text>
         </View>
 
