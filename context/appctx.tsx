@@ -18,11 +18,15 @@ const AppProvider = ({ children }: Props) => {
     name: "",
     owner: "",
   });
+
+  const [memberList, setMemberList] = useState([]);
   return (
     <AppContext.Provider
       value={{
         workspace,
         setWorkspace,
+        memberList,
+        setMemberList,
       }}
     >
       {children}

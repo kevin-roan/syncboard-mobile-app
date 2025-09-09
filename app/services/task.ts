@@ -5,6 +5,7 @@ export async function createTask(payload: {
   description?: string;
   project_id: string;
   created_by: string;
+  assigned_to: string;
   status?: string;
 }) {
   const insertData = { ...payload };

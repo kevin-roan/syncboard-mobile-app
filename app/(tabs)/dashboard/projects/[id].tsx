@@ -10,10 +10,10 @@ import {
   getTasks,
   updateTaskStatus,
 } from "@/app/services/task";
-import ModalForm from "@/components/ui/modals/modalform";
+
 import { useAuth } from "@/context/authctx";
 import TaskCard from "@/components/ui/cards/taskcard";
-import TaskFormModal from "@/app/(modal)/createpproject";
+import TaskFormModal from "@/app/(modal)/createtask";
 
 const Project = () => {
   const router = useRouter();
@@ -48,15 +48,15 @@ const Project = () => {
   };
 
   const handleCreateTask = async (formData) => {
-    console.log("form data", formData);
-
-    return;
+    // console.log("form data", formData);
     try {
       const payload = {
-        name: taskName,
-        description: description,
+        name: formData.taskName,
+        description: formData.taskDescription,
         project_id: projectId,
         created_by: userId,
+        assigned_to: formData.assignedUserId,
+        status: formData?.status,
       };
       const data = await createTask(payload);
       setTaskFormVisible(false);

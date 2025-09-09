@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, TextInput, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  ListRenderItem,
+} from "react-native";
 import { Button, Modal, Portal, Text } from "react-native-paper";
 import styles from "./styles";
+import { useApp } from "@/context/appctx";
 
 interface User {
   id: string;
@@ -24,34 +32,29 @@ interface Props {
   onSubmit: (formData: TaskFormData) => void;
 }
 
-const users = [
-  { id: "1", name: "John Doe", email: "john@example.com" },
-  { id: "2", name: "Jane Smith", email: "jane@example.com" },
-];
-
 const TaskFormModal: React.FC<Props> = ({
   title,
   visible,
-  // users,
+  users,
   onDismissCb,
   onSubmit,
 }) => {
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [taskName, setTaskName] = useState<string>("");
-  const [taskDescription, setTaskDescription] = useState<string>("");
-  const [dueDate, setDueDate] = useState<string>("");
-  const [assignedUserId, setAssignedUserId] = useState<string>("");
-  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [taskName, setTaskName] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [assignedUserId, setAssignedUserId] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Error states
-  const [taskNameError, setTaskNameError] = useState<string>("");
-  const [dueDateError, setDueDateError] = useState<string>("");
-  const [userError, setUserError] = useState<string>("");
+  const [taskNameError, setTaskNameError] = useState("");
+  const [dueDateError, setDueDateError] = useState("");
+  const [userError, setUserError] = useState("");
 
-  // Focus states
-  const [taskNameFocused, setTaskNameFocused] = useState<boolean>(false);
-  const [taskDescFocused, setTaskDescFocused] = useState<boolean>(false);
-  const [dueDateFocused, setDueDateFocused] = useState<boolean>(false);
+  const [taskNameFocused, setTaskNameFocused] = useState(false);
+  const [taskDescFocused, setTaskDescFocused] = useState(false);
+  const [dueDateFocused, setDueDateFocused] = useState(false);
+
+  const { memberList } = useApp();
 
   useEffect(() => {
     setModalVisible(visible);
@@ -83,74 +86,60 @@ const TaskFormModal: React.FC<Props> = ({
   };
 
   const validateTaskName = (value: string): string => {
-    if (!value.trim()) {
-      return "Task name is required";
-    }
-    if (value.trim().length < 3) {
+    const trimmed = value.trim();
+    if (!trimmed) return "Task name is required";
+    if (trimmed.length < 3)
       return "Task name must be at least 3 characters long";
-    }
-    if (value.trim().length > 100) {
+    if (trimmed.length > 100)
       return "Task name must be less than 100 characters";
-    }
     return "";
   };
 
   const validateDueDate = (value: string): string => {
-    if (!value.trim()) {
-      return "Due date is required";
-    }
+    const trimmed = value.trim();
+    if (!trimmed) return "Due date is required";
 
-    // Basic date format validation (DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY)
     const dateRegex = /^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/;
-    if (!dateRegex.test(value)) {
-      return "Please enter date in DD/MM/YYYY format";
+    const match = trimmed.match(dateRegex);
+    if (!match) return "Please enter date in DD/MM/YYYY format";
+
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+
+    if (day < 1 || day > 31 || month < 1 || month > 12 || year < 2024) {
+      return "Please enter a valid date";
     }
-
-    const match = value.match(dateRegex);
-    if (match) {
-      const day = parseInt(match[1]);
-      const month = parseInt(match[2]);
-      const year = parseInt(match[3]);
-
-      if (day < 1 || day > 31 || month < 1 || month > 12 || year < 2024) {
-        return "Please enter a valid date";
-      }
-    }
-
     return "";
   };
 
   const validateUser = (): string => {
-    if (!assignedUserId) {
-      return "Please select a user to assign the task";
-    }
+    if (!assignedUserId) return "Please select a user to assign the task";
     return "";
   };
 
   const handleTaskNameChange = (value: string) => {
     setTaskName(value);
-    if (taskNameError) {
-      setTaskNameError("");
-    }
+    if (taskNameError) setTaskNameError("");
   };
 
-  const handleTaskDescriptionChange = (value: string) => {
+  const handleTaskDescriptionChange = (value: string) =>
     setTaskDescription(value);
-  };
 
   const handleDueDateChange = (value: string) => {
     setDueDate(value);
-    if (dueDateError) {
-      setDueDateError("");
-    }
+    if (dueDateError) setDueDateError("");
   };
 
   const handleUserSelect = (userId: string) => {
     setAssignedUserId(userId);
     setDropdownOpen(false);
-    if (userError) {
-      setUserError("");
-    }
+    if (userError) setUserError("");
+  };
+
+  const handleCancel = () => {
+    resetForm();
+    onDismissCb();
   };
 
   const handleSubmit = () => {
@@ -162,35 +151,23 @@ const TaskFormModal: React.FC<Props> = ({
     setDueDateError(dueDateErr);
     setUserError(userErr);
 
-    if (taskNameErr || dueDateErr || userErr) {
-      return;
-    }
+    if (taskNameErr || dueDateErr || userErr) return;
 
-    const formData: TaskFormData = {
+    onSubmit({
       taskName: taskName.trim(),
       taskDescription: taskDescription.trim(),
       dueDate: dueDate.trim(),
       assignedUserId,
-    };
-
-    onSubmit(formData);
+    });
     resetForm();
   };
 
-  const handleCancel = () => {
-    resetForm();
-    onDismissCb();
-  };
-
-  const isValid = () => {
-    return (
-      taskName.trim().length >= 3 &&
-      taskName.trim().length <= 100 &&
-      dueDate.trim() &&
-      assignedUserId &&
-      !validateDueDate(dueDate)
-    );
-  };
+  const isValid = (): boolean =>
+    taskName.trim().length >= 3 &&
+    taskName.trim().length <= 100 &&
+    dueDate.trim() !== "" &&
+    assignedUserId !== "" &&
+    !validateDueDate(dueDate);
 
   const getInputStyle = (focused: boolean, error: string) => {
     if (error) return styles.textInputError;
@@ -198,24 +175,51 @@ const TaskFormModal: React.FC<Props> = ({
     return styles.textInput;
   };
 
-  const getSelectedUser = () => {
-    return users.find((user) => user.id === assignedUserId);
+  const getSelectedUser = (): User | undefined =>
+    users.find((user) => user.id === assignedUserId);
+
+  const renderUser: ListRenderItem<User> = ({ item }) => {
+    const selected = assignedUserId === item.id;
+    return (
+      <TouchableOpacity
+        style={[styles.dropdownItem, selected && styles.dropdownItemSelected]}
+        onPress={() => handleUserSelect(item.id)}
+      >
+        <View>
+          <Text
+            style={[
+              styles.dropdownItemName,
+              selected && styles.dropdownItemNameSelected,
+            ]}
+          >
+            {item.name}
+          </Text>
+          <Text
+            style={[
+              styles.dropdownItemEmail,
+              selected && styles.dropdownItemEmailSelected,
+            ]}
+          >
+            {item.email}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
     <Portal>
-      <Modal visible={modalVisible} onDismiss={handleCancel} dismissable={true}>
+      <Modal visible={modalVisible} onDismiss={handleCancel} dismissable>
         <View style={styles.modalOverlay}>
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContainer}
           >
-            {/* Header */}
             <View style={styles.header}>
               <Text style={styles.title}>{title}</Text>
             </View>
 
-            {/* Task Name Input */}
+            {/* Task Name */}
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Task Name *</Text>
               <TextInput
@@ -228,12 +232,12 @@ const TaskFormModal: React.FC<Props> = ({
                 autoCapitalize="sentences"
                 maxLength={100}
               />
-              {taskNameError ? (
+              {!!taskNameError && (
                 <Text style={styles.errorText}>{taskNameError}</Text>
-              ) : null}
+              )}
             </View>
 
-            {/* Task Description Input */}
+            {/* Task Description */}
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Task Description</Text>
               <TextInput
@@ -246,7 +250,7 @@ const TaskFormModal: React.FC<Props> = ({
                   getInputStyle(taskDescFocused, ""),
                   styles.textAreaInput,
                 ]}
-                multiline={true}
+                multiline
                 numberOfLines={4}
                 autoCapitalize="sentences"
                 maxLength={500}
@@ -254,7 +258,7 @@ const TaskFormModal: React.FC<Props> = ({
               />
             </View>
 
-            {/* Due Date Input */}
+            {/* Due Date */}
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Due Date *</Text>
               <TextInput
@@ -267,12 +271,12 @@ const TaskFormModal: React.FC<Props> = ({
                 maxLength={10}
                 keyboardType="numeric"
               />
-              {dueDateError ? (
+              {!!dueDateError && (
                 <Text style={styles.errorText}>{dueDateError}</Text>
-              ) : null}
+              )}
             </View>
 
-            {/* User Assignment Dropdown */}
+            {/* Assign To */}
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Assign To *</Text>
               <TouchableOpacity
@@ -281,7 +285,7 @@ const TaskFormModal: React.FC<Props> = ({
                   userError && styles.dropdownButtonError,
                   dropdownOpen && styles.dropdownButtonFocused,
                 ]}
-                onPress={() => setDropdownOpen(!dropdownOpen)}
+                onPress={() => setDropdownOpen((prev) => !prev)}
               >
                 <Text
                   style={[
@@ -289,61 +293,27 @@ const TaskFormModal: React.FC<Props> = ({
                     !getSelectedUser() && styles.dropdownPlaceholder,
                   ]}
                 >
-                  {getSelectedUser()
-                    ? getSelectedUser()!.name
-                    : "Select a user"}
+                  {getSelectedUser()?.name ?? "Select a user"}
                 </Text>
               </TouchableOpacity>
 
               {dropdownOpen && (
                 <View style={styles.dropdownList}>
-                  <ScrollView
-                    style={styles.dropdownScrollView}
-                    nestedScrollEnabled={true}
+                  <FlatList
+                    data={users}
+                    keyExtractor={(item) => item.id}
+                    renderItem={renderUser}
+                    nestedScrollEnabled
                     showsVerticalScrollIndicator={false}
-                  >
-                    {users.map((user) => (
-                      <TouchableOpacity
-                        key={user.id}
-                        style={[
-                          styles.dropdownItem,
-                          assignedUserId === user.id &&
-                            styles.dropdownItemSelected,
-                        ]}
-                        onPress={() => handleUserSelect(user.id)}
-                      >
-                        <View>
-                          <Text
-                            style={[
-                              styles.dropdownItemName,
-                              assignedUserId === user.id &&
-                                styles.dropdownItemNameSelected,
-                            ]}
-                          >
-                            {user.name}
-                          </Text>
-                          <Text
-                            style={[
-                              styles.dropdownItemEmail,
-                              assignedUserId === user.id &&
-                                styles.dropdownItemEmailSelected,
-                            ]}
-                          >
-                            {user.email}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    ))}
-                  </ScrollView>
+                    style={styles.dropdownScrollView}
+                  />
                 </View>
               )}
 
-              {userError ? (
-                <Text style={styles.errorText}>{userError}</Text>
-              ) : null}
+              {!!userError && <Text style={styles.errorText}>{userError}</Text>}
             </View>
 
-            {/* Character Counter for Description */}
+            {/* Character Counter */}
             <View style={styles.characterCounter}>
               <Text style={styles.characterCounterText}>
                 Description: {taskDescription.length}/500
@@ -353,8 +323,8 @@ const TaskFormModal: React.FC<Props> = ({
             {/* Action Buttons */}
             <View style={styles.buttonContainer}>
               <Button
-                onPress={handleCancel}
                 mode="outlined"
+                onPress={handleCancel}
                 style={styles.cancelButton}
                 contentStyle={styles.cancelButtonContent}
                 labelStyle={styles.cancelButtonText}
@@ -362,8 +332,8 @@ const TaskFormModal: React.FC<Props> = ({
                 Cancel
               </Button>
               <Button
-                onPress={handleSubmit}
                 mode="contained"
+                onPress={handleSubmit}
                 disabled={!isValid()}
                 style={[
                   styles.submitButton,

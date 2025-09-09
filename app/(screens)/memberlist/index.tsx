@@ -32,7 +32,6 @@ export default function MemberList() {
   }, [workspace?.id]);
 
   const renderItem = ({ item, index }) => {
-    console.log("member item ", JSON.stringify(item, null, 2));
     return (
       <UserCard
         role={item?.role}

@@ -24,11 +24,12 @@ import InviteUserModal from "@/components/ui/modals/inviteuser";
 import { createInvitation } from "@/app/services/invitation";
 import { getWorkspaceUsers } from "@/app/services/workspace_members";
 import UserCard from "@/components/ui/cards/workspace_membercard";
+import moment from "moment";
 
 const Dashboard = () => {
   const router = useRouter();
   const { session } = useAuth();
-  const { workspace, setWorkspace } = useApp();
+  const { workspace, setWorkspace, setMemberList } = useApp();
 
   const userId = session?.user?.id;
 
@@ -80,6 +81,7 @@ const Dashboard = () => {
       try {
         const resp = await getWorkspaceUsers(workspaceId);
         setWorkspaceMembers(resp);
+        setMemberList(resp);
       } catch (error) {
         console.log("error", error);
         Alert.alert("Error fetching workpace members");
@@ -321,11 +323,12 @@ const Dashboard = () => {
             renderItem={({ item, index }) => {
               return (
                 <UserCard
-                  role="Member"
-                  email="kevinron@afkjfd.com"
-                  joinedAt="393239, 23932"
-                  userName="keiviornap"
-                  key={index}
+                  role={item?.role}
+                  email={item?.email}
+                  key={item?.id}
+                  userName={item.username}
+                  joinedAt={moment(item.joined_at).format("DD MMM YYYY")}
+                  avatarUrl={item.avatar_url}
                 />
               );
             }}
