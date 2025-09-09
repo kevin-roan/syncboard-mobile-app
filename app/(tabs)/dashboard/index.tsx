@@ -48,7 +48,7 @@ const Dashboard = () => {
     const fetchWorkspaceInfo = async () => {
       try {
         const data = await getWorkspaces();
-        setWorkspaces(data); // Store all workspaces
+        setWorkspaces(data);
         if (data?.length > 0) {
           setWorkspace(data[0]);
         } else {
@@ -136,6 +136,10 @@ const Dashboard = () => {
   const handleSeeAllProjects = () => {
     router.push("/projectlist");
     // console.log("See all projects");
+  };
+
+  const handleSeeWorkspaceMembers = () => {
+    router.push("/memberlist");
   };
 
   const handleInviteUser = async (email: string, role?: string) => {
@@ -305,7 +309,7 @@ const Dashboard = () => {
           <Text style={styles.sectionTitle}>Workspace Members</Text>
           <TouchableOpacity
             style={styles.seeAllButton}
-            onPress={handleSeeAllProjects}
+            onPress={handleSeeWorkspaceMembers}
           >
             <Text style={styles.seeAllText}>See All</Text>
           </TouchableOpacity>

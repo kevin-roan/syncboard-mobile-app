@@ -47,7 +47,10 @@ const Project = () => {
     fetchTasks();
   };
 
-  const handleCreateTask = async (taskName: string, description: string) => {
+  const handleCreateTask = async (formData) => {
+    console.log("form data", formData);
+
+    return;
     try {
       const payload = {
         name: taskName,
@@ -123,23 +126,12 @@ const Project = () => {
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }
         />
-        <ModalForm
-          visible={taskFormVisible}
-          title="Enter task name"
-          descriptionPlaceholder="Enter Description"
-          textinputPlaceholder="Enter task name"
-          onDismissCb={() => setTaskFormVisible(false)}
-          onSubmit={handleCreateTask}
-        />
+
         <TaskFormModal
           title="Create New Task"
           visible={taskFormVisible}
           onDismissCb={() => setTaskFormVisible(false)}
-          onSubmit={(formData) => {
-            console.log("Task Data:", formData);
-            // Handle task creation
-            // setModalVisible(false);
-          }}
+          onSubmit={handleCreateTask}
         />
         <FAB
           icon="plus"

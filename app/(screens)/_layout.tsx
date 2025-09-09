@@ -9,6 +9,12 @@ const ScreensStackLayout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="memberlist/index"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 };

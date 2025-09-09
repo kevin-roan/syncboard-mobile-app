@@ -28,16 +28,6 @@ const UserCard: React.FC<UserCardProps> = ({
       .substring(0, 2);
   };
 
-  // Format joined date
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
   // Get role chip color based on role
   const getRoleChipStyle = (userRole: string) => {
     const lowerRole = userRole.toLowerCase();
@@ -92,7 +82,7 @@ const UserCard: React.FC<UserCardProps> = ({
         <View style={styles.footer}>
           <View style={styles.joinedContainer}>
             <Text style={styles.joinedLabel}>Joined</Text>
-            <Text style={styles.joinedDate}>{formatDate(joinedAt)}</Text>
+            <Text style={styles.joinedDate}>{joinedAt}</Text>
           </View>
         </View>
       </Card.Content>

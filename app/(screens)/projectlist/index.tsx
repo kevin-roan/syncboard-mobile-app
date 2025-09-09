@@ -17,7 +17,7 @@ import { getProjects } from "@/app/services/projects";
 import styles from "./styles";
 
 const ProjectList = () => {
-  const { workspace, setWorkspace } = useApp();
+  const { workspace } = useApp();
   const router = useRouter();
   const theme = useTheme();
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -46,7 +46,7 @@ const ProjectList = () => {
     try {
       const data = await getProjects(workspace?.id);
       setProjects(data);
-    } catch (error: Error) {
+    } catch (error) {
       console.log("error refreshing projects", error);
     } finally {
       setRefreshing(false);
@@ -112,6 +112,7 @@ const ProjectList = () => {
   return (
     <ScreenLayout>
       <Appbar.Header elevated>
+        <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content
           title="Projects"
           subtitle={workspace?.name || "Select workspace"}
