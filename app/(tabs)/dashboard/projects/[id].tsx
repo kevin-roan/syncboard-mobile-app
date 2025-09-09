@@ -57,6 +57,7 @@ const Project = () => {
         created_by: userId,
         assigned_to: formData.assignedUserId,
         status: formData?.status,
+        due: formData?.dueDate,
       };
       const data = await createTask(payload);
       setTaskFormVisible(false);
@@ -97,6 +98,7 @@ const Project = () => {
         title={item.name}
         status={item.status}
         description={item.description}
+        dueDate={item?.due}
         onStatusChangeCb={handleUpdateTask}
         handleDeleteTask={handleDeleteTask}
       />
