@@ -4,6 +4,7 @@ import styles from "./styles";
 import { Menu } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import moment from "moment";
+import { useRouter } from "expo-router";
 
 interface Props {
   id: string;
@@ -25,8 +26,15 @@ const TaskCard: React.FC<Props> = ({
   dueDate,
 }) => {
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
+
+  const router = useRouter();
+
+  const handleTaskNavigation = () => {
+    router.push(`/task/${id}`);
+  };
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={handleTaskNavigation}>
       <View style={styles.cardHead}>
         <View>
           <Text style={styles.title}>{title}</Text>
@@ -71,7 +79,7 @@ const TaskCard: React.FC<Props> = ({
           title="Completed"
         />
       </Menu>
-    </View>
+    </TouchableOpacity>
   );
 };
 
