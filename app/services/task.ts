@@ -72,3 +72,40 @@ export async function deleteTaskById(taskId: string) {
   if (error) throw error;
   return data;
 }
+
+export async function getTaskInfoById(taskId: string) {
+  const { data, error } = await supabase
+    .from("tasks_with_users")
+    .select("*")
+    .eq("id", taskId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export interface CommentInput {
+  text: string;
+  author: string;
+  timestamp: string;
+}
+
+export async function createCommentByTaskId(
+  taskId: string,
+  comment: CommentInput,
+) {
+  const insertData = {
+    task_id: taskId,
+    content: comment.text,
+    created_by: comment.author,
+  };
+
+  const { data, error } = await supabase
+    .from("comments")
+    .insert([insertData])
+    .select();
+
+  if (error) throw error;
+
+  return data;
+}

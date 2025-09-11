@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, FlatList, RefreshControl, View } from "react-native";
+import { Alert, FlatList, RefreshControl, View, StatusBar } from "react-native";
 import { Text, Appbar, Button, FAB } from "react-native-paper";
 import styles from "./styles";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -14,6 +14,7 @@ import {
 import { useAuth } from "@/context/authctx";
 import TaskCard from "@/components/ui/cards/taskcard";
 import TaskFormModal from "@/app/(modal)/createtask";
+import { Colors } from "@/constants/Colors";
 
 const Project = () => {
   const router = useRouter();
@@ -107,6 +108,7 @@ const Project = () => {
 
   return (
     <>
+      <StatusBar barStyle={"light-content"} backgroundColor={"white"} />
       <Appbar.Header style={styles.header}>
         <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content title={projectName} />
