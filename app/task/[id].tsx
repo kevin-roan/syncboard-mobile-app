@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { StatusBar, RefreshControl, ScrollView } from "react-native";
+import { StatusBar, RefreshControl, Alert, ScrollView } from "react-native";
 import ScreenLayout from "@/provider/screenlayout";
 import styles from "./styles";
 import { Appbar } from "react-native-paper";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import TaskInfoCard from "@/components/ui/cards/taskinfocard";
-import { getTaskInfoById } from "../services/task";
+import {
+  createCommentByTaskId,
+  getTaskCommentsByTaskId,
+  getTaskInfoById,
+  subscribeToTaskComments,
+} from "../services/task";
 import CommentsCard from "@/components/ui/cards/commentcard";
+import { useAuth } from "@/context/authctx";
 
 interface TaskData {
   id: string;
@@ -20,9 +26,13 @@ interface TaskData {
 
 const Task = () => {
   const [taskData, setTaskData] = useState<TaskData | null>(null);
+  const [comments, setComments] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
+  const { session } = useAuth();
+
+  const userId = session?.user?.id;
 
   const fetchTaskInfo = useCallback(async () => {
     if (!id) return;
@@ -30,14 +40,47 @@ const Task = () => {
     setTaskData(data);
   }, [id]);
 
+  const fetchTaskComments = useCallback(async () => {
+    if (!id) return;
+    const data = await getTaskCommentsByTaskId(id);
+    console.log("retrived comments", data);
+    setComments(data);
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const unsubscribe = subscribeToTaskComments(id, (comment) => {
+      setComments((prev) => [...prev, comment]);
+    });
+
+    return () => unsubscribe();
+  }, [id]);
+
   useEffect(() => {
     fetchTaskInfo();
-  }, [fetchTaskInfo]);
+    fetchTaskComments();
+  }, [fetchTaskInfo, fetchTaskComments]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchTaskInfo();
     setRefreshing(false);
+  };
+
+  const handleAddComment = async (commentText: string) => {
+    try {
+      const comment = {
+        text: commentText,
+        author: userId,
+      };
+      const res = await createCommentByTaskId(id, comment);
+      console.log("comments", res);
+      setComments(res[0]);
+    } catch (error) {
+      console.log("error", error);
+      Alert.alert("error adding comment");
+    }
   };
 
   return (
@@ -66,7 +109,7 @@ const Task = () => {
             assigneeAvatar={taskData.assigned_to_avatar}
           />
         )}
-        <CommentsCard taskId={id} />
+        <CommentsCard onSubmit={handleAddComment} comments={comments} />
       </ScrollView>
     </ScreenLayout>
   );

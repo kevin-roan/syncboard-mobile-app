@@ -2,19 +2,17 @@ import React, { useState } from "react";
 import { View, FlatList } from "react-native";
 import { Card, Text, Avatar, TextInput, IconButton } from "react-native-paper";
 import styles from "./style";
-import { createCommentByTaskId } from "@/app/services/task";
 
-interface Comment {
+export interface Comment {
   id: string;
-  text: string;
+  content: string;
   author: string;
   timestamp: string;
 }
 
 interface CommentsCardProps {
-  taskId: string;
   comments: Comment[];
-  onCommentsChange?: (comments: Comment[]) => void;
+  onSubmit: (comment: string) => void;
 }
 
 const colors = {
@@ -34,37 +32,11 @@ const getInitials = (name?: string | null): string => {
     .substring(0, 2);
 };
 
-const CommentsCard: React.FC<CommentsCardProps> = ({
-  taskId,
-  comments,
-  onCommentsChange,
-}) => {
+const CommentsCard: React.FC<CommentsCardProps> = ({ comments, onSubmit }) => {
   const [commentText, setCommentText] = useState<string>("");
 
-  const handleSendComment = async () => {
-    if (commentText.trim()) {
-      try {
-        const newComment = {
-          text: commentText.trim(),
-          author: "You",
-          timestamp: "Just now",
-        };
-
-        // Call service to create comment in backend with taskId
-        // Assuming backend will return the inserted comment with id
-        const createdComments = await createCommentByTaskId(taskId, newComment);
-
-        // Update local comments list
-        if (onCommentsChange) {
-          // Assuming createdComments is an array with the new comment inserted
-          onCommentsChange([...comments, ...createdComments]);
-        }
-
-        setCommentText("");
-      } catch (error) {
-        console.error("Failed to send comment", error);
-      }
-    }
+  const handleSendComment = () => {
+    onSubmit(commentText);
   };
 
   const renderComment = ({ item }: { item: Comment }) => (
@@ -89,18 +61,16 @@ const CommentsCard: React.FC<CommentsCardProps> = ({
           </Text>
         </View>
         <Text style={[styles.commentText, { color: colors.text }]}>
-          {item.text}
+          {item.content}
         </Text>
       </View>
     </View>
   );
-
-  return null;
   return (
     <Card style={styles.card} mode="elevated">
       <Card.Content style={styles.cardContent}>
         <Text style={[styles.title, { color: colors.text }]}>
-          Comments ({comments.length})
+          Comments ({comments?.length ?? 0})
         </Text>
         <FlatList
           data={comments}
