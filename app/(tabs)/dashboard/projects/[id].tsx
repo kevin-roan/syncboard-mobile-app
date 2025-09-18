@@ -15,6 +15,7 @@ import { useAuth } from "@/context/authctx";
 import TaskCard from "@/components/ui/cards/taskcard";
 import TaskFormModal from "@/app/(modal)/createtask";
 import { Colors } from "@/constants/Colors";
+import { convertToISODate } from "@/utils/convertToISODate";
 
 const Project = () => {
   const router = useRouter();
@@ -49,7 +50,6 @@ const Project = () => {
   };
 
   const handleCreateTask = async (formData) => {
-    // console.log("form data", formData);
     try {
       const payload = {
         name: formData.taskName,
@@ -58,7 +58,7 @@ const Project = () => {
         created_by: userId,
         assigned_to: formData.assignedUserId,
         status: formData?.status,
-        due: formData?.dueDate,
+        due: formData?.dueDate ? convertToISODate(formData.dueDate) : undefined,
       };
       const data = await createTask(payload);
       setTaskFormVisible(false);

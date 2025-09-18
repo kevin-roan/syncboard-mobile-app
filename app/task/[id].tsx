@@ -8,9 +8,10 @@ import TaskInfoCard from "@/components/ui/cards/taskinfocard";
 import {
   createCommentByTaskId,
   getTaskCommentsByTaskId,
-  getTaskInfoById,
   subscribeToTaskComments,
-} from "../services/task";
+} from "../services/comment";
+
+import { getTaskInfoById } from "../services/task";
 import CommentsCard from "@/components/ui/cards/commentcard";
 import { useAuth } from "@/context/authctx";
 
