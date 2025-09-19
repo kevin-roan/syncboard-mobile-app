@@ -7,6 +7,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import TaskInfoCard from "@/components/ui/cards/taskinfocard";
 import {
   createCommentByTaskId,
+  getTaskCommentDetailsByCommentId,
   getTaskCommentsByTaskId,
   subscribeToTaskComments,
 } from "../services/comment";
@@ -30,33 +31,41 @@ const Task = () => {
   const [comments, setComments] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
-  const { id } = useLocalSearchParams<{ id?: string }>();
+  const { id: taskId } = useLocalSearchParams<{ id?: string }>();
   const { session } = useAuth();
 
   const userId = session?.user?.id;
 
   const fetchTaskInfo = useCallback(async () => {
-    if (!id) return;
-    const data = await getTaskInfoById(id);
+    if (!taskId) return;
+    const data = await getTaskInfoById(taskId);
     setTaskData(data);
-  }, [id]);
+  }, [taskId]);
 
   const fetchTaskComments = useCallback(async () => {
-    if (!id) return;
-    const data = await getTaskCommentsByTaskId(id);
+    if (!taskId) return;
+    const data = await getTaskCommentsByTaskId(taskId);
     console.log("retrived comments", data);
     setComments(data);
-  }, [id]);
+  }, [taskId]);
 
+  const fetchNewCommentsByCommentId = async (commentId: string) => {
+    if (!commentId) return;
+    const newComment = await getTaskCommentDetailsByCommentId(commentId);
+    setComments((prev) => [...prev, newComment]);
+  };
+
+  // subscribe to comments
   useEffect(() => {
-    if (!id) return;
+    if (!taskId) return;
 
-    const unsubscribe = subscribeToTaskComments(id, (comment) => {
-      setComments((prev) => [...prev, comment]);
+    const unsubscribe = subscribeToTaskComments(taskId, (comment) => {
+      fetchNewCommentsByCommentId(comment.id);
+      // setComments((prev) => [...prev, comment]);
     });
 
     return () => unsubscribe();
-  }, [id]);
+  }, [taskId]);
 
   useEffect(() => {
     fetchTaskInfo();
@@ -72,12 +81,14 @@ const Task = () => {
   const handleAddComment = async (commentText: string) => {
     try {
       const comment = {
-        text: commentText,
-        author: userId,
+        content: commentText,
+        user_id: userId,
       };
-      const res = await createCommentByTaskId(id, comment);
+      const res = await createCommentByTaskId(taskId, comment);
       console.log("comments", res);
-      setComments(res[0]);
+      if (res && res.length > 0) {
+        setComments((prev) => [...prev, res[0]]);
+      }
     } catch (error) {
       console.log("error", error);
       Alert.alert("error adding comment");

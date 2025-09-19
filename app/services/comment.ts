@@ -1,8 +1,8 @@
 import { supabase } from "@/lib/supabase";
 
 export interface CommentInput {
-  text: string;
-  author: string;
+  content: string;
+  user_id: string;
 }
 
 export async function createCommentByTaskId(
@@ -11,8 +11,8 @@ export async function createCommentByTaskId(
 ) {
   const insertData = {
     task_id: taskId,
-    content: comment.text,
-    created_by: comment.author,
+    content: comment.content,
+    created_by: comment.user_id,
   };
 
   const { data, error } = await supabase
@@ -40,7 +40,7 @@ export function subscribeToTaskComments(
         filter: `task_id=eq.${taskId}`,
       },
       (payload) => {
-        console.log("Realtime payload:", payload);
+        // console.log("Realtime payload:", payload);
         if (payload.new) {
           onNewComment(payload.new);
         }
@@ -64,5 +64,15 @@ export async function getTaskCommentsByTaskId(taskId: string) {
 
   if (error) throw error;
   console.log("data", data);
+  return data;
+}
+
+export async function getTaskCommentDetailsByCommentId(commentId: string) {
+  const { data, error } = await supabase
+    .from("comment_details")
+    .select("*")
+    .eq("id", commentId)
+    .single();
+  if (error) throw error;
   return data;
 }
