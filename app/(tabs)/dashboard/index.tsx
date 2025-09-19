@@ -15,14 +15,21 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/context/authctx";
 import { useApp } from "@/context/appctx";
 import styles from "./styles";
-import { createProject, getProjects } from "@/app/services/projects";
+import {
+  createProject,
+  getActiveProjects,
+  getProjects,
+} from "@/app/services/projects";
 import { getWorkspaces } from "@/app/services/workspace";
 import ProjectCard from "@/components/ui/cards/projectcard";
 import WorkspaceDrawerModal from "@/components/ui/drawer/workspacedrawer";
 import { getDueTaskCount } from "@/app/services/task";
 import InviteUserModal from "@/components/ui/modals/inviteuser";
 import { createInvitation } from "@/app/services/invitation";
-import { getWorkspaceUsers } from "@/app/services/workspace_members";
+import {
+  getWorkspaceMemberCount,
+  getWorkspaceUsers,
+} from "@/app/services/workspace_members";
 import UserCard from "@/components/ui/cards/workspace_membercard";
 import moment from "moment";
 
@@ -43,6 +50,8 @@ const Dashboard = () => {
     useState<boolean>(false);
   const [dashboardInfo, setDashboardInfo] = useState({
     taskDue: 0,
+    activeProjects: 0,
+    teamMembers: 0,
   });
 
   useEffect(() => {
@@ -90,8 +99,18 @@ const Dashboard = () => {
 
     const fetchDashboardMetadata = async (workspaceId: string) => {
       try {
-        const taskDue = await getDueTaskCount(workspaceId);
-        setDashboardInfo((prev) => ({ ...prev, taskDue }));
+        const [taskDue, activeProjects, teamMembers] = Promise.all([
+          getDueTaskCount(workspaceId),
+          getActiveProjects(workspaceId),
+          getWorkspaceMemberCount(workspaceId),
+        ]);
+
+        setDashboardInfo((prev) => ({
+          ...prev,
+          taskDue,
+          activeProjects,
+          teamMembers,
+        }));
       } catch (error) {
         console.error("Error fetching dashboard metadata:", error);
       }
@@ -220,7 +239,9 @@ const Dashboard = () => {
         {/* Stats Section */}
         <View style={styles.statsSection}>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>12</Text>
+            <Text style={styles.statNumber}>
+              {dashboardInfo.activeProjects}
+            </Text>
             <Text style={styles.statLabel}>Active Projects</Text>
           </View>
           <View style={styles.statCard}>
@@ -228,7 +249,7 @@ const Dashboard = () => {
             <Text style={styles.statLabel}>Tasks Due</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>6</Text>
+            <Text style={styles.statNumber}>{dashboardInfo.teamMembers}</Text>
             <Text style={styles.statLabel}>Team Members</Text>
           </View>
         </View>

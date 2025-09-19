@@ -23,3 +23,14 @@ export async function getProjects(workspace_id: string) {
   if (error) throw error;
   return data;
 }
+
+export async function getActiveProjects(workspaceId: string) {
+  const { count, error } = await supabase
+    .from("projects")
+    .select("*", { count: "exact", head: true })
+    .eq("workspace_id", workspaceId);
+
+  if (error) throw error;
+
+  return count || 0;
+}
