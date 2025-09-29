@@ -13,7 +13,7 @@ import { useRouter } from "expo-router";
 import { useApp } from "@/context/appctx";
 import ScreenLayout from "@/provider/screenlayout";
 import ProjectCard from "@/components/ui/cards/projectcard";
-import { getProjects } from "@/app/services/projects";
+import { getProjects } from "@/services/projects";
 import styles from "./styles";
 
 const ProjectList = () => {

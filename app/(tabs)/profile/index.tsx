@@ -12,7 +12,7 @@ import { Appbar, Button, Avatar } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAuth } from "@/context/authctx";
 import styles from "./styles";
-import { getProfile } from "@/app/services/profile";
+import { getProfile } from "@/services/profile";
 
 const Profile = () => {
   const [user, setUser] = useState<unknown>(null);

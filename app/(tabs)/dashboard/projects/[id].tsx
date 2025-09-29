@@ -9,7 +9,7 @@ import {
   deleteTaskById,
   getTasks,
   updateTaskStatus,
-} from "@/app/services/task";
+} from "@/services/task";
 
 import { useAuth } from "@/context/authctx";
 import TaskCard from "@/components/ui/cards/taskcard";

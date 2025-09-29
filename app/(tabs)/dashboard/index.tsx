@@ -19,19 +19,20 @@ import {
   createProject,
   getActiveProjects,
   getProjects,
-} from "@/app/services/projects";
-import { getWorkspaces } from "@/app/services/workspace";
+} from "@/services/projects";
+import { getWorkspaces } from "@/services/workspace";
 import ProjectCard from "@/components/ui/cards/projectcard";
 import WorkspaceDrawerModal from "@/components/ui/drawer/workspacedrawer";
-import { getDueTaskCount } from "@/app/services/task";
+import { getDueTaskCount } from "@/services/task";
 import InviteUserModal from "@/components/ui/modals/inviteuser";
-import { createInvitation } from "@/app/services/invitation";
+import { createInvitation } from "@/services/invitation";
 import {
   getWorkspaceMemberCount,
   getWorkspaceUsers,
-} from "@/app/services/workspace_members";
+} from "@/services/workspace_members";
 import UserCard from "@/components/ui/cards/workspace_membercard";
 import moment from "moment";
+import DashboardNavigation from "@/components/ui/navbar/dashboard-header";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -211,6 +212,7 @@ const Dashboard = () => {
         <Appbar.Action icon="account-circle" onPress={() => {}} />
       </Appbar.Header>
 
+      <DashboardNavigation title={workspace?.name} />
       {/* Fixed WorkspaceDrawer */}
       <WorkspaceDrawerModal
         drawerVisible={drawerVisible}

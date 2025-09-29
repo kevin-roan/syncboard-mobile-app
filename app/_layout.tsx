@@ -4,6 +4,15 @@ import { AppProvider } from "@/context/appctx";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PaperProvider } from "react-native-paper";
 import { LogBox } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
+
+SplashScreen.preventAutoHideAsync();
 
 export default function Root() {
   return (
@@ -22,7 +31,16 @@ export default function Root() {
 const RootLayout = () => {
   const { authenticated, loading } = useAuth();
 
-  console.log("authenticated", authenticated);
+  useEffect(() => {
+    if (loading) {
+      SplashScreen.hide();
+    }
+  }, [loading]);
+
+  console.log("loading", loading, "authecated", authenticated);
+
+  if (loading) return null;
+
   LogBox.ignoreAllLogs();
 
   return (

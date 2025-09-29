@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { View, Alert, RefreshControl, FlatList } from "react-native";
 import ScreenLayout from "@/provider/screenlayout";
 import styles from "./styles";
-import { getWorkspaceUsers } from "@/app/services/workspace_members";
+import { getWorkspaceUsers } from "@/services/workspace_members";
 import { useApp } from "@/context/appctx";
 import UserCard from "@/components/ui/cards/workspace_membercard";
 import { Appbar, Text, ActivityIndicator } from "react-native-paper";

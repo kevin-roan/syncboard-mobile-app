@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Alert } from "react-native";
 import { TextInput, Button } from "react-native-paper";
-import { createWorkspace } from "../services/workspace";
+import { createWorkspace } from "../../services/workspace";
 import { useAuth } from "@/context/authctx";
 import { useRouter } from "expo-router";
 

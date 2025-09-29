@@ -29,17 +29,17 @@ export const AuthProvider = ({ children }: Props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // setLoading(true);
+    setLoading(true);
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
-      // setLoading(false);
+      setLoading(false);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
-      // setLoading(false);
+      setLoading(false);
     });
 
     return () => {
