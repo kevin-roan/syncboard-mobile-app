@@ -11,6 +11,7 @@ export default function Layout() {
 
   return (
     <Tabs
+      initialRouteName="dashboard/index"
       screenOptions={{ headerShown: false }}
       tabBar={({ navigation }) => (
         <BottomNavigation.Bar

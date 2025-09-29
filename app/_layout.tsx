@@ -32,8 +32,8 @@ const RootLayout = () => {
   const { authenticated, loading } = useAuth();
 
   useEffect(() => {
-    if (loading) {
-      SplashScreen.hide();
+    if (!loading) {
+      SplashScreen.hideAsync();
     }
   }, [loading]);
 
