@@ -25,6 +25,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="planor"/>
+        <data android:scheme="exp+planor"/>
       </intent-filter>
     </activity>
   </application>

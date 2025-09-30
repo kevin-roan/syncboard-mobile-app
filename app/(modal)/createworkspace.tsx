@@ -12,6 +12,7 @@ const CreateWorkspace = () => {
   const handleCreateWorkspace = async () => {
     const userId = auth?.session?.user?.id;
     try {
+      if (!workspaceName || typeof workspaceName !== "string") return;
       const data = await createWorkspace(workspaceName, userId);
       console.log("created workspace", data);
       router.replace("/home");

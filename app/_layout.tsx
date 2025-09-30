@@ -6,6 +6,14 @@ import { PaperProvider } from "react-native-paper";
 import { LogBox } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import "../global.css";
+
+import { ThemeProvider } from "@/provider/themeprovider";
+import {
+  useFonts,
+  Poppins_400Regular,
+  Poppins_600SemiBold,
+} from "@expo-google-fonts/poppins";
 
 SplashScreen.setOptions({
   duration: 1000,
@@ -15,12 +23,27 @@ SplashScreen.setOptions({
 SplashScreen.preventAutoHideAsync();
 
 export default function Root() {
+  const [fontsLoaded] = useFonts({
+    Poppins_400Regular,
+    Poppins_600SemiBold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null;
+
   return (
     <AuthProvider>
       <AppProvider>
         <SafeAreaProvider>
           <PaperProvider>
-            <RootLayout />
+            <ThemeProvider>
+              <RootLayout />
+            </ThemeProvider>
           </PaperProvider>
         </SafeAreaProvider>
       </AppProvider>
