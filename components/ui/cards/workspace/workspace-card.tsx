@@ -23,11 +23,9 @@ const WorkspaceCard: React.FC<Props> = ({
       <Text className="font-regular text-lg text-white">{workspaceName}</Text>
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">
-          <Text className="text-sm text-info ">{totalProjectsCount ?? 0} Total Project</Text>
-          <Text className="text-sm  text-success">{completedProjectsCount ?? 0} Total Project</Text>
-          <Text className="text-sm  text-destructive">
-            {archivedProjectsCount ?? 0} Total Project
-          </Text>
+          <Text className="text-sm text-info ">{totalProjectsCount ?? 0} Total Projects</Text>
+          <Text className="text-sm  text-success">{completedProjectsCount ?? 0} Active</Text>
+          <Text className="text-sm  text-destructive">{archivedProjectsCount ?? 0} Archived</Text>
         </View>
         <MaterialIcons name="delete-forever" size={24} color={THEME[scheme].destructive} />
       </View>

@@ -47,8 +47,6 @@ const Profile = () => {
       console.log('Logged out successfully');
     }
   }
-
-  console.log('user workspaces, ', userWorkspaces[0].name);
   return (
     <ScreenLayout>
       <ScrollView
