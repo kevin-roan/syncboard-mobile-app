@@ -6,12 +6,12 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
-} from "react";
-import { useColorScheme } from "react-native";
-import { darkTheme, lightTheme, Theme } from "@/constants/theme";
-import { getStorageItem } from "@/utils/storage";
+} from 'react';
+import { useColorScheme } from 'react-native';
+import { darkTheme, lightTheme, Theme } from '@/constants/theme';
+import { getStorageItem, setStorageItem } from '@/utils/storage';
 
-type ThemeMode = "light" | "dark" | "system";
+type ThemeMode = 'light' | 'dark' | 'system';
 
 interface ThemeContextProps {
   theme: Theme;
@@ -21,28 +21,24 @@ interface ThemeContextProps {
   isSystemMode: boolean;
 }
 
-const THEME_STORAGE_KEY = "theme";
+const THEME_STORAGE_KEY = 'theme';
 
 const ThemeContext = createContext<ThemeContextProps | null>(null);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const systemScheme = useColorScheme();
-  const [mode, setModeState] = useState<ThemeMode>("system");
+  const [mode, setModeState] = useState<ThemeMode>('system');
 
   useEffect(() => {
     const loadStoredTheme = () => {
       try {
         const storedMode = getStorageItem(THEME_STORAGE_KEY);
-        if (
-          storedMode === "light" ||
-          storedMode === "dark" ||
-          storedMode === "system"
-        ) {
+        if (storedMode === 'light' || storedMode === 'dark' || storedMode === 'system') {
           setModeState(storedMode);
         }
       } catch (error) {
-        console.warn("Failed to load theme from storage:", error);
-        setModeState("system");
+        console.warn('Failed to load theme from storage:', error);
+        setModeState('system');
       }
     };
 
@@ -50,41 +46,39 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const theme = useMemo((): Theme => {
-    if (mode === "system") {
-      return systemScheme === "dark" ? darkTheme : lightTheme;
+    if (mode === 'system') {
+      return systemScheme === 'dark' ? darkTheme : lightTheme;
     }
-    return mode === "dark" ? darkTheme : lightTheme;
+    return mode === 'dark' ? darkTheme : lightTheme;
   }, [mode, systemScheme]);
 
   useEffect(() => {
     try {
       setStorageItem(THEME_STORAGE_KEY, mode);
     } catch (error) {
-      console.warn("Failed to save theme to storage:", error);
+      console.warn('Failed to save theme to storage:', error);
     }
   }, [mode]);
 
   const toggleTheme = useCallback(() => {
     setModeState((prevMode) => {
-      if (prevMode === "system") {
-        return systemScheme === "dark" ? "light" : "dark";
+      if (prevMode === 'system') {
+        return systemScheme === 'dark' ? 'light' : 'dark';
       }
-      return prevMode === "light" ? "dark" : "light";
+      return prevMode === 'light' ? 'dark' : 'light';
     });
   }, [systemScheme]);
 
   const setMode = useCallback((newMode: ThemeMode) => {
-    if (newMode === "light" || newMode === "dark" || newMode === "system") {
+    if (newMode === 'light' || newMode === 'dark' || newMode === 'system') {
       setModeState(newMode);
     } else {
-      console.warn(
-        `Invalid theme mode: ${newMode}. Using 'system' as fallback.`,
-      );
-      setModeState("system");
+      console.warn(`Invalid theme mode: ${newMode}. Using 'system' as fallback.`);
+      setModeState('system');
     }
   }, []);
 
-  const isSystemMode = mode === "system";
+  const isSystemMode = mode === 'system';
 
   const contextValue = useMemo(
     () => ({
@@ -94,14 +88,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       setMode,
       isSystemMode,
     }),
-    [theme, mode, toggleTheme, setMode, isSystemMode],
+    [theme, mode, toggleTheme, setMode, isSystemMode]
   );
 
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 };
 
 export const useTheme = (): ThemeContextProps => {
@@ -109,8 +99,8 @@ export const useTheme = (): ThemeContextProps => {
 
   if (!context) {
     throw new Error(
-      "useTheme must be used within a ThemeProvider. " +
-        "Make sure your component is wrapped with <ThemeProvider>.",
+      'useTheme must be used within a ThemeProvider. ' +
+        'Make sure your component is wrapped with <ThemeProvider>.'
     );
   }
 

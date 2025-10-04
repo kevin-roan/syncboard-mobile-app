@@ -6,7 +6,7 @@ export const lightTheme = {
   // Text
   textPrimary: '#000000',
   textSecondary: '#4A4A4A',
-  textMuted: '#7A7A7A',
+  textMuted: '#C5C5C5',
 
   // Brand / Accent
   primary: '#0066FF',
@@ -37,7 +37,9 @@ export const darkTheme = {
   // Text
   textPrimary: '#FFFFFF',
   textSecondary: '#A796B1',
-  textMuted: '#626262',
+  // textMuted: '#626262',
+
+  textMuted: '#C5C5C5',
 
   // Brand / Accent
   primary: '#3399ff',

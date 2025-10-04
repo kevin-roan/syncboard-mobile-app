@@ -1,18 +1,22 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar, View } from "react-native";
-import { useTheme } from "../themeprovider";
-import styles from "./styles";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../themeprovider';
+import * as StatusBar from 'expo-status-bar';
 
 interface Props {
   children: React.ReactNode;
 }
-const ScreenLayout: React.FC<Props> = ({ children }) => {
-  const { theme } = useTheme();
 
-  const _styles = styles(theme);
+const ScreenLayout: React.FC<Props> = ({ children }) => {
+  const { theme, mode } = useTheme();
+  StatusBar.setStatusBarStyle(mode === 'system' ? 'auto' : mode);
+
   return (
-    <SafeAreaView style={_styles.container} className="bg-black flex-1">
-      <StatusBar translucent barStyle={"dark-content"} />
+    <SafeAreaView
+      style={{
+        padding: 20,
+        backgroundColor: theme.background,
+        flex: 1,
+      }}>
       {children}
     </SafeAreaView>
   );

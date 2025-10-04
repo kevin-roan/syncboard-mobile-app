@@ -1,19 +1,17 @@
-import { Stack, useRouter } from "expo-router";
-import { AuthProvider, useAuth } from "@/context/authctx";
-import { AppProvider } from "@/context/appctx";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { PaperProvider } from "react-native-paper";
-import { LogBox } from "react-native";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import "../global.css";
+import { Stack, useRouter } from 'expo-router';
+import { AuthProvider, useAuth } from '@/context/authctx';
+import { AppProvider } from '@/context/appctx';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { PaperProvider } from 'react-native-paper';
+import { LogBox } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import '../global.css';
 
-import { ThemeProvider } from "@/provider/themeprovider";
-import {
-  useFonts,
-  Poppins_400Regular,
-  Poppins_600SemiBold,
-} from "@expo-google-fonts/poppins";
+import { ThemeProvider } from '@/provider/themeprovider';
+import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
+
+import { PortalHost } from '@rn-primitives/portal';
 
 SplashScreen.setOptions({
   duration: 1000,
@@ -43,6 +41,7 @@ export default function Root() {
           <PaperProvider>
             <ThemeProvider>
               <RootLayout />
+              <PortalHost />
             </ThemeProvider>
           </PaperProvider>
         </SafeAreaProvider>
@@ -60,7 +59,7 @@ const RootLayout = () => {
     }
   }, [loading]);
 
-  console.log("loading", loading, "authecated", authenticated);
+  console.log('loading', loading, 'authecated', authenticated);
 
   if (loading) return null;
 
@@ -73,7 +72,7 @@ const RootLayout = () => {
         <Stack.Screen
           name="(modal)"
           options={{
-            presentation: "modal",
+            presentation: 'modal',
             headerShown: false,
             gestureEnabled: true,
             animationDuration: 300,
