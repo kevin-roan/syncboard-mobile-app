@@ -1,8 +1,8 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from '@/lib/supabase';
 
 export async function createWorkspace(name: string, userId: string) {
   const { data, error } = await supabase
-    .from("workspaces")
+    .from('workspaces')
     .insert([{ name, created_by: userId }])
     .select()
     .single();
@@ -10,8 +10,12 @@ export async function createWorkspace(name: string, userId: string) {
   return data;
 }
 
-export async function getWorkspaces() {
-  const { data, error } = await supabase.from("workspaces").select();
+// get workspaces that the auth user is in. (rls enabled)
+export async function getUserWorkspaces(userId: string) {
+  const { data, error } = await supabase
+    .from('workspace_members')
+    .select('workspace_id, workspaces(*)')
+    .eq('user_id', userId);
   if (error) throw error;
-  return data;
+  return data.map((item) => item.workspaces);
 }

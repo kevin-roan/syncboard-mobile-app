@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Alert, ScrollView } from 'react-native';
+import { View, Alert, ScrollView, FlatList } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/authctx';
 import { getProfile } from '@/services/profile';
@@ -9,6 +9,7 @@ import { Text } from '@/components/ui/text';
 import ProfileInfoCard from '@/components/ui/cards/profile/profie-info-card';
 import moment from 'moment';
 import WorkspaceCard from '@/components/ui/cards/workspace/workspace-card';
+import { useGetUserWorkspaces } from '@/hooks/workspace/use-workspace';
 
 const note =
   'Username will be appeared in syncboard issues, set it however you want be called in Syncboard';
@@ -19,6 +20,8 @@ const Profile = () => {
 
   const userId = session?.user?.id;
   const usernameInital = session?.user?.email?.charAt(0).toUpperCase() || 'U';
+
+  const { data: userWorkspaces, error: userWorkspacesError } = useGetUserWorkspaces(userId);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -45,6 +48,7 @@ const Profile = () => {
     }
   }
 
+  console.log('user workspaces, ', userWorkspaces[0].name);
   return (
     <ScreenLayout>
       <ScrollView
@@ -64,20 +68,20 @@ const Profile = () => {
             onLogoutCallback={handleLogOut}
           />
           <Text variant="lead">Workspaces</Text>
-          <View className="gap-4">
-            <WorkspaceCard
-              workspaceName="Software Manson"
-              totalProjectsCount={43}
-              archivedProjectsCount={20}
-              completedProjectsCount={20}
-            />
-            <WorkspaceCard
-              workspaceName="Software Manson"
-              totalProjectsCount={43}
-              archivedProjectsCount={20}
-              completedProjectsCount={20}
-            />
-          </View>
+          <FlatList
+            data={userWorkspaces}
+            ListEmptyComponent={<Text>No Workspaces Yet</Text>}
+            contentContainerStyle={{ gap: 4 }}
+            renderItem={({ item }) => (
+              <WorkspaceCard
+                workspaceName={item.name}
+                totalProjectsCount={43}
+                archivedProjectsCount={20}
+                completedProjectsCount={20}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+          />
         </View>
       </ScrollView>
     </ScreenLayout>
