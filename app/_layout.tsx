@@ -12,6 +12,8 @@ import { ThemeProvider } from '@/provider/themeprovider';
 import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 
 import { PortalHost } from '@rn-primitives/portal';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/utils/queryClient';
 
 SplashScreen.setOptions({
   duration: 1000,
@@ -38,12 +40,14 @@ export default function Root() {
     <AuthProvider>
       <AppProvider>
         <SafeAreaProvider>
-          <PaperProvider>
-            <ThemeProvider>
-              <RootLayout />
-              <PortalHost />
-            </ThemeProvider>
-          </PaperProvider>
+          <QueryClientProvider client={queryClient}>
+            <PaperProvider>
+              <ThemeProvider>
+                <RootLayout />
+                <PortalHost />
+              </ThemeProvider>
+            </PaperProvider>
+          </QueryClientProvider>
         </SafeAreaProvider>
       </AppProvider>
     </AuthProvider>

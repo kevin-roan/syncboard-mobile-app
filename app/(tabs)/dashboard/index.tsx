@@ -194,14 +194,12 @@ const Dashboard = () => {
   };
   return (
     <ScreenLayout>
-      {/*
-         *      <Appbar.Header style={styles.header}>
+      <Appbar.Header style={styles.header}>
         <Appbar.Action icon="menu" onPress={toggleDrawer} />
-        <Appbar.Content title={workspace?.name || "Dashboard"} />
+        <Appbar.Content title={workspace?.name || 'Dashboard'} />
         <Appbar.Action icon="bell-outline" onPress={() => {}} />
         <Appbar.Action icon="account-circle" onPress={() => {}} />
       </Appbar.Header>
-         */}
 
       {/* Fixed WorkspaceDrawer */}
       <WorkspaceDrawerModal

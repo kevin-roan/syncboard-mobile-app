@@ -8,7 +8,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        border: 'hsl(var(--border))',
+        border: {
+          DEFAULT: 'hsl(var(--border))',
+        },
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
@@ -24,6 +26,18 @@ module.exports = {
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
+        },
+        success: {
+          DEFAULT: 'hsl(var(--success))',
+          foreground: 'hsl(var(--success-foreground, var(--foreground)))',
+        },
+        warning: {
+          DEFAULT: 'hsl(var(--warning))',
+          foreground: 'hsl(var(--warning-foreground, var(--foreground)))',
+        },
+        info: {
+          DEFAULT: 'hsl(var(--info))',
+          foreground: 'hsl(var(--info-foreground, var(--foreground)))',
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
@@ -71,7 +85,6 @@ module.exports = {
   },
   plugins: [require('tailwindcss-animate')],
 };
-
 // import { lightTheme, darkTheme } from './constants/theme';
 //
 // /** @type {import('tailwindcss').Config} */

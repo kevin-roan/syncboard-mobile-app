@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { View, Alert } from 'react-native';
+import { View, Alert, ScrollView } from 'react-native';
 import { supabase } from '@/lib/supabase';
-
 import { useAuth } from '@/context/authctx';
 import { getProfile } from '@/services/profile';
 import ScreenLayout from '@/provider/screenlayout';
 import ProfilePictureCard from '@/components/ui/cards/profile/profile-picture-card';
+import { Text } from '@/components/ui/text';
 import ProfileInfoCard from '@/components/ui/cards/profile/profie-info-card';
 import moment from 'moment';
+import WorkspaceCard from '@/components/ui/cards/workspace/workspace-card';
 
 const note =
-  ' Username will be appeared in syncboard issues, set it however you want be called in Syncboard ';
+  'Username will be appeared in syncboard issues, set it however you want be called in Syncboard';
 
 const Profile = () => {
   const [user, setUser] = useState<unknown>(null);
   const { session } = useAuth();
 
   const userId = session?.user?.id;
+  const usernameInital = session?.user?.email?.charAt(0).toUpperCase() || 'U';
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (!userId) return;
@@ -42,21 +45,41 @@ const Profile = () => {
     }
   }
 
-  const usernameInital = session?.user?.email?.charAt(0).toUpperCase() || 'U';
-
   return (
     <ScreenLayout>
-      <View className="gap-4">
-        <ProfilePictureCard usernameIntial={usernameInital} avatarUrl={user?.avatar_url} />
-        <ProfileInfoCard
-          fullName={user?.full_name ?? '-'}
-          email={session?.user?.email ?? '-'}
-          userName={user?.username ?? '-'}
-          memberSince={moment(user?.created_at || new Date()).format('LL')}
-          note={note}
-          onLogoutCallback={handleLogOut}
-        />
-      </View>
+      <ScrollView
+        className="gap-4"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: 100,
+        }}>
+        <View className="gap-4">
+          <ProfilePictureCard usernameIntial={usernameInital} avatarUrl={user?.avatar_url} />
+          <ProfileInfoCard
+            fullName={user?.full_name ?? '-'}
+            email={session?.user?.email ?? '-'}
+            userName={user?.username ?? '-'}
+            memberSince={moment(user?.created_at || new Date()).format('LL')}
+            note={note}
+            onLogoutCallback={handleLogOut}
+          />
+          <Text variant="lead">Workspaces</Text>
+          <View className="gap-4">
+            <WorkspaceCard
+              workspaceName="Software Manson"
+              totalProjectsCount={43}
+              archivedProjectsCount={20}
+              completedProjectsCount={20}
+            />
+            <WorkspaceCard
+              workspaceName="Software Manson"
+              totalProjectsCount={43}
+              archivedProjectsCount={20}
+              completedProjectsCount={20}
+            />
+          </View>
+        </View>
+      </ScrollView>
     </ScreenLayout>
   );
 };
