@@ -16,7 +16,7 @@ import { useAuth } from '@/context/authctx';
 import { useApp } from '@/context/appctx';
 import styles from './styles';
 import { createProject, getActiveProjects, getProjects } from '@/services/projects';
-import { getWorkspaces } from '@/services/workspace';
+import { getUserWorkspaces } from '@/services/workspace';
 import ProjectCard from '@/components/ui/cards/projectcard';
 import WorkspaceDrawerModal from '@/components/ui/drawer/workspacedrawer';
 import { getDueTaskCount } from '@/services/task';
@@ -25,9 +25,8 @@ import { createInvitation } from '@/services/invitation';
 import { getWorkspaceMemberCount, getWorkspaceUsers } from '@/services/workspace_members';
 import UserCard from '@/components/ui/cards/workspace_membercard';
 import moment from 'moment';
-import DashboardNavigation from '@/components/ui/navbar/dashboard-header';
 import ScreenLayout from '@/provider/screenlayout';
-import WelcomeBoardCard from '@/components/ui/cards/welcomeboardcard';
+import { useGetUserWorkspaces } from '@/hooks/workspace/use-workspace';
 
 const Dashboard = () => {
   const router = useRouter();
@@ -49,10 +48,16 @@ const Dashboard = () => {
     teamMembers: 0,
   });
 
+  // react query stuff
+
+  const { data, error } = useGetUserWorkspaces(userId);
+  console.log('react query data', data, 'error rwuery ', error);
+
   useEffect(() => {
     const fetchWorkspaceInfo = async () => {
       try {
-        const data = await getWorkspaces();
+        if (!userId) return;
+        const data = await getUserWorkspaces(userId);
         setWorkspaces(data);
         if (data?.length > 0) {
           setWorkspace(data[0]);
