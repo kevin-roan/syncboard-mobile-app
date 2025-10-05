@@ -16,9 +16,9 @@ interface Props {
 }
 
 const taskStats: TaskStat[] = [
-  { label: 'Total Tasks', countKey: 'totalCount', color: '#CCCCCC' },
-  { label: 'In progress', countKey: 'inProgressCount', color: '#FFA500' },
-  { label: 'Completed', countKey: 'completedCount', color: '#6ECC39' },
+  { label: 'Total Tasks', countKey: 'totalCount', color: '#b3b3b3' },
+  { label: 'In progress', countKey: 'inProgressCount', color: '#d18b09' },
+  { label: 'Completed', countKey: 'completedCount', color: '#557618' },
 ];
 
 interface ColoredDotProps {
@@ -26,9 +26,7 @@ interface ColoredDotProps {
 }
 
 const ColoredDot: React.FC<ColoredDotProps> = ({ color }) => (
-  <View
-    style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: color, marginRight: 8 }}
-  />
+  <View style={{ width: 8, height: 8, borderRadius: 5, backgroundColor: color, marginRight: 8 }} />
 );
 
 interface ItemWrapperProps {
@@ -53,7 +51,9 @@ const TaskStatCard: React.FC<Props> = ({
       {taskStats.map(({ label, countKey, color }) => (
         <ItemWrapper key={label}>
           <ColoredDot color={color} />
-          <Text style={{ color, fontWeight: label === 'Tasks' ? '500' : '400' }}>
+          <Text
+            style={{ color, fontWeight: label === 'Tasks' ? '500' : '400' }}
+            className="text-sm">
             {counts[countKey]} {label}
           </Text>
         </ItemWrapper>

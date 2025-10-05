@@ -110,26 +110,39 @@ const ProjectList = () => {
         <Appbar.Action icon="plus" onPress={handleCreateProject} />
       </Appbar.Header>
           * */}
-      <NavHeader title="Projects" onBackAction={() => {}} />
+      <NavHeader title="Projects" />
 
-      <Surface style={styles.container} elevation={0}>
-        {projects.length > 0 ? (
-          <FlatList
-            data={projects}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <ProjectCard project={item} onPress={handleProjectPress} style={styles.projectCard} />
-            )}
-            contentContainerStyle={styles.listContainer}
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-          />
-        ) : (
-          renderEmptyState()
-        )}
-      </Surface>
-
+      {projects.length > 0 ? (
+        <FlatList
+          data={projects}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{
+            paddingVertical: 20,
+          }}
+          renderItem={({ item }) => {
+            console.log('json', JSON.stringify(item, null, 2));
+            return (
+              <ProjectCard
+                key={item.id}
+                project={item}
+                onPress={handleProjectPress}
+                title={item.name}
+                description="End 2 End does not work on the react native mobile app"
+                createdAt={item.created_at}
+                createdBy={item.created_by ?? '-'}
+                inProgressTaskCount={20}
+                completedTaskCount={39}
+                totalTaskCount={19}
+              />
+            );
+          }}
+          showsVerticalScrollIndicator={false}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+        />
+      ) : (
+        renderEmptyState()
+      )}
       <FAB
         icon="plus"
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
