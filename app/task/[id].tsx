@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { StatusBar, RefreshControl, Alert, ScrollView } from "react-native";
-import ScreenLayout from "@/provider/screenlayout";
-import styles from "./styles";
-import { Appbar } from "react-native-paper";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import TaskInfoCard from "@/components/ui/cards/taskinfocard";
+import React, { useState, useEffect, useCallback } from 'react';
+import { StatusBar, RefreshControl, Alert, ScrollView } from 'react-native';
+import ScreenLayout from '@/provider/screenlayout';
+import styles from './styles';
+import { Appbar } from 'react-native-paper';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import TaskInfoCard from '@/components/cards/taskinfocard';
 import {
   createCommentByTaskId,
   getTaskCommentDetailsByCommentId,
   getTaskCommentsByTaskId,
   subscribeToTaskComments,
-} from "../../services/comment";
+} from '../../services/comment';
 
-import { getTaskInfoById } from "../../services/task";
-import CommentsCard from "@/components/ui/cards/commentcard";
-import { useAuth } from "@/context/authctx";
+import { getTaskInfoById } from '../../services/task';
+import CommentsCard from '@/components/cards/commentcard';
+import { useAuth } from '@/context/authctx';
 
 interface TaskData {
   id: string;
@@ -45,7 +45,7 @@ const Task = () => {
   const fetchTaskComments = useCallback(async () => {
     if (!taskId) return;
     const data = await getTaskCommentsByTaskId(taskId);
-    console.log("retrived comments", data);
+    console.log('retrived comments', data);
     setComments(data);
   }, [taskId]);
 
@@ -85,13 +85,13 @@ const Task = () => {
         user_id: userId,
       };
       const res = await createCommentByTaskId(taskId, comment);
-      console.log("comments", res);
+      console.log('comments', res);
       if (res && res.length > 0) {
         setComments((prev) => [...prev, res[0]]);
       }
     } catch (error) {
-      console.log("error", error);
-      Alert.alert("error adding comment");
+      console.log('error', error);
+      Alert.alert('error adding comment');
     }
   };
 
@@ -106,17 +106,14 @@ const Task = () => {
 
       <ScrollView
         contentContainerStyle={styles.container}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}>
         {taskData && (
           <TaskInfoCard
             key={taskData.id}
             taskName={taskData.name}
-            assignedTo={taskData.assigned_to_username || ""}
-            assignedBy={taskData.created_by_username || ""}
-            taskDescription={taskData.description || ""}
+            assignedTo={taskData.assigned_to_username || ''}
+            assignedBy={taskData.created_by_username || ''}
+            taskDescription={taskData.description || ''}
             creatorAvatar={taskData.created_by_avatar}
             assigneeAvatar={taskData.assigned_to_avatar}
           />

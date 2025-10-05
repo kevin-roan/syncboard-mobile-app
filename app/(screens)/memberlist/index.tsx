@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { View, Alert, RefreshControl, FlatList } from "react-native";
-import ScreenLayout from "@/provider/screenlayout";
-import styles from "./styles";
-import { getWorkspaceUsers } from "@/services/workspace_members";
-import { useApp } from "@/context/appctx";
-import UserCard from "@/components/ui/cards/workspace_membercard";
-import { Appbar, Text, ActivityIndicator } from "react-native-paper";
-import moment from "moment";
-import { useRouter } from "expo-router";
+import { useEffect, useState } from 'react';
+import { View, Alert, RefreshControl, FlatList } from 'react-native';
+import ScreenLayout from '@/provider/screenlayout';
+import styles from './styles';
+import { getWorkspaceUsers } from '@/services/workspace_members';
+import { useApp } from '@/context/appctx';
+import UserCard from '@/components/cards/workspace_membercard';
+import { Appbar, Text, ActivityIndicator } from 'react-native-paper';
+import moment from 'moment';
+import { useRouter } from 'expo-router';
 
 export default function MemberList() {
   const router = useRouter();
@@ -23,8 +23,8 @@ export default function MemberList() {
         const resp = await getWorkspaceUsers(workspaceId);
         setMemberList(resp);
       } catch (error) {
-        console.log("error", error);
-        Alert.alert("Error fetching workspace members");
+        console.log('error', error);
+        Alert.alert('Error fetching workspace members');
       }
     };
 
@@ -38,7 +38,7 @@ export default function MemberList() {
         email={item?.email}
         key={item?.id}
         userName={item.username}
-        joinedAt={moment(item.joined_at).format("DD MMM YYYY")}
+        joinedAt={moment(item.joined_at).format('DD MMM YYYY')}
         avatarUrl={item.avatar_url}
       />
     );
@@ -50,7 +50,7 @@ export default function MemberList() {
       const data = await getWorkspaceUsers(workspace?.id);
       setMemberList(data);
     } catch (error) {
-      console.log("error refreshing projects", error);
+      console.log('error refreshing projects', error);
     } finally {
       setRefreshing(false);
     }
@@ -77,9 +77,7 @@ export default function MemberList() {
           renderItem={renderItem}
           // keyExtractor={(item) => item.id.toString()}
           ListEmptyComponent={<Text>No Members Yet</Text>}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         />
       </View>
     </ScreenLayout>

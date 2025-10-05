@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Alert, FlatList, RefreshControl, View, StatusBar } from "react-native";
-import { Text, Appbar, Button, FAB } from "react-native-paper";
-import styles from "./styles";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useApp } from "@/context/appctx";
-import {
-  createTask,
-  deleteTaskById,
-  getTasks,
-  updateTaskStatus,
-} from "@/services/task";
+import React, { useState, useEffect } from 'react';
+import { Alert, FlatList, RefreshControl, View, StatusBar } from 'react-native';
+import { Text, Appbar, Button, FAB } from 'react-native-paper';
+import styles from './styles';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useApp } from '@/context/appctx';
+import { createTask, deleteTaskById, getTasks, updateTaskStatus } from '@/services/task';
 
-import { useAuth } from "@/context/authctx";
-import TaskCard from "@/components/ui/cards/taskcard";
-import TaskFormModal from "@/app/(modal)/createtask";
-import { Colors } from "@/constants/Colors";
-import { convertToISODate } from "@/utils/convertToISODate";
+import { useAuth } from '@/context/authctx';
+import TaskCard from '@/components/cards/taskcard';
+import TaskFormModal from '@/app/(modal)/createtask';
+import { Colors } from '@/constants/Colors';
+import { convertToISODate } from '@/utils/convertToISODate';
 
 const Project = () => {
   const router = useRouter();
@@ -37,8 +32,8 @@ const Project = () => {
       const resp = await getTasks(projectId);
       setTasks(resp);
     } catch (error) {
-      console.log("error fetching tasks", error);
-      Alert.alert("Error fetching tasks");
+      console.log('error fetching tasks', error);
+      Alert.alert('Error fetching tasks');
     } finally {
       setRefreshing(false); // always reset refreshing
     }
@@ -63,10 +58,10 @@ const Project = () => {
       const data = await createTask(payload);
       setTaskFormVisible(false);
       setTasks((prev) => [...prev, data]);
-      console.log("task created", data);
+      console.log('task created', data);
     } catch (error) {
-      console.log("error creating task", error);
-      Alert.alert("Error creating task");
+      console.log('error creating task', error);
+      Alert.alert('Error creating task');
     }
   };
 
@@ -74,10 +69,10 @@ const Project = () => {
     try {
       const resp = await updateTaskStatus(taskId, status);
       handleRefresh();
-      console.log("task updated", resp);
+      console.log('task updated', resp);
     } catch (error) {
-      console.log("error", error);
-      Alert.alert("Error updating the task");
+      console.log('error', error);
+      Alert.alert('Error updating the task');
     }
   };
 
@@ -85,9 +80,9 @@ const Project = () => {
     try {
       const resp = await deleteTaskById(taskId);
       handleRefresh();
-      console.log("task deleted successfully", resp);
+      console.log('task deleted successfully', resp);
     } catch (error) {
-      Alert.alert("Error deleting task", error);
+      Alert.alert('Error deleting task', error);
     }
   };
 
@@ -108,14 +103,14 @@ const Project = () => {
 
   return (
     <>
-      <StatusBar barStyle={"light-content"} backgroundColor={"white"} />
+      <StatusBar barStyle={'light-content'} backgroundColor={'white'} />
       <Appbar.Header style={styles.header}>
         <Appbar.BackAction onPress={() => router.back()} />
         <Appbar.Content title={projectName} />
         <Appbar.Action icon="dots-vertical" onPress={() => {}} />
       </Appbar.Header>
 
-      <View style={{ backgroundColor: "white", flex: 1 }}>
+      <View style={{ backgroundColor: 'white', flex: 1 }}>
         {tasks && tasks?.length <= 0 && (
           <Text variant="bodyMedium" style={styles.info}>
             You do not have any tasks yet.
@@ -126,9 +121,7 @@ const Project = () => {
           data={tasks}
           renderItem={renderItem}
           contentContainerStyle={styles.tasksContainer}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
         />
 
         <TaskFormModal
@@ -137,11 +130,7 @@ const Project = () => {
           onDismissCb={() => setTaskFormVisible(false)}
           onSubmit={handleCreateTask}
         />
-        <FAB
-          icon="plus"
-          style={styles.fab}
-          onPress={() => setTaskFormVisible(true)}
-        />
+        <FAB icon="plus" style={styles.fab} onPress={() => setTaskFormVisible(true)} />
       </View>
     </>
   );

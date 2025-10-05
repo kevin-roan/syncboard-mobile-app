@@ -4,11 +4,11 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/authctx';
 import { getProfile } from '@/services/profile';
 import ScreenLayout from '@/provider/screenlayout';
-import ProfilePictureCard from '@/components/ui/cards/profile/profile-picture-card';
+import ProfilePictureCard from '@/components/cards/profile/profile-picture-card';
 import { Text } from '@/components/ui/text';
-import ProfileInfoCard from '@/components/ui/cards/profile/profie-info-card';
+import ProfileInfoCard from '@/components/cards/profile/profie-info-card';
 import moment from 'moment';
-import WorkspaceCard from '@/components/ui/cards/workspace/workspace-card';
+import WorkspaceCard from '@/components/cards/workspace/workspace-card';
 import { useGetUserWorkspaces } from '@/hooks/workspace/use-workspace';
 
 const note =

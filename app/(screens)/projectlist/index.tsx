@@ -1,20 +1,14 @@
-import { useState, useEffect } from "react";
-import { View, FlatList } from "react-native";
-import {
-  Appbar,
-  Text,
-  Surface,
-  FAB,
-  ActivityIndicator,
-  useTheme,
-} from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useApp } from "@/context/appctx";
-import ScreenLayout from "@/provider/screenlayout";
-import ProjectCard from "@/components/ui/cards/projectcard";
-import { getProjects } from "@/services/projects";
-import styles from "./styles";
+import { useState, useEffect } from 'react';
+import { View, FlatList } from 'react-native';
+import { Appbar, Text, Surface, FAB, ActivityIndicator, useTheme } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useApp } from '@/context/appctx';
+import ScreenLayout from '@/provider/screenlayout';
+import ProjectCard from '@/components/cards/projectcard';
+import { getProjects } from '@/services/projects';
+import styles from './styles';
+import NavHeader from '@/components/ui/navbar/navheader';
 
 const ProjectList = () => {
   const { workspace } = useApp();
@@ -31,7 +25,7 @@ const ProjectList = () => {
         const data = await getProjects(workspace?.id);
         setProjects(data);
       } catch (error: Error) {
-        console.log("error fetching projects", error);
+        console.log('error fetching projects', error);
         // You might want to show a Snackbar instead of Alert for better UX
       } finally {
         setLoading(false);
@@ -47,7 +41,7 @@ const ProjectList = () => {
       const data = await getProjects(workspace?.id);
       setProjects(data);
     } catch (error) {
-      console.log("error refreshing projects", error);
+      console.log('error refreshing projects', error);
     } finally {
       setRefreshing(false);
     }
@@ -63,7 +57,7 @@ const ProjectList = () => {
   };
 
   const handleCreateProject = () => {
-    router.push("/dashboard/projects/create");
+    router.push('/dashboard/projects/create');
   };
 
   const renderEmptyState = () => (
@@ -80,13 +74,8 @@ const ProjectList = () => {
         </Text>
         <Text
           variant="bodyMedium"
-          style={[
-            styles.emptySubtitle,
-            { color: theme.colors.onSurfaceVariant },
-          ]}
-        >
-          Create your first project to get started with managing your tasks and
-          team.
+          style={[styles.emptySubtitle, { color: theme.colors.onSurfaceVariant }]}>
+          Create your first project to get started with managing your tasks and team.
         </Text>
       </View>
     </Surface>
@@ -95,10 +84,12 @@ const ProjectList = () => {
   if (loading) {
     return (
       <ScreenLayout>
-        <Appbar.Header elevated>
+        {/*
+           *        <Appbar.Header elevated>
           <Appbar.Content title="Projects" />
           <Appbar.Action icon="plus" onPress={handleCreateProject} />
         </Appbar.Header>
+           * */}
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" />
           <Text variant="bodyMedium" style={styles.loadingText}>
@@ -111,15 +102,15 @@ const ProjectList = () => {
 
   return (
     <ScreenLayout>
-      <Appbar.Header elevated>
+      {/*
+          *      <Appbar.Header elevated>
         <Appbar.BackAction onPress={() => router.back()} />
-        <Appbar.Content
-          title="Projects"
-          subtitle={workspace?.name || "Select workspace"}
-        />
+        <Appbar.Content title="Projects" subtitle={workspace?.name || 'Select workspace'} />
         <Appbar.Action icon="refresh" onPress={handleRefresh} />
         <Appbar.Action icon="plus" onPress={handleCreateProject} />
       </Appbar.Header>
+          * */}
+      <NavHeader title="Projects" onBackAction={() => {}} />
 
       <Surface style={styles.container} elevation={0}>
         {projects.length > 0 ? (
@@ -127,11 +118,7 @@ const ProjectList = () => {
             data={projects}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <ProjectCard
-                project={item}
-                onPress={handleProjectPress}
-                style={styles.projectCard}
-              />
+              <ProjectCard project={item} onPress={handleProjectPress} style={styles.projectCard} />
             )}
             contentContainerStyle={styles.listContainer}
             showsVerticalScrollIndicator={false}

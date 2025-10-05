@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Text,
-  FlatList,
-  View,
-  ScrollView,
-  Alert,
-  TouchableOpacity,
-  RefreshControl,
-} from 'react-native';
+import { FlatList, View, ScrollView, Alert, TouchableOpacity, RefreshControl } from 'react-native';
 import { Appbar } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ModalForm from '@/components/ui/modals/modalform';
@@ -17,16 +9,23 @@ import { useApp } from '@/context/appctx';
 import styles from './styles';
 import { createProject, getActiveProjects, getProjects } from '@/services/projects';
 import { getUserWorkspaces } from '@/services/workspace';
-import ProjectCard from '@/components/ui/cards/projectcard';
+import ProjectCard from '@/components/cards/projectcard';
 import WorkspaceDrawerModal from '@/components/ui/drawer/workspacedrawer';
 import { getDueTaskCount } from '@/services/task';
 import InviteUserModal from '@/components/ui/modals/inviteuser';
 import { createInvitation } from '@/services/invitation';
 import { getWorkspaceMemberCount, getWorkspaceUsers } from '@/services/workspace_members';
-import UserCard from '@/components/ui/cards/workspace_membercard';
+import UserCard from '@/components/cards/workspace_membercard';
 import moment from 'moment';
 import ScreenLayout from '@/provider/screenlayout';
 import { useGetUserWorkspaces } from '@/hooks/workspace/use-workspace';
+import DashboardNavigation from '@/components/ui/navbar/dashboard-header';
+import WelcomeBoardCard from '@/components/cards/welcomeboardcard';
+import ProjectStatCard from '@/components/cards/dashboard/projectstat-card';
+import TaskCard from '@/components/cards/taskcard';
+import TaskStatCard from '@/components/cards/dashboard/taskstat-card';
+import DashboardQuickActions from '@/components/cards/dashboard/quickaction';
+import { Text } from '@/components/ui/text';
 
 const Dashboard = () => {
   const router = useRouter();
@@ -34,6 +33,8 @@ const Dashboard = () => {
   const { workspace, setWorkspace, setMemberList } = useApp();
 
   const userId = session?.user?.id;
+
+  const [selectedTab, setSelectedTab] = useState('projects');
 
   const [projectformVisible, setProjectformVisible] = useState<boolean>(false);
   const [projects, setProjects] = useState<string[]>([]);
@@ -50,8 +51,7 @@ const Dashboard = () => {
 
   // react query stuff
 
-  const { data, error } = useGetUserWorkspaces(userId);
-  console.log('react query data', data, 'error rwuery ', error);
+  // const { data, error } = useGetUserWorkspaces(userId);
 
   useEffect(() => {
     const fetchWorkspaceInfo = async () => {
@@ -199,12 +199,50 @@ const Dashboard = () => {
   };
   return (
     <ScreenLayout>
-      <Appbar.Header style={styles.header}>
+      {/*
+         *      <Appbar.Header style={styles.header}>
         <Appbar.Action icon="menu" onPress={toggleDrawer} />
         <Appbar.Content title={workspace?.name || 'Dashboard'} />
         <Appbar.Action icon="bell-outline" onPress={() => {}} />
         <Appbar.Action icon="account-circle" onPress={() => {}} />
       </Appbar.Header>
+         * */}
+
+      <DashboardNavigation title={'Software Manson'} />
+
+      <WelcomeBoardCard />
+      <View className="mb-3 flex-row gap-3">
+        <ProjectStatCard archviedCount={2} completedCount={10} activeCount={7} />
+        <TaskStatCard completedCount={4} totalCount={30} inProgressCount={3} />
+      </View>
+      <DashboardQuickActions />
+
+      <View className="flex-row items-center justify-between">
+        <View className="my-4 flex flex-row gap-3">
+          <TouchableOpacity onPress={() => setSelectedTab('projects')}
+            disabled={selectedTab === 'projects'}>
+          >
+            <Text
+              variant={'h4'}
+              className={selectedTab === 'projects' ? 'text-white' : 'text-muted'}>
+              Projects
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setSelectedTab('tasks')}
+            disabled={selectedTab === 'tasks'}>
+            <Text variant={'h4'} className={selectedTab === 'tasks' ? 'text-white' : 'text-muted'}>
+              Tasks
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          onPress={() =>
+            selectedTab === 'projects' ? router.push('/projectlist') : router.push('/tasks')
+          }>
+          <Text className="text-sm font-normal text-muted">View All</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Fixed WorkspaceDrawer */}
       <WorkspaceDrawerModal
