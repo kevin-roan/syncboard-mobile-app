@@ -124,15 +124,8 @@ const ProjectList = () => {
             return (
               <ProjectCard
                 key={item.id}
-                project={item}
+                project={item} // Pass the entire item here
                 onPress={handleProjectPress}
-                title={item.name}
-                description="End 2 End does not work on the react native mobile app"
-                createdAt={item.created_at}
-                createdBy={item.created_by ?? '-'}
-                inProgressTaskCount={20}
-                completedTaskCount={39}
-                totalTaskCount={19}
               />
             );
           }}

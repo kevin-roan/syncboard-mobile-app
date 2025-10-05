@@ -1,4 +1,4 @@
-import { Stack, useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import { AuthProvider, useAuth } from '@/context/authctx';
 import { AppProvider } from '@/context/appctx';
 import { SafeAreaProvider } from 'react-native-safe-area-context';

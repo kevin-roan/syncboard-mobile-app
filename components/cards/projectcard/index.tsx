@@ -6,15 +6,20 @@ import ProgressBar from '@/components/progressbar';
 import moment from 'moment';
 import { THEME } from '@/lib/theme';
 
-interface Props {
-  title: string;
-  description: string;
-  onPress: () => void;
-  createdAt: string;
-  createdBy: string;
+interface Project {
+  id: string;
+  name: string;
+  description?: string;
+  created_at: string;
+  created_by?: string;
   totalTaskCount: number;
   completedTaskCount: number;
   inProgressTaskCount: number;
+}
+
+interface Props {
+  project: Project;
+  onPress: () => void;
 }
 
 interface TaskStat {
@@ -29,20 +34,22 @@ const taskStats: TaskStat[] = [
   { label: 'Completed', countKey: 'inProgressTaskCount', color: '#557618' },
 ];
 
-const ProjectCard: React.FC<Props> = ({
-  title,
-  description,
-  onPress,
-  createdAt,
-  createdBy,
-  totalTaskCount,
-  completedTaskCount,
-  inProgressTaskCount,
-}) => {
+const ProjectCard: React.FC<Props> = ({ project, onPress }) => {
+  const {
+    name: title,
+    description = 'End 2 End does not work on the react native mobile app', // default if missing
+    created_at: createdAt,
+    created_by,
+    totalTaskCount,
+    completedTaskCount,
+    inProgressTaskCount,
+  } = project;
+
   const scheme = useColorScheme();
   const counts = { totalTaskCount, completedTaskCount, inProgressTaskCount };
+
   return (
-    <TouchableOpacity onPress={() => onPress ?? null} className="gap-1 rounded-2xl bg-card p-4">
+    <TouchableOpacity onPress={onPress} className="gap-1 rounded-2xl bg-card p-4">
       <View className="flex-row items-center gap-2">
         <MaterialCommunityIcons name="tree" size={30} color={THEME[scheme].foreground} />
         <View className="flex-shrink">
@@ -56,7 +63,7 @@ const ProjectCard: React.FC<Props> = ({
       </View>
       <View className="flex-row gap-3">
         <Text className="text-sm">Created on {moment(createdAt).format('DD MMM YYYY')}</Text>
-        <Text className="text-sm">By{createdBy}</Text>
+        <Text className="text-sm">By {created_by ?? '-'}</Text>
       </View>
       <View className="flex-row">
         {taskStats.map((item, index) => (
@@ -86,5 +93,4 @@ interface ColoredDotProps {
 const ColoredDot: React.FC<ColoredDotProps> = ({ color }) => (
   <View style={{ width: 4, height: 4, borderRadius: 5, backgroundColor: color, marginRight: 8 }} />
 );
-
 export default ProjectCard;
