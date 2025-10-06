@@ -12,7 +12,7 @@ interface Props {
   onBackPress?: () => void;
 }
 
-const NavHeader: React.FC<Props> = ({ title, onBackPress }) => {
+const TopNavigation: React.FC<Props> = ({ title, onBackPress }) => {
   const scheme = useColorScheme();
   const router = useRouter();
 
@@ -37,4 +37,4 @@ const NavHeader: React.FC<Props> = ({ title, onBackPress }) => {
   );
 };
 
-export default NavHeader;
+export default TopNavigation;
