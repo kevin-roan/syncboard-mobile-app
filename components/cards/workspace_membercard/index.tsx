@@ -1,7 +1,7 @@
-import React from "react";
-import { View } from "react-native";
-import { Card, Text, Avatar, Chip } from "react-native-paper";
-import styles from "./styles";
+import React from 'react';
+import { View } from 'react-native';
+import { Card, Text, Avatar, Chip } from 'react-native-paper';
+import styles from './styles';
 
 export interface UserCardProps {
   userName: string;
@@ -11,29 +11,21 @@ export interface UserCardProps {
   avatarUrl?: string;
 }
 
-const UserCard: React.FC<UserCardProps> = ({
-  userName,
-  email,
-  joinedAt,
-  role,
-  avatarUrl,
-}) => {
-  // Get initials from userName
+const UserCard: React.FC<UserCardProps> = ({ userName, email, joinedAt, role, avatarUrl }) => {
   const getInitials = (name: string): string => {
     return name
-      .split(" ")
+      .split(' ')
       .map((word) => word.charAt(0))
-      .join("")
+      .join('')
       .toUpperCase()
       .substring(0, 2);
   };
 
-  // Get role chip color based on role
   const getRoleChipStyle = (userRole: string) => {
     const lowerRole = userRole.toLowerCase();
-    if (lowerRole.includes("admin")) {
+    if (lowerRole.includes('admin')) {
       return styles.adminChip;
-    } else if (lowerRole.includes("manager") || lowerRole.includes("lead")) {
+    } else if (lowerRole.includes('manager') || lowerRole.includes('lead')) {
       return styles.managerChip;
     } else {
       return styles.defaultChip;
@@ -46,11 +38,7 @@ const UserCard: React.FC<UserCardProps> = ({
         <View style={styles.header}>
           <View style={styles.avatarContainer}>
             {avatarUrl ? (
-              <Avatar.Image
-                size={56}
-                source={{ uri: avatarUrl }}
-                style={styles.avatar}
-              />
+              <Avatar.Image size={56} source={{ uri: avatarUrl }} style={styles.avatar} />
             ) : (
               <Avatar.Text
                 size={56}
@@ -73,8 +61,7 @@ const UserCard: React.FC<UserCardProps> = ({
           <Chip
             style={[styles.roleChip, getRoleChipStyle(role)]}
             textStyle={styles.roleChipText}
-            compact
-          >
+            compact>
             {role}
           </Chip>
         </View>
