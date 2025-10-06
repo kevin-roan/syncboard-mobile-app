@@ -1,3 +1,7 @@
+figma design; https://www.figma.com/design/pPdlyXYqUMGrIoU9XgS1nf/syncboard?node-id=0-1&m=dev
+
+
+
 todos;
 - Integrate Slack/Discord messages.
 - Push notifications can only be applied to a user that who is subscribed to a project. otherwise no dont send them push notifications.
