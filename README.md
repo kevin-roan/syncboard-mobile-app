@@ -1,3 +1,8 @@
+This repo includes source file for the syncboard mobile app. Later i will be linking the desktop,web app links in here ( are currenlty in development )
+
+_? synboard is a free and open source autonomous project mangement solution for small to medium companies.
+
+
 figma design; https://www.figma.com/design/pPdlyXYqUMGrIoU9XgS1nf/syncboard?node-id=0-1&m=dev
 
 
