@@ -5,13 +5,13 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 interface Props {
   activeCount: number;
   completedCount: number;
-  archivedCount: number;
+  memberCount: number;
 }
 
 const stats = [
   {
     label: 'Active',
-    iconName: 'flash-outline',
+    iconName: 'heart',
     countKey: 'activeCount',
   },
   {
@@ -20,14 +20,14 @@ const stats = [
     countKey: 'completedCount',
   },
   {
-    label: 'Archived',
-    iconName: 'archive-outline',
-    countKey: 'archivedCount',
+    label: 'Members',
+    iconName: 'people',
+    countKey: 'memberCount',
   },
 ];
 
-const ProjectStatCard: React.FC<Props> = ({ activeCount, completedCount, archivedCount }) => {
-  const counts = { activeCount, completedCount, archivedCount };
+const ProjectStatCard: React.FC<Props> = ({ activeCount, completedCount, memberCount }) => {
+  const counts = { activeCount, completedCount, memberCount };
 
   return (
     <View className="flex-1 rounded-3xl bg-card p-4 px-6">
