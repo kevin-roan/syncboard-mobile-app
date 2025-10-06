@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack } from 'expo-router';
 
 const ScreensStackLayout = () => {
   return (
@@ -11,6 +11,12 @@ const ScreensStackLayout = () => {
       />
       <Stack.Screen
         name="memberlist/index"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="workspace/[id]"
         options={{
           headerShown: false,
         }}

@@ -72,6 +72,7 @@ const Profile = () => {
             contentContainerStyle={{ gap: 4 }}
             renderItem={({ item }) => (
               <WorkspaceCard
+                workspaceId={item.id}
                 workspaceName={item.name}
                 totalProjectsCount={43}
                 archivedProjectsCount={20}
