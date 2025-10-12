@@ -156,7 +156,7 @@ const Dashboard = () => {
         </View>
         <TouchableOpacity
           onPress={() =>
-            selectedTab === 'projects' ? router.push('/projectlist') : router.push('/tasks')
+            selectedTab === 'projects' ? router.push('/projects') : router.push('/tasks')
           }>
           <Text className="text-sm font-normal text-muted">View All</Text>
         </TouchableOpacity>
@@ -175,7 +175,7 @@ const Dashboard = () => {
         data={projects}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <ProjectCard key={item.id} project={item} onPress={handleProjectPress} />
+          <ProjectCard key={item.id} project={item} onPress={() => handleProjectPress(item)} />
         )}
       />
     </ScreenLayout>

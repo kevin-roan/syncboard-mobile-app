@@ -1,20 +1,22 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
-import { Button } from "react-native-paper";
-import ScreenLayout from "@/provider/screenlayout";
+import { View, StyleSheet } from 'react-native';
+import { useRouter, usePathname } from 'expo-router';
+import { Button } from 'react-native-paper';
+import { Text } from '@/components/ui/text';
+import ScreenLayout from '@/provider/screenlayout';
 
 const NotFound = () => {
+  const pathname = usePathname();
   const router = useRouter();
 
   const handleRedirect = () => {
-    router.replace("/signin");
+    router.replace('/');
   };
 
   return (
     <ScreenLayout>
       <View style={styles.container}>
-        <Text> 404 Not Found </Text>
+        <Text variant={'h4'}>404 Not Found</Text>
+        <Text className="text-center text-white">Path {pathname}</Text>
         <Button onPress={handleRedirect}>Back to Home</Button>
       </View>
     </ScreenLayout>
@@ -24,8 +26,8 @@ const NotFound = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

@@ -9,7 +9,7 @@ import styles from './styles';
 import NavHeader from '@/components/ui/navbar/navheader';
 import { useGetProjects } from '@/hooks/projects/useGetProjects';
 
-const ProjectList = () => {
+const Projects = () => {
   const { workspace } = useApp();
   const router = useRouter();
   const theme = useTheme();
@@ -97,4 +97,4 @@ const ProjectList = () => {
   );
 };
 
-export default ProjectList;
+export default Projects;

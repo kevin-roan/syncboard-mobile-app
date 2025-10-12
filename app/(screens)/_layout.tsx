@@ -4,7 +4,7 @@ const ScreensStackLayout = () => {
   return (
     <Stack>
       <Stack.Screen
-        name="projectlist/index"
+        name="projects/index"
         options={{
           headerShown: false,
         }}
