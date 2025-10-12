@@ -1,5 +1,5 @@
 import { View, FlatList } from 'react-native';
-import { Appbar, Text, Surface, FAB, ActivityIndicator, useTheme } from 'react-native-paper';
+import { Text, Surface, FAB, ActivityIndicator, useTheme } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useApp } from '@/context/appctx';
@@ -8,6 +8,17 @@ import ProjectCard from '@/components/cards/projectcard';
 import styles from './styles';
 import NavHeader from '@/components/ui/navbar/navheader';
 import { useGetProjects } from '@/hooks/projects/useGetProjects';
+
+interface Project {
+  id: string;
+  name: string;
+  description?: string;
+  created_at: string;
+  created_by?: string;
+  totalTaskCount: number;
+  completedTaskCount: number;
+  inProgressTaskCount: number;
+}
 
 const Projects = () => {
   const { workspace } = useApp();
@@ -24,7 +35,7 @@ const Projects = () => {
 
   const handleProjectPress = (project: Project) => {
     router.push({
-      pathname: `/dashboard/projects/${project.id}`,
+      pathname: `/projects/${project.id}`,
       params: { projectName: project.name },
     });
   };
@@ -77,7 +88,7 @@ const Projects = () => {
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingVertical: 20 }}
           renderItem={({ item }) => (
-            <ProjectCard key={item.id} project={item} onPress={handleProjectPress} />
+            <ProjectCard key={item.id} project={item} onPress={() => handleProjectPress(item)} />
           )}
           showsVerticalScrollIndicator={false}
           refreshing={isFetching}

@@ -1,28 +1,20 @@
 import { Stack } from 'expo-router';
 
-const ScreensStackLayout = () => {
+export default function ProjectsLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="projects"
+        name="index"
         options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="memberlist/index"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="workspace/[id]"
+        name="[id]"
         options={{
           headerShown: false,
         }}
       />
     </Stack>
   );
-};
-
-export default ScreensStackLayout;
+}

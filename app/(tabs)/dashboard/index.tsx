@@ -103,7 +103,7 @@ const Dashboard = () => {
 
   const handleProjectPress = (project: Project) => {
     router.push({
-      pathname: `/dashboard/projects/${project.id}`,
+      pathname: `/projects/${project.id}`,
       params: { projectName: project.name },
     });
   };
