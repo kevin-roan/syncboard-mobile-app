@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, FlatList, Text, RefreshControl } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import ScreenLayout from '@/provider/screenlayout';
@@ -10,6 +10,7 @@ import { DropdownMenuPreview } from '@/components/ui/dropdownpreview';
 
 const Projects = () => {
   const { id: projectId, projectName } = useLocalSearchParams();
+  const dropdownPositionRef = useRef(null);
 
   const { data, error, isLoading, isRefetching, refetch } = useGetTasks(projectId);
   // create new task
@@ -42,10 +43,9 @@ const Projects = () => {
   return (
     <ScreenLayout>
       <TopNavigation title={projectName} />
-      <DropdownMenuPreview />
       <FlatList
         data={data}
-        renderItem={({ item }) => <TaskCard task={item} />}
+        renderItem={({ item }) => <TaskCard task={item} onPress={() => null} />}
         ListEmptyComponent={<Text>No Tasks Yet</Text>}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
         contentContainerStyle={{ gap: 8, marginVertical: 10, paddingBottom: 100 }}

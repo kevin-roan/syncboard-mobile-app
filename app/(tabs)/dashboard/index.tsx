@@ -20,6 +20,7 @@ import TaskStatCard from '@/components/cards/dashboard/taskstat-card';
 import DashboardQuickActions from '@/components/cards/dashboard/quickaction';
 import { Text } from '@/components/ui/text';
 import { useGetProjects } from '@/hooks/projects/useGetProjects';
+import CustomDropdown from '@/components/dropdown';
 
 const Dashboard = () => {
   const router = useRouter();
