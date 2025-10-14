@@ -1,21 +1,21 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "transparent", // Let Paper handle the background
+    backgroundColor: 'transparent', // Let Paper handle the background
   },
 
   // Loading state
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 24,
   },
   loadingText: {
     marginTop: 16,
-    textAlign: "center",
+    textAlign: 'center',
   },
 
   // List container
@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
   // Empty state
   emptyStateContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 32,
     marginHorizontal: 16,
     marginVertical: 24,
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
 
   emptyStateContent: {
-    alignItems: "center",
+    alignItems: 'center',
     maxWidth: 280,
   },
 
@@ -51,20 +51,20 @@ const styles = StyleSheet.create({
   },
 
   emptyTitle: {
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 12,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 
   emptySubtitle: {
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 22,
     opacity: 0.8,
   },
 
   // Floating Action Button
   fab: {
-    position: "absolute",
+    position: 'absolute',
     margin: 16,
     right: 0,
     bottom: 0,

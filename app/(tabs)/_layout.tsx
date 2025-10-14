@@ -19,7 +19,7 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const isHomeActive = state.index === 0;
   const isProfileActive = state.index === 1;
   return (
-    <View className="flex-row items-center justify-around pt-2 pb-4 bg-neutral-800">
+    <View className="flex-row items-center justify-around bg-neutral-800 pb-4 pt-2">
       <TabButton
         label="Home"
         icon="home-outline"
@@ -55,13 +55,18 @@ function TabButton({
   onPress: () => void;
 }) {
   return (
-    <TouchableOpacity className="items-center justify-center w-20" onPress={onPress} accessibilityRole="button">
+    <TouchableOpacity
+      className="w-20 items-center justify-center"
+      onPress={onPress}
+      accessibilityRole="button">
       <MaterialCommunityIcons
         name={isActive ? activeIcon : icon}
         size={22}
         color={isActive ? '#ffffff' : '#9ca3af'}
       />
-      <Text className={isActive ? 'mt-1 text-xs text-white' : 'mt-1 text-xs text-gray-400'}>{label}</Text>
+      <Text className={isActive ? 'mt-1 text-xs text-white' : 'mt-1 text-xs text-gray-400'}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -69,7 +74,10 @@ function TabButton({
 function ExtraButton({ label, onPress }: { label: string; onPress: () => void }) {
   return (
     <View className="items-center justify-center">
-      <TouchableOpacity className="w-14 h-14 rounded-full bg-gray-200 items-center justify-center" onPress={onPress} accessibilityRole="button">
+      <TouchableOpacity
+        className="h-14 w-14 items-center justify-center rounded-full bg-gray-200"
+        onPress={onPress}
+        accessibilityRole="button">
         <MaterialCommunityIcons name="plus" size={26} color="#333333" />
       </TouchableOpacity>
       <Text className="mt-2 text-sm text-gray-400">{label}</Text>

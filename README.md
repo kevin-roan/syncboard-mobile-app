@@ -8,6 +8,7 @@ figma design; https://www.figma.com/design/pPdlyXYqUMGrIoU9XgS1nf/syncboard?node
 
 
 todos;
+
 - Integrate Slack/Discord messages.
 - Push notifications can only be applied to a user that who is subscribed to a project. otherwise no dont send them push notifications.
 - SpreadSheet, Kanban view layouts
@@ -15,4 +16,10 @@ todos;
 - Export Task as CSV, Json
 - Import existing projects from Jira,Linear,Monday..
 - Archvive or delete view from every users inside the company
-  
+
+Docs/Blogs
+
+..
+<BS>..
+Refer to this, but instead of using modal use a view for dropdown
+https://medium.com/@mindelias/building-a-custom-dropdown-menu-in-react-native-a-step-by-step-guide-939b5f16627b

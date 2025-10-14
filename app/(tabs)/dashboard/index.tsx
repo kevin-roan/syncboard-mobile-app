@@ -20,6 +20,7 @@ import TaskStatCard from '@/components/cards/dashboard/taskstat-card';
 import DashboardQuickActions from '@/components/cards/dashboard/quickaction';
 import { Text } from '@/components/ui/text';
 import { useGetProjects } from '@/hooks/projects/useGetProjects';
+import CustomDropdown from '@/components/dropdown';
 
 const Dashboard = () => {
   const router = useRouter();
@@ -103,7 +104,7 @@ const Dashboard = () => {
 
   const handleProjectPress = (project: Project) => {
     router.push({
-      pathname: `/dashboard/projects/${project.id}`,
+      pathname: `/projects/${project.id}`,
       params: { projectName: project.name },
     });
   };
@@ -156,7 +157,7 @@ const Dashboard = () => {
         </View>
         <TouchableOpacity
           onPress={() =>
-            selectedTab === 'projects' ? router.push('/projectlist') : router.push('/tasks')
+            selectedTab === 'projects' ? router.push('/projects') : router.push('/tasks')
           }>
           <Text className="text-sm font-normal text-muted">View All</Text>
         </TouchableOpacity>
@@ -175,7 +176,7 @@ const Dashboard = () => {
         data={projects}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <ProjectCard key={item.id} project={item} onPress={handleProjectPress} />
+          <ProjectCard key={item.id} project={item} onPress={() => handleProjectPress(item)} />
         )}
       />
     </ScreenLayout>

@@ -1,86 +1,81 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import styles from "./styles";
-import { Menu } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import moment from "moment";
-import { useRouter } from "expo-router";
+import { useState, useRef } from 'react';
+import { View, TouchableNativeFeedback, Modal, Pressable, StyleSheet } from 'react-native';
+import { Text } from '@/components/ui/text';
+import AvatarGroup from '@/components/ui/avatargroup';
+import DateChip from '@/components/ui/datechip';
+import moment from 'moment';
+import { useRouter } from 'expo-router';
+import ProgressChip from '@/components/ui/progresschip';
 
 interface Props {
-  id: string;
   title: string;
-  description: string;
-  onStatusChangeCb: (taskId: string, status: string) => void;
-  status: string;
-  handleDeleteTask: (id: string) => void;
-  dueDate: string;
+  onPress: () => void;
 }
 
-const TaskCard: React.FC<Props> = ({
-  id,
-  title,
-  onStatusChangeCb,
-  description,
-  status,
-  handleDeleteTask,
-  dueDate,
-}) => {
-  const [menuVisible, setMenuVisible] = useState<boolean>(false);
-
+const TaskCard: React.FC<Props> = ({ title, onPress }) => {
   const router = useRouter();
+  const [visible, setVisible] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0, width: 0 });
 
-  const handleTaskNavigation = () => {
-    router.push(`/task/${id}`);
+  const triggerRef = useRef(null);
+
+  const toggleModal = () => {
+    if (triggerRef.current) {
+      triggerRef.current.measureInWindow((x, y, width, height) => {
+        setPosition({ x, y: y + height, width });
+        setVisible(true);
+      });
+    } else {
+      setVisible(true);
+    }
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handleTaskNavigation}>
-      <View style={styles.cardHead}>
-        <View>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
-          <Text style={styles.description}>
-            Due Date {moment(dueDate).format("DD MMM YYYY")}
-          </Text>
+    <>
+      <TouchableNativeFeedback
+        onPress={onPress}
+        background={TouchableNativeFeedback.Ripple('rgba(0, 0, 0, 0.1)', false)}>
+        <View className="gap-3 rounded-xl bg-card p-3">
+          <Text>React native reanimated implementation, migration docs</Text>
+          <View className="flex-row gap-2">
+            <AvatarGroup title={'3 People'} onPress={() => {}} />
+            <DateChip date={moment().daysInMonth()} />
+            <ProgressChip ref={triggerRef} status="in_progress" onPress={toggleModal} />
+          </View>
         </View>
-        <TouchableOpacity onPress={() => handleDeleteTask(id)}>
-          <MaterialCommunityIcons name="dots-vertical" size={20} />
-        </TouchableOpacity>
-      </View>
-      <Menu
-        visible={menuVisible}
-        onDismiss={() => setMenuVisible(false)}
-        anchor={
-          <TouchableOpacity
-            style={styles.badge}
-            onPress={() => setMenuVisible(true)}
-          >
-            <Text style={styles.badgeText}>{status}</Text>
-          </TouchableOpacity>
-        }
-        anchorPosition="bottom"
-      >
-        <Menu.Item
-          onPress={() => {
-            onStatusChangeCb(id, "todo");
-          }}
-          title="Todo"
-        />
-        <Menu.Item
-          onPress={() => {
-            onStatusChangeCb(id, "in_progress");
-          }}
-          title="In Progress"
-        />
-        <Menu.Item
-          onPress={() => {
-            onStatusChangeCb(id, "completed");
-          }}
-          title="Completed"
-        />
-      </Menu>
-    </TouchableOpacity>
+      </TouchableNativeFeedback>
+
+      <Modal
+        transparent
+        animationType="fade"
+        visible={visible}
+        onRequestClose={() => setVisible(false)}>
+        <Pressable style={styles.modalOverlay} onPress={() => setVisible(false)}>
+          <View
+            style={[styles.popup, { top: position.y, left: position.x, width: position.width }]}>
+            <Text>This is the modal content below the trigger</Text>
+          </View>
+        </Pressable>
+      </Modal>
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+  },
+  popup: {
+    position: 'absolute',
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 8,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+  },
+});
 
 export default TaskCard;

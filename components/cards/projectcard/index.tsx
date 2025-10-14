@@ -36,6 +36,7 @@ const taskStats: TaskStat[] = [
 
 const ProjectCard: React.FC<Props> = ({ project, onPress }) => {
   const {
+    id: projectId,
     name: title,
     description = 'End 2 End does not work on the react native mobile app', // default if missing
     created_at: createdAt,
