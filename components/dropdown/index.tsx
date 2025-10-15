@@ -1,136 +1,212 @@
-import React, { useState, useRef, useEffect } from 'react';
 import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from 'react-native';
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from '@/components/ui/menubar';
+import { Text } from '@/components/ui/text';
+import * as React from 'react';
+import Animated, { FadeIn } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const CustomDropdown = () => {
-  const [visible, setVisible] = useState(false);
-  const triggerRef = useRef<View>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0, width: 0 });
-  const dropdownWidth = 150;
-
-  useEffect(() => {
-    if (triggerRef.current && visible) {
-      triggerRef.current.measure((fx, fy, width, height, px, py) => {
-        setPosition({
-          x: px,
-          y: py + height,
-          width: width,
-        });
-      });
-    }
-  }, [visible]);
-
-  const MenuOption = ({
-    onSelect,
-    children,
-  }: {
-    onSelect: () => void;
-    children: React.ReactNode;
-  }) => {
-    return (
-      <TouchableOpacity onPress={onSelect} style={styles.menuOption}>
-        {children}
-      </TouchableOpacity>
-    );
+export function MenubarPreview() {
+  const insets = useSafeAreaInsets();
+  const contentInsets = {
+    top: insets.top,
+    bottom: insets.bottom,
+    left: 12,
+    right: 12,
   };
+  const [value, setValue] = React.useState<string | undefined>();
+  const [isSubOpen, setIsSubOpen] = React.useState(false);
+  const [isSubOpen2, setIsSubOpen2] = React.useState(false);
+  const [isChecked, setIsChecked] = React.useState(false);
+  const [isChecked2, setIsChecked2] = React.useState(false);
+  const [radio, setRadio] = React.useState('michael');
 
-  const handleOpen = () => setVisible(true);
-  const handleClose = () => setVisible(false);
+  /**
+   * NOTE:
+   * On mobile, if the menu is open and the user is about to go to a new screen,
+   * it's best to close the menu first.
+   */
+
+  function closeSubs() {
+    setIsSubOpen(false);
+    setIsSubOpen2(false);
+  }
+
+  function onValueChange(val: string | undefined) {
+    if (typeof val === 'string') {
+      setValue(val);
+      return;
+    }
+    closeSubs();
+    setValue(undefined);
+  }
 
   return (
-    <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={handleOpen}>
-        <View ref={triggerRef} style={styles.triggerStyle}>
-          <Text style={styles.triggerText}>Actions</Text>
-        </View>
-      </TouchableWithoutFeedback>
-
-      {visible && (
-        <Modal
-          transparent={true}
-          visible={visible}
-          animationType="fade"
-          onRequestClose={handleClose}>
-          <TouchableWithoutFeedback onPress={handleClose}>
-            <View style={styles.modalOverlay}>
-              <View
-                style={[
-                  styles.menu,
-                  {
-                    top: position.y,
-                    left: position.x + position.width / 2 - dropdownWidth / 2,
-                    width: dropdownWidth,
-                  },
-                ]}>
-                <MenuOption
-                  onSelect={() => {
-                    setVisible(false);
-                    // Add view details action here
-                  }}>
-                  <Text>View Details</Text>
-                </MenuOption>
-                <MenuOption
-                  onSelect={() => {
-                    setVisible(false);
-                    // Add delete action here
-                  }}>
-                  <Text>Delete</Text>
-                </MenuOption>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-      )}
-    </View>
+    <Menubar value={value} onValueChange={onValueChange}>
+      <MenubarMenu value="file">
+        <MenubarTrigger onPress={closeSubs}>
+          <Text>File</Text>
+        </MenubarTrigger>
+        <MenubarContent insets={contentInsets}>
+          <MenubarItem>
+            <Text>New Tab</Text>
+            <MenubarShortcut>⌘T</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem>
+            <Text>New Window</Text>
+            <MenubarShortcut>⌘N</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem disabled>
+            <Text>New Incognito Window</Text>
+          </MenubarItem>
+          <MenubarSeparator />
+          <MenubarSub open={isSubOpen} onOpenChange={setIsSubOpen}>
+            <MenubarSubTrigger>
+              <Text>Share</Text>
+            </MenubarSubTrigger>
+            <MenubarSubContent>
+              <Animated.View entering={FadeIn.duration(200)}>
+                <MenubarItem>
+                  <Text>Email link</Text>
+                </MenubarItem>
+                <MenubarItem>
+                  <Text>Messages</Text>
+                </MenubarItem>
+                <MenubarItem>
+                  <Text>Notes</Text>
+                </MenubarItem>
+              </Animated.View>
+            </MenubarSubContent>
+          </MenubarSub>
+          <MenubarSeparator />
+          <MenubarItem>
+            <Text>Print...</Text>
+            <MenubarShortcut>⌘P</MenubarShortcut>
+          </MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu value="edit">
+        <MenubarTrigger onPress={closeSubs}>
+          <Text>Edit</Text>
+        </MenubarTrigger>
+        <MenubarContent insets={contentInsets} className="native:w-48">
+          <MenubarItem>
+            <Text>Undo</Text>
+            <MenubarShortcut>⌘Z</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem>
+            <Text>Redo</Text>
+            <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+          </MenubarItem>
+          <MenubarSeparator />
+          <MenubarSub open={isSubOpen2} onOpenChange={setIsSubOpen2}>
+            <MenubarSubTrigger>
+              <Text>Find</Text>
+            </MenubarSubTrigger>
+            <MenubarSubContent>
+              <Animated.View entering={FadeIn.duration(200)}>
+                <MenubarItem>
+                  <Text>Search the web</Text>
+                </MenubarItem>
+                <MenubarSeparator />
+                <MenubarItem>
+                  <Text>Find...</Text>
+                </MenubarItem>
+                <MenubarItem>
+                  <Text>Find Next</Text>
+                </MenubarItem>
+                <MenubarItem>
+                  <Text>Find Previous</Text>
+                </MenubarItem>
+              </Animated.View>
+            </MenubarSubContent>
+          </MenubarSub>
+          <MenubarSeparator />
+          <MenubarItem>
+            <Text>Cut</Text>
+          </MenubarItem>
+          <MenubarItem>
+            <Text>Copy</Text>
+          </MenubarItem>
+          <MenubarItem>
+            <Text>Paste</Text>
+          </MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu value="view">
+        <MenubarTrigger onPress={closeSubs}>
+          <Text>View</Text>
+        </MenubarTrigger>
+        <MenubarContent insets={contentInsets}>
+          <MenubarCheckboxItem
+            checked={isChecked}
+            onCheckedChange={setIsChecked}
+            closeOnPress={false}>
+            <Text>Always Show Bookmarks Bar</Text>
+          </MenubarCheckboxItem>
+          <MenubarCheckboxItem
+            checked={isChecked2}
+            onCheckedChange={setIsChecked2}
+            closeOnPress={false}>
+            <Text>Always Show Full URLs</Text>
+          </MenubarCheckboxItem>
+          <MenubarSeparator />
+          <MenubarItem inset>
+            <Text>Reload</Text>
+            <MenubarShortcut>⌘R</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem disabled inset>
+            <Text>Force Reload</Text>
+            <MenubarShortcut>⇧⌘R</MenubarShortcut>
+          </MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem inset>
+            <Text>Toggle Fullscreen</Text>
+          </MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem inset>
+            <Text>Hide Sidebar</Text>
+          </MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu value="profile">
+        <MenubarTrigger onPress={closeSubs}>
+          <Text>Profiles</Text>
+        </MenubarTrigger>
+        <MenubarContent insets={contentInsets}>
+          <MenubarRadioGroup value={radio} onValueChange={setRadio}>
+            <MenubarRadioItem closeOnPress={false} value="andy">
+              <Text>Andy</Text>
+            </MenubarRadioItem>
+            <MenubarRadioItem closeOnPress={false} value="michael">
+              <Text>Michael</Text>
+            </MenubarRadioItem>
+            <MenubarRadioItem closeOnPress={false} value="creed">
+              <Text>Creed</Text>
+            </MenubarRadioItem>
+          </MenubarRadioGroup>
+          <MenubarSeparator />
+          <MenubarItem inset>
+            <Text>Edit...</Text>
+          </MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem inset>
+            <Text>Add Profile...</Text>
+          </MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5fcff',
-  },
-  triggerStyle: {
-    height: 40,
-    backgroundColor: '#007bff', // primary color
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 100,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  triggerText: { fontSize: 16, color: 'white' },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    backgroundColor: 'transparent',
-  },
-  menu: {
-    position: 'absolute',
-    width: 80,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  menuOption: {
-    padding: 5,
-  },
-});
-
-export default CustomDropdown;
+}

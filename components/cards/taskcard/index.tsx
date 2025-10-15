@@ -1,5 +1,12 @@
 import { useState, useRef } from 'react';
-import { View, TouchableNativeFeedback, Modal, Pressable, StyleSheet } from 'react-native';
+import {
+  View,
+  TouchableNativeFeedback,
+  Modal,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import { Text } from '@/components/ui/text';
 import AvatarGroup from '@/components/ui/avatargroup';
 import DateChip from '@/components/ui/datechip';
@@ -12,9 +19,12 @@ interface Props {
   onPress: () => void;
 }
 
+const statusList = ['todo', 'in_progress', 'completed'];
+
 const TaskCard: React.FC<Props> = ({ title, onPress }) => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
+  const [status, setStatus] = useState('in_progress');
   const [position, setPosition] = useState({ x: 0, y: 0, width: 0 });
 
   const triggerRef = useRef(null);
@@ -28,6 +38,10 @@ const TaskCard: React.FC<Props> = ({ title, onPress }) => {
     } else {
       setVisible(true);
     }
+  };
+
+  const handleSetStatus = (status) => {
+    setStatus(status);
   };
 
   return (
@@ -53,7 +67,11 @@ const TaskCard: React.FC<Props> = ({ title, onPress }) => {
         <Pressable style={styles.modalOverlay} onPress={() => setVisible(false)}>
           <View
             style={[styles.popup, { top: position.y, left: position.x, width: position.width }]}>
-            <Text>This is the modal content below the trigger</Text>
+            {statusList.map((item, index) => (
+              <TouchableOpacity className="my-1 rounded-md px-1" onPress={handleSetStatus}>
+                <Text>{item}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </Pressable>
       </Modal>
@@ -67,9 +85,11 @@ const styles = StyleSheet.create({
   },
   popup: {
     position: 'absolute',
-    backgroundColor: '#fff',
+    backgroundColor: '#2B2B2B',
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: '#3D3D3D',
     elevation: 5,
     shadowColor: '#000',
     shadowOpacity: 0.3,

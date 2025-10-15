@@ -11,6 +11,7 @@ import { DropdownMenuPreview } from '@/components/ui/dropdownpreview';
 const Projects = () => {
   const { id: projectId, projectName } = useLocalSearchParams();
   const dropdownPositionRef = useRef(null);
+  const router = useRouter();
 
   const { data, error, isLoading, isRefetching, refetch } = useGetTasks(projectId);
   // create new task
@@ -45,7 +46,9 @@ const Projects = () => {
       <TopNavigation title={projectName} />
       <FlatList
         data={data}
-        renderItem={({ item }) => <TaskCard task={item} onPress={() => null} />}
+        renderItem={({ item }) => (
+          <TaskCard task={item} onPress={() => router.push('/task/adkjdafd')} />
+        )}
         ListEmptyComponent={<Text>No Tasks Yet</Text>}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
         contentContainerStyle={{ gap: 8, marginVertical: 10, paddingBottom: 100 }}
