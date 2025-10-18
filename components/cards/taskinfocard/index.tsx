@@ -1,122 +1,60 @@
-import React from "react";
-import { View } from "react-native";
-import { Card, Text, Avatar } from "react-native-paper";
-import styles from "./styles";
+import * as React from 'react';
+import { TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Text } from '@/components/ui/text';
+import UserChip from '@/components/ui/userchip';
+import DateChip from '@/components/ui/datechip';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import ProgressChip from '@/components/ui/progresschip';
+import { THEME } from '@/lib/theme';
 
-interface TaskCardProps {
-  taskName: string;
-  taskDescription: string;
-  assignedTo: string;
-  assignedBy: string;
-  assigneeAvatar?: string;
-  creatorAvatar?: string;
+// TODO;
+// handle users > 2
+
+interface AssingedUsers {
+  username: string;
+  avatarUrl: string;
 }
 
-const TaskInfoCard: React.FC<TaskCardProps> = ({
-  taskName,
-  taskDescription,
-  assignedTo,
-  assignedBy,
-  assigneeAvatar,
-  creatorAvatar,
-}) => {
-  const colors = {
-    primary: "#6750A4",
-    secondary: "#F7F2FA",
-    text: "#1A1A1A",
-    subText: "#666666",
-  };
+interface Props {
+  assignedUsers: [AssingedUsers];
+  dueDate: string;
+  status: string;
+  onStatusChange: (status: string) => void;
+}
 
-  const getInitials = (name: string | undefined | null): string => {
-    if (!name) return "?";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .substring(0, 2);
-  };
+const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onStatusChange }) => {
+  const scheme = useColorScheme();
 
   return (
-    <Card style={styles.card} mode="elevated">
-      <Card.Content style={styles.cardContent}>
-        <Text style={[styles.title, { color: colors.text }]}>{taskName}</Text>
-        <Text style={[styles.description, { color: colors.subText }]}>
-          {taskDescription}
-        </Text>
-        <View style={[styles.divider, { backgroundColor: colors.secondary }]} />
-        <View style={styles.assignmentSection}>
-          <View style={styles.assignmentItem}>
-            <Text style={[styles.label, { color: colors.subText }]}>
-              ASSIGNED TO
-            </Text>
-            <View style={styles.assignmentRow}>
-              {assigneeAvatar ? (
-                <Avatar.Image
-                  size={32}
-                  source={{ uri: assigneeAvatar }}
-                  style={styles.avatar}
-                />
-              ) : (
-                <Avatar.Text
-                  size={32}
-                  label={getInitials(assignedTo)}
-                  style={[styles.avatar, { backgroundColor: colors.primary }]}
-                  labelStyle={{
-                    color: "#FFFFFF",
-                    fontSize: 12,
-                    fontWeight: "600",
-                  }}
-                />
-              )}
-              <View style={styles.assignmentText}>
-                <Text style={[styles.name, { color: colors.text }]}>
-                  {assignedTo}
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.assignmentItem}>
-            <Text style={[styles.label, { color: colors.subText }]}>
-              ASSIGNED BY
-            </Text>
-            <View style={styles.assignmentRow}>
-              {creatorAvatar ? (
-                <Avatar.Image
-                  size={32}
-                  source={{ uri: creatorAvatar }}
-                  style={styles.avatar}
-                />
-              ) : (
-                <Avatar.Text
-                  size={32}
-                  label={getInitials(assignedBy)}
-                  style={[
-                    styles.avatar,
-                    {
-                      backgroundColor: colors.secondary,
-                      borderWidth: 1,
-                      borderColor: colors.primary,
-                    },
-                  ]}
-                  labelStyle={{
-                    color: colors.primary,
-                    fontSize: 12,
-                    fontWeight: "600",
-                  }}
-                />
-              )}
-              <View style={styles.assignmentText}>
-                <Text style={[styles.name, { color: colors.text }]}>
-                  {assignedBy}
-                </Text>
-              </View>
-            </View>
-          </View>
+    <View className="my-4 gap-2 rounded-xl bg-card p-3">
+      <View className="gap-1">
+        <Label label="Assigned To" />
+        <View className="flex-row gap-3 overflow-hidden">
+          {assignedUsers.map((item, index) => {
+            if (index >= 2) return null;
+            return <UserChip key={index} username={item.username} />;
+          })}
+          <TouchableOpacity className="rounded-full bg-input p-1">
+            <Ionicons name="add-sharp" size={12} color={THEME[scheme].muted} className="m-auto" />
+          </TouchableOpacity>
         </View>
-      </Card.Content>
-    </Card>
+      </View>
+      <View className="flex-row justify-between">
+        <View className="gap-1">
+          <Label label="Due Date" />
+          <DateChip date={dueDate} />
+        </View>
+        <View className="flex-row items-center gap-2 self-end">
+          <Label label="Status" />
+          <ProgressChip status={status} onPress={onStatusChange} />
+        </View>
+      </View>
+    </View>
   );
+};
+
+const Label = ({ label }: { label: string }) => {
+  return <Text className="text-sm font-light text-muted">{label}</Text>;
 };
 
 export default TaskInfoCard;

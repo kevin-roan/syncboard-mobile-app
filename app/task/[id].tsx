@@ -1,42 +1,132 @@
-import * as React from 'react';
-import ScreenLayout from '@/provider/screenlayout';
+import { useState } from 'react';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+  useColorScheme,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-
-import { StyleSheet } from 'react-native';
+import ScreenLayout from '@/provider/screenlayout';
 import TopNavigation from '@/components/ui/navbar/navheader';
-import { RichText, Toolbar, useEditorBridge } from '@10play/tentap-editor';
+import TaskInfoCard from '@/components/cards/taskinfocard';
+import {
+  CodeBridge,
+  RichText,
+  TenTapStartKit,
+  Toolbar,
+  useEditorBridge,
+} from '@10play/tentap-editor';
 import Markdown from 'react-native-markdown-display';
+import Feather from '@expo/vector-icons/Feather';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-const copy = `# h1 Heading 8-)
+const UserList = [
+  { username: 'Kevin Mihyaoan' },
+  { username: 'Sara Johnson' },
+  { username: 'Alex Kim' },
+  { username: 'Liam Chen' },
+];
 
-**This is some bold text!**
- - Task Info  1
+const markdownStyles = {
+  body: {
+    color: '#fff',
+  },
+  heading1: {
+    color: '#fff',
+  },
+  strong: {
+    color: '#fff',
+  },
+  bullet_list: {
+    color: '#fff',
+  },
+};
 
-This is normal text
+const customCodeBlockCSS = `
+code {
+    background-color: yellow;
+    border-radius: 0.25em;
+    border-color: #e45d5d;
+    border-width: 1px;
+    border-style: solid;
+    box-decoration-break: clone;
+    color: red;
+    font-size: 0.9rem;
+    padding: 0.25em;
+}
 `;
 
 const TaskInfo = () => {
+  const scheme = useColorScheme();
+
+  const [isEditing, setEditing] = useState<boolean>(true);
+  const [markdownData, setMarkdownData] = useState<string>(`# h1 Heading 8-)
+
+**This is some bold text!**
+ - Task Info 1
+
+This is normal text
+`);
+
   const editor = useEditorBridge({
     autofocus: true,
     avoidIosKeyboard: true,
-    initialContent: copy,
+    initialContent: markdownData,
+    bridgeExtensions: [...TenTapStartKit, CodeBridge.configureCSS(customCodeBlockCSS)],
   });
 
+  const toggleEditingMode = () => setEditing(!isEditing);
+
   return (
-    <ScreenLayout>
+    <ScreenLayout style={{ flex: 1 }}>
       <LinearGradient
         colors={['rgba(102, 51, 0, 0.9)', 'transparent']}
         style={styles.background}
-        locations={[0.1, 0.6]}></LinearGradient>
-
-      <TopNavigation title="React Native Reanimated " />
-      <Markdown>{copy}</Markdown>
-      <RichText
-        editor={editor}
-        style={{
-          backgroundColor: 'transparent',
-        }}
+        locations={[0.1, 0.6]}
       />
+
+      <TopNavigation title="React Native Reanimated" />
+
+      <TaskInfoCard
+        assignedUsers={UserList}
+        onStatusChange={() => {}}
+        status="todo"
+        dueDate="30/12/2002"
+      />
+      <View className="flex-row justify-end">
+        {isEditing ? (
+          <TouchableOpacity onPress={toggleEditingMode}>
+            <MaterialIcons name="edit-off" size={20} color="white" />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={toggleEditingMode}>
+            <Feather name="edit-2" size={20} color="white" />
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {!isEditing ? (
+        <TouchableOpacity onPress={toggleEditingMode}>
+          <Markdown style={markdownStyles}>{markdownData}</Markdown>
+        </TouchableOpacity>
+      ) : (
+        <>
+          <RichText
+            editor={editor}
+            style={{
+              flex: 1,
+              color: '#fff',
+              backgroundColor: 'transparent',
+            }}
+          />
+
+          <View style={{ marginBottom: 40 }}>
+            <Toolbar editor={editor} />
+          </View>
+        </>
+      )}
     </ScreenLayout>
   );
 };
@@ -52,7 +142,6 @@ const styles = StyleSheet.create({
     height: 300,
   },
 });
-
 //
 //
 //
