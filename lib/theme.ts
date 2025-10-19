@@ -58,30 +58,34 @@ export const THEME = {
     chart3: 'hsl(39, 100%, 50%)', // #FFA500
     chart4: 'hsl(290, 50%, 50%)', // #A64CA6
     chart5: 'hsl(340, 100%, 60%)', // #FF3366
+    // task Status bar colors (should be in rgba)
+    in_progress: 'rgba(102, 51, 0, 0.9)',
+    completed: 'rgba(64, 83, 20, 1)',
+    wont_do: 'rgba(123, 15, 15, 1)',
   },
 };
 
-export const NAV_THEME: Record<'light' | 'dark', NavTheme> = {
-  light: {
-    ...DefaultTheme,
-    colors: {
-      background: THEME.light.background,
-      border: THEME.light.border,
-      card: THEME.light.card,
-      notification: THEME.light.destructive,
-      primary: THEME.light.primary,
-      text: THEME.light.foreground,
-    },
-  },
-  dark: {
-    ...DarkTheme,
-    colors: {
-      background: THEME.dark.background,
-      border: THEME.dark.border,
-      card: THEME.dark.card,
-      notification: THEME.dark.destructive,
-      primary: THEME.dark.primary,
-      text: THEME.dark.foreground,
-    },
-  },
-};
+// export const NAV_THEME: Record<'light' | 'dark', NavTheme> = {
+//   light: {
+//     ...DefaultTheme,
+//     colors: {
+//       background: THEME.light.background,
+//       border: THEME.light.border,
+//       card: THEME.light.card,
+//       notification: THEME.light.destructive,
+//       primary: THEME.light.primary,
+//       text: THEME.light.foreground,
+//     },
+//   },
+//   dark: {
+//     ...DarkTheme,
+//     colors: {
+//       background: THEME.dark.background,
+//       border: THEME.dark.border,
+//       card: THEME.dark.card,
+//       notification: THEME.dark.destructive,
+//       primary: THEME.dark.primary,
+//       text: THEME.dark.foreground,
+//     },
+//   },
+// };

@@ -3,6 +3,7 @@ import { Text } from '@/components/ui/text';
 import Entypo from '@expo/vector-icons/Entypo';
 import { THEME } from '@/lib/theme';
 import React from 'react';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 interface Props extends TouchableOpacityProps {
   status: 'in_progress' | 'completed' | 'todo';
@@ -22,9 +23,21 @@ const ProgressChip = React.forwardRef<TouchableOpacity, Props>(
       <TouchableOpacity
         ref={ref}
         onPress={onPress}
-        className="flex-row items-center gap-2 rounded-full bg-input px-2 ps-4"
+        className="border-1 flex-row items-center gap-2 rounded-full bg-input
+        px-2
+        "
+
+        style={{
+    borderRadius: 30,
+    borderWidth: 0.5,
+    borderColor: '#3D3D3D',
+        }}
+
         {...rest}>
-        <Text style={{ color: statusColors[status] }}>{status}</Text>
+        <MaterialCommunityIcons name="progress-check" size={16} color={statusColors[status]} />
+        <Text style={{ color: statusColors[status] }} className="font-normal">
+          {status}
+        </Text>
         <Entypo name="chevron-small-down" size={20} color={THEME[scheme].muted} />
       </TouchableOpacity>
     );

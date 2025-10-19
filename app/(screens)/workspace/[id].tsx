@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FlatList, View } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { useLocalSearchParams } from 'expo-router';
-import TopNavigation from '@/components/ui/navbar/navheader';
+import TopNavigation from '@/components/topnavigation';
 import ScreenLayout from '@/provider/screenlayout';
 import UserinfoCard from '@/components/cards/userinfocard';
 import { useGetWorkspaceMemberList } from '@/hooks/workspace/use-workspace';

@@ -6,7 +6,7 @@ import { useApp } from '@/context/appctx';
 import ScreenLayout from '@/provider/screenlayout';
 import ProjectCard from '@/components/cards/projectcard';
 import styles from './styles';
-import NavHeader from '@/components/ui/navbar/navheader';
+import NavHeader from '@/components/topnavigation';
 import { useGetProjects } from '@/hooks/projects/useGetProjects';
 
 interface Project {
