@@ -1,6 +1,6 @@
 > > TASKS
 > > [] Implement screens
-> > [] Markdown editor (switch to insert / normal mode)
+> > [x] Markdown editor (switch to insert / normal mode)
 > > [] Dynamic statusbar color ( according to the task status)
 > > [] Delete task dropdown ( )
 > > [] Custom alert modal

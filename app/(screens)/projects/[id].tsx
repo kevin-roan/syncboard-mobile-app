@@ -41,13 +41,21 @@ const Projects = () => {
     return <ActivityIndicator size={'large'} />;
   }
 
+  const handleTaskNavigation = (task: Project) => {
+    router.push({
+      pathname: `/task/${task.id}`,
+      // hope this doesnt break on production ( or i might need to encode the string and then pass it. )
+      params: { taskName: task.name, taskStatus: task.status },
+    });
+  };
+
   return (
     <ScreenLayout>
       <TopNavigation title={projectName} />
       <FlatList
         data={data}
         renderItem={({ item }) => (
-          <TaskCard task={item} onPress={() => router.push('/task/adkjdafd')} />
+          <TaskCard task={item} onPress={() => handleTaskNavigation(item)} />
         )}
         ListEmptyComponent={<Text>No Tasks Yet</Text>}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}

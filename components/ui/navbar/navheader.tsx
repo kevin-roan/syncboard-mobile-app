@@ -19,11 +19,16 @@ const TopNavigation: React.FC<Props> = ({ title, onBackPress }) => {
   const handleBackPress = onBackPress ?? (() => router.back());
   return (
     <View className="flex-row justify-between">
-      <View className="flex-row items-center gap-3">
+      <View className="flex-shrink flex-row items-center gap-3">
         <TouchableOpacity onPress={handleBackPress}>
           <FontAwesome6 name="chevron-left" size={18} color={THEME[scheme].muted} />
         </TouchableOpacity>
-        <Text className="text-xl font-light text-[#ccc]">{title}</Text>
+        <Text
+          className="mr-10 flex-shrink text-xl font-light text-[#ccc]"
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {title}
+        </Text>
       </View>
       <View className="flex-row items-center gap-3">
         <TouchableOpacity>
