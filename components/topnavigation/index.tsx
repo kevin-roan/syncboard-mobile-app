@@ -24,9 +24,7 @@ const TopNavigation: React.FC<Props> = ({ title, onBackPress, onMenuButtonPress 
   const menuButtonRef = React.useRef(null);
 
   const handleMenuButtonPress = () => {
-    // measure height and stuff
-    //  and pass it as callback . *
-
+    // todo ; hide the menu button if there is no such callback
     if (menuButtonRef.current) {
       menuButtonRef.current.measureInWindow((x, y, width, height) => {
         const position: Position = { x, y: y + height, width };

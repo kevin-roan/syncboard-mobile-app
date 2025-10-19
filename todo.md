@@ -3,5 +3,5 @@
 > > [x] Dynamic statusbar color ( according to the task status)
 > > [x] Delete task dropdown ( )
 > > [x] Custom alert modal
-> > [] Add more users (custom dropdown)
+> > [x] Add more users (custom dropdown)
 > > [] Change Task Status (custom dropdown)
