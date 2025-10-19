@@ -1,18 +1,20 @@
 import { useState, useRef } from 'react';
-import { TouchableOpacity, StyleSheet, Button, View, useColorScheme } from 'react-native';
+import { TouchableOpacity, Pressable, StyleSheet, Modal, View, useColorScheme } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ScreenLayout from '@/provider/screenlayout';
-import TopNavigation from '@/components/ui/navbar/navheader';
+import TopNavigation from '@/components/topnavigation';
 import TaskInfoCard from '@/components/cards/taskinfocard';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import Markdown from 'react-native-markdown-display';
 import Feather from '@expo/vector-icons/Feather';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { THEME } from '@/lib/theme';
 
 import type { EnrichedTextInputInstance, OnChangeStateEvent } from 'react-native-enriched';
 import { EnrichedTextInput } from 'react-native-enriched';
 import { useLocalSearchParams } from 'expo-router';
+import { Position } from '@/types/position';
+import { Text } from '@/components/ui/text';
 
 const UserList = [
   { username: 'Kevin Mihyaoan' },
@@ -21,24 +23,34 @@ const UserList = [
   { username: 'Liam Chen' },
 ];
 
+const dummyMarkdown = `# h1 Heading 8-)
+
+ **This is some bold text!**
+  - Task Info 1
+
+ This is normal text
+ `;
+
 const TaskInfo = () => {
   const scheme = useColorScheme();
 
   const { id: taskId, taskName, taskStatus } = useLocalSearchParams();
-  console.log('screen params', taskId, taskName, taskStatus);
+  // console.log('screen params', taskId, taskName, taskStatus);
 
   const ref = useRef<EnrichedTextInputInstance>(null);
 
   const [stylesState, setStylesState] = useState<OnChangeStateEvent | null>();
 
   const [isEditing, setEditing] = useState<boolean>(true);
-  const [markdownData, setMarkdownData] = useState<string>(`# h1 Heading 8-)
 
- **This is some bold text!**
-  - Task Info 1
+  const [deleteDropdownVisible, setDeleteDropdownVisible] = useState<boolean>(false);
+  const [deleteDropdownPosition, setDeleteDropdownPosition] = useState<Position>({
+    x: 0,
+    y: 0,
+    width: 0,
+  });
 
- This is normal text
- `);
+  const [markdownData, setMarkdownData] = useState<string>(dummyMarkdown);
 
   const [htmlData, setHtmlData] = useState('');
 
@@ -51,6 +63,12 @@ const TaskInfo = () => {
     setHtmlData(data.nativeEvent.value);
   };
 
+  const triggerDeleteDropdown = (position: Position) => {
+    console.log('position', position);
+    setDeleteDropdownVisible(!deleteDropdownVisible);
+    setDeleteDropdownPosition(position);
+  };
+
   return (
     <ScreenLayout style={{ flex: 1 }}>
       <LinearGradient
@@ -59,7 +77,36 @@ const TaskInfo = () => {
         locations={[0.1, 0.6]}
       />
 
-      <TopNavigation title={taskName} />
+      <TopNavigation title={taskName} onMenuButtonPress={triggerDeleteDropdown} />
+
+      <Modal
+        transparent
+        animationType="fade"
+        visible={deleteDropdownVisible}
+        onRequestClose={() => setDeleteDropdownVisible(false)}>
+        <Pressable className="flex-1" onPress={() => setDeleteDropdownVisible(false)}>
+          <View
+            className="bg-card "
+            style={[
+              styles.deleteDropdown,
+              {
+                top: deleteDropdownPosition.y,
+                start: deleteDropdownPosition.x - 179,
+                width: 200,
+              },
+            ]}>
+            <TouchableOpacity className="flex-row items-center justify-between rounded-md rounded-bl-none rounded-br-none bg-popover p-1">
+              <Text className="text-sm text-muted">Share</Text>
+              <MaterialIcons name="ios-share" size={18} color={THEME[scheme].muted} />
+            </TouchableOpacity>
+
+            <TouchableOpacity className="flex-row items-center justify-between rounded-md p-1">
+              <Text className="text-sm text-muted">Delete</Text>
+              <MaterialIcons name="delete" size={18} color="darkred" />
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      </Modal>
 
       <TaskInfoCard
         assignedUsers={UserList}
@@ -107,6 +154,12 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     height: 300,
+  },
+
+  deleteDropdown: {
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: '#3D3D3D',
   },
 });
 
