@@ -1,11 +1,20 @@
 import { useState, useRef } from 'react';
-import { TouchableOpacity, Pressable, StyleSheet, Modal, View, useColorScheme } from 'react-native';
+import {
+  TouchableOpacity,
+  Pressable,
+  StyleSheet,
+  Modal,
+  View,
+  useColorScheme,
+  Platform,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import ScreenLayout from '@/provider/screenlayout';
 import TopNavigation from '@/components/topnavigation';
 import TaskInfoCard from '@/components/cards/taskinfocard';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
+import { BlurView } from 'expo-blur';
 import Markdown from 'react-native-markdown-display';
 import Feather from '@expo/vector-icons/Feather';
 import { THEME } from '@/lib/theme';
@@ -15,6 +24,7 @@ import { EnrichedTextInput } from 'react-native-enriched';
 import { useLocalSearchParams } from 'expo-router';
 import { Position } from '@/types/position';
 import { Text } from '@/components/ui/text';
+import MinimalAlert from '@/components/alert';
 
 const UserList = [
   { username: 'Kevin Mihyaoan' },
@@ -43,8 +53,10 @@ const TaskInfo = () => {
 
   const [isEditing, setEditing] = useState<boolean>(true);
 
-  const [deleteDropdownVisible, setDeleteDropdownVisible] = useState<boolean>(false);
-  const [deleteDropdownPosition, setDeleteDropdownPosition] = useState<Position>({
+  const [deleteModalVisible, setDeletModalVisible] = useState<boolean>(false);
+
+  const [taskMenuDropdownVisible, settaskMenuDropdownVisible] = useState<boolean>(false);
+  const [taskMenuDropdownPosition, settaskMenuDropdownPosition] = useState<Position>({
     x: 0,
     y: 0,
     width: 0,
@@ -65,9 +77,14 @@ const TaskInfo = () => {
 
   const triggerDeleteDropdown = (position: Position) => {
     console.log('position', position);
-    setDeleteDropdownVisible(!deleteDropdownVisible);
-    setDeleteDropdownPosition(position);
+    settaskMenuDropdownVisible(!taskMenuDropdownVisible);
+    settaskMenuDropdownPosition(position);
   };
+
+  const handleDeleteTask  = () =>{
+
+  }
+
 
   return (
     <ScreenLayout style={{ flex: 1 }}>
@@ -78,35 +95,6 @@ const TaskInfo = () => {
       />
 
       <TopNavigation title={taskName} onMenuButtonPress={triggerDeleteDropdown} />
-
-      <Modal
-        transparent
-        animationType="fade"
-        visible={deleteDropdownVisible}
-        onRequestClose={() => setDeleteDropdownVisible(false)}>
-        <Pressable className="flex-1" onPress={() => setDeleteDropdownVisible(false)}>
-          <View
-            className="bg-card "
-            style={[
-              styles.deleteDropdown,
-              {
-                top: deleteDropdownPosition.y,
-                start: deleteDropdownPosition.x - 179,
-                width: 200,
-              },
-            ]}>
-            <TouchableOpacity className="flex-row items-center justify-between rounded-md rounded-bl-none rounded-br-none bg-popover p-1">
-              <Text className="text-sm text-muted">Share</Text>
-              <MaterialIcons name="ios-share" size={18} color={THEME[scheme].muted} />
-            </TouchableOpacity>
-
-            <TouchableOpacity className="flex-row items-center justify-between rounded-md p-1">
-              <Text className="text-sm text-muted">Delete</Text>
-              <MaterialIcons name="delete" size={18} color="darkred" />
-            </TouchableOpacity>
-          </View>
-        </Pressable>
-      </Modal>
 
       <TaskInfoCard
         assignedUsers={UserList}
@@ -141,6 +129,74 @@ const TaskInfo = () => {
           <View style={{ marginBottom: 40 }}></View>
         </>
       )}
+
+      {
+        // all the modals
+      }
+
+      <Modal
+        transparent
+        animationType="fade"
+        visible={taskMenuDropdownVisible}
+        onRequestClose={() => settaskMenuDropdownVisible(false)}>
+        <Pressable className="flex-1" onPress={() => settaskMenuDropdownVisible(false)}>
+          <View
+            className="bg-card "
+            style={[
+              styles.deleteDropdown,
+              {
+                top: taskMenuDropdownPosition.y,
+                start: taskMenuDropdownPosition.x - 179,
+                width: 200,
+              },
+            ]}>
+            <TouchableOpacity className="flex-row items-center justify-between rounded-md rounded-bl-none rounded-br-none bg-popover p-1">
+              <Text className="text-sm text-muted">Share</Text>
+              <MaterialIcons name="ios-share" size={18} color={THEME[scheme].muted} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="flex-row items-center justify-between rounded-md p-1"
+              onPress={() => {
+                settaskMenuDropdownVisible(false)
+              setDeletModalVisible(!deleteModalVisible)}}>
+              <Text className="text-sm text-muted">Delete</Text>
+              <MaterialIcons name="delete" size={18} color="darkred" />
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      </Modal>
+
+      {
+        // delete  task  modal
+      }
+      <Modal visible={deleteModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setDeletModalVisible(false)}>
+      >
+      <BlurView intensity={3} style={{
+    flex: 1,
+    justifyContent: 'center',
+    overflow: 'hidden',
+        }}
+          tint='dark'
+          experimentalBlurMethod='dimezisBlurView'
+          >
+        <Pressable
+          className='flex-1 items-center justify-center bg-[rgba(0,0,0,0.7)]'
+        >
+
+          <MinimalAlert info="Confirm that you want to delete this Task. This cannot be undone" 
+              onCancel={() => setDeletModalVisible(false)}
+              onSubmit={handleDeleteTask}
+              submitButtonText='Delete Task'
+              submitButtonIcon={ <MaterialIcons name="delete" size={18} color="darkred" /> }
+
+            />
+        </Pressable>
+      </BlurView>
+      </Modal>
     </ScreenLayout>
   );
 };
@@ -160,7 +216,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: '#3D3D3D',
+    elevation: 10,
+    shadowColor: Platform.OS === 'android' ? 'rgba(0,0,0,0.8)' : '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 10,
   },
+
 });
 
 const markdownStyles = {
