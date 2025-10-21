@@ -25,6 +25,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { Position } from '@/types/position';
 import { Text } from '@/components/ui/text';
 import MinimalAlert from '@/components/alert';
+import { Status } from '@/types/status';
 
 const UserList = [
   { username: 'Kevin Mihyaoan' },
@@ -51,9 +52,10 @@ const TaskInfo = () => {
 
   const [stylesState, setStylesState] = useState<OnChangeStateEvent | null>();
 
+  const [status,setStatus] = useState<Status>("todo")
   const [isEditing, setEditing] = useState<boolean>(true);
 
-  const [deleteModalVisible, setDeletModalVisible] = useState<boolean>(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
 
   const [taskMenuDropdownVisible, settaskMenuDropdownVisible] = useState<boolean>(false);
   const [taskMenuDropdownPosition, settaskMenuDropdownPosition] = useState<Position>({
@@ -98,8 +100,8 @@ const TaskInfo = () => {
 
       <TaskInfoCard
         assignedUsers={UserList}
-        onStatusChange={() => {}}
-        status="todo"
+        onStatusChange={(status) => {setStatus(status)}}
+        status={status}
         dueDate="30/12/2002"
       />
       <View className="flex-row justify-end">
@@ -159,7 +161,7 @@ const TaskInfo = () => {
               className="flex-row items-center justify-between rounded-md p-1"
               onPress={() => {
                 settaskMenuDropdownVisible(false)
-              setDeletModalVisible(!deleteModalVisible)}}>
+              setDeleteModalVisible(!deleteModalVisible)}}>
               <Text className="text-sm text-muted">Delete</Text>
               <MaterialIcons name="delete" size={18} color="darkred" />
             </TouchableOpacity>
@@ -173,7 +175,7 @@ const TaskInfo = () => {
       <Modal visible={deleteModalVisible}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setDeletModalVisible(false)}>
+        onRequestClose={() => setDeleteModalVisible(false)}>
       >
       <BlurView intensity={3} style={{
     flex: 1,
@@ -188,7 +190,7 @@ const TaskInfo = () => {
         >
 
           <MinimalAlert info="Confirm that you want to delete this Task. This cannot be undone" 
-              onCancel={() => setDeletModalVisible(false)}
+              onCancel={() => setDeleteModalVisible(false)}
               onSubmit={handleDeleteTask}
               submitButtonText='Delete Task'
               submitButtonIcon={ <MaterialIcons name="delete" size={18} color="darkred" /> }

@@ -1,11 +1,14 @@
 import * as React from 'react';
-import { TouchableOpacity, useColorScheme, View } from 'react-native';
+import { TouchableOpacity, Modal, Pressable, useColorScheme, View } from 'react-native';
 import { Text } from '@/components/ui/text';
 import UserChip from '@/components/ui/userchip';
 import DateChip from '@/components/ui/datechip';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import ProgressChip from '@/components/ui/progresschip';
 import { THEME } from '@/lib/theme';
+import { Position } from '@/types/position';
+import { Status } from '@/types/status';
+import TaskStatusDropdown from '@/components/dropdown/taskstatusdropdown';
 
 // TODO;
 // handle users > 2
@@ -16,14 +19,36 @@ interface AssingedUsers {
 }
 
 interface Props {
-  assignedUsers: [AssingedUsers];
+  assignedUsers: AssingedUsers[];
   dueDate: string;
-  status: string;
-  onStatusChange: (status: string) => void;
+  status: Status;
+  onStatusChange: (status: Status) => void;
 }
 
 const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onStatusChange }) => {
+  const [statusTriggerPosition, setStatusTriggerPosition] = React.useState<Position>({
+    x: 0,
+    y: 0,
+    width: 0,
+  });
+  const [statusDropdownVisible, setStatusDropdownVisible] = React.useState<boolean>(false);
+
   const scheme = useColorScheme();
+
+  const triggerRef = React.useRef(null);
+
+  // todo
+  /// can refactor this by moving this into the progresschip and just passing the position.
+  const toggleModal = () => {
+    if (triggerRef.current) {
+      triggerRef.current.measureInWindow((x, y, width, height) => {
+        setStatusTriggerPosition({ x, y: y + height, width });
+        setStatusDropdownVisible(true);
+      });
+    } else {
+      setStatusDropdownVisible(true);
+    }
+  };
 
   return (
     <View className="my-4 gap-2 rounded-xl bg-card p-3">
@@ -46,9 +71,24 @@ const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onStatu
         </View>
         <View className="flex-row items-center gap-2 self-end">
           <Label label="Status" />
-          <ProgressChip status={status} onPress={onStatusChange} />
+          <ProgressChip status={status} onPress={toggleModal} ref={triggerRef} />
         </View>
       </View>
+
+      <Modal
+        transparent
+        animationType="fade"
+        visible={statusDropdownVisible}
+        onRequestClose={() => setStatusDropdownVisible(false)}>
+        <Pressable style={{ flex: 1 }} onPress={() => setStatusDropdownVisible(false)}>
+          <TaskStatusDropdown
+            taskStatusList={['todo', 'in_progress', 'wont_do', 'completed']}
+            onTaskUpdate={onStatusChange}
+            selectedStatus={status}
+            position={statusTriggerPosition}
+          />
+        </Pressable>
+      </Modal>
     </View>
   );
 };

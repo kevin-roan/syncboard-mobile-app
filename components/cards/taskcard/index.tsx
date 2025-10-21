@@ -1,38 +1,48 @@
 import { useState, useRef } from 'react';
-import {
-  View,
-  TouchableNativeFeedback,
-  Modal,
-  Pressable,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { View, TouchableNativeFeedback, Modal, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@/components/ui/text';
 import AvatarGroup from '@/components/ui/avatargroup';
 import DateChip from '@/components/ui/datechip';
 import moment from 'moment';
 import { useRouter } from 'expo-router';
 import ProgressChip from '@/components/ui/progresschip';
+import { Position } from '@/types/position';
+import AddUserDropdown from '@/components/dropdown/adduserdropdown';
+import TaskStatusDropdown from '@/components/dropdown/taskstatusdropdown';
+import { Status } from '@/types/status';
+
+interface Task {
+  title: string;
+  dueDate: string;
+}
 
 interface Props {
-  title: string;
+  task: Task;
   onPress: () => void;
+  status: Status;
+  onStatusChange: (status: Status) => void;
 }
 
 const statusList = ['todo', 'in_progress', 'completed'];
 
-const TaskCard: React.FC<Props> = ({ title, onPress }) => {
+const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
-  const [status, setStatus] = useState('in_progress');
-  const [position, setPosition] = useState({ x: 0, y: 0, width: 0 });
+  const [progressPosition, setProgressPosition] = useState<Position>({ x: 0, y: 0, width: 0 });
+
+  const [userDropdownVisible, setUserDropdownVisible] = useState<boolean>(false);
+  const [userDropdownPosition, setUserDropDownPosition] = useState<Position>({
+    x: 0,
+    y: 0,
+    width: 0,
+  });
 
   const triggerRef = useRef(null);
 
   const toggleModal = () => {
     if (triggerRef.current) {
       triggerRef.current.measureInWindow((x, y, width, height) => {
-        setPosition({ x, y: y + height, width });
+        setProgressPosition({ x: x + 30, y: y + height, width });
         setVisible(true);
       });
     } else {
@@ -41,20 +51,35 @@ const TaskCard: React.FC<Props> = ({ title, onPress }) => {
   };
 
   const handleSetStatus = (status) => {
-    setStatus(status);
+    onStatusChange(status);
   };
 
+  const handleShowUserDropdown = (position: Position) => {
+    setUserDropdownVisible(!userDropdownVisible);
+    setUserDropDownPosition(position);
+  };
+
+  console.log('json ', JSON.stringify(task, null, 2));
   return (
     <>
       <TouchableNativeFeedback
         onPress={onPress}
         background={TouchableNativeFeedback.Ripple('rgba(0, 0, 0, 0.1)', false)}>
         <View className="gap-3 rounded-xl bg-card p-3">
-          <Text>React native reanimated implementation, migration docs</Text>
-          <View className="flex-row gap-2">
-            <AvatarGroup title={'3 People'} onPress={() => {}} />
-            <DateChip date={moment().daysInMonth()} />
-            <ProgressChip ref={triggerRef} status="in_progress" onPress={toggleModal} />
+          <View>
+            <Text>{task.name}</Text>
+            {task.description && (
+              <Text variant={'p'} className="text-sm text-muted">
+                {task.description}
+              </Text>
+            )}
+          </View>
+          <View className="flex-row flex-wrap gap-2">
+            <AvatarGroup title={'3 People'} onPress={handleShowUserDropdown} />
+            <View className=" flex-row gap-2">
+              <DateChip date={moment(task.due).format('DD MMM')} />
+              <ProgressChip ref={triggerRef} status={status} onPress={toggleModal} />
+            </View>
           </View>
         </View>
       </TouchableNativeFeedback>
@@ -65,13 +90,33 @@ const TaskCard: React.FC<Props> = ({ title, onPress }) => {
         visible={visible}
         onRequestClose={() => setVisible(false)}>
         <Pressable style={styles.modalOverlay} onPress={() => setVisible(false)}>
+          <TaskStatusDropdown
+            taskStatusList={statusList}
+            position={progressPosition}
+            selectedStatus={status}
+            onTaskUpdate={handleSetStatus}
+          />
+        </Pressable>
+      </Modal>
+
+      <Modal
+        transparent
+        animationType="fade"
+        visible={userDropdownVisible}
+        onRequestClose={() => setUserDropdownVisible(false)}>
+        <Pressable style={styles.modalOverlay} onPress={() => setUserDropdownVisible(false)}>
           <View
-            style={[styles.popup, { top: position.y, left: position.x, width: position.width }]}>
-            {statusList.map((item, index) => (
-              <TouchableOpacity className="my-1 rounded-md px-1" onPress={handleSetStatus}>
-                <Text>{item}</Text>
-              </TouchableOpacity>
-            ))}
+            style={[
+              styles.popup,
+              {
+                top: userDropdownPosition.y + 10,
+                left: userDropdownPosition.x,
+                width: 200,
+                padding: 0,
+                borderRadius: 14,
+              },
+            ]}>
+            <AddUserDropdown />
           </View>
         </Pressable>
       </Modal>
@@ -90,7 +135,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: '#3D3D3D',
-    elevation: 5,
+    elevation: 10,
     shadowColor: '#000',
     shadowOpacity: 0.3,
     shadowRadius: 4,

@@ -2,17 +2,30 @@ import * as React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Text } from '@/components/ui/text';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Position } from '@/types/position';
 
 interface Props {
   title: string;
-  onPress: () => void;
+  onPress: (position: Position) => void;
 }
 
 const AvatarGroup: React.FC<Props> = ({ title, onPress }) => {
+  const triggerRef = React.useRef(null);
+
+  const handlePress = () => {
+    if (triggerRef.current) {
+      triggerRef.current.measureInWindow((x, y, width, height) => {
+        const position: Position = { x, y: y + height, width };
+        onPress(position);
+      });
+    }
+  };
+
   return (
     <TouchableOpacity
+      ref={triggerRef}
       className="flex-row items-center rounded-full bg-input p-0.5"
-      onPress={onPress}>
+      onPress={handlePress}>
       <Avatar
         alt="@mrzachnugent"
         className="
