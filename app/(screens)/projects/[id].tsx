@@ -7,6 +7,7 @@ import { useGetTasks } from '@/hooks/tasks/useGetTasks';
 import { ActivityIndicator } from 'react-native-paper';
 import TaskCard from '@/components/cards/taskcard';
 import { DropdownMenuPreview } from '@/components/ui/dropdownpreview';
+import { Status } from '@/types/status';
 
 const Projects = () => {
   const { id: projectId, projectName } = useLocalSearchParams();
@@ -49,13 +50,22 @@ const Projects = () => {
     });
   };
 
+  const handleUpdateTaskStatus = (status: Status) => {
+    // make status update api call from jere
+  };
+
   return (
     <ScreenLayout>
       <TopNavigation title={projectName} />
       <FlatList
         data={data}
         renderItem={({ item }) => (
-          <TaskCard task={item} onPress={() => handleTaskNavigation(item)} />
+          <TaskCard
+            task={item}
+            onPress={() => handleTaskNavigation(item)}
+            status={item.status}
+            onStatusChange={(status) => handleUpdateTaskStatus(status)}
+          />
         )}
         ListEmptyComponent={<Text>No Tasks Yet</Text>}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}

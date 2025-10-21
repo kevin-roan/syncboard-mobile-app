@@ -4,4 +4,4 @@
 > > [x] Delete task dropdown ( )
 > > [x] Custom alert modal
 > > [x] Add more users (custom dropdown)
-> > [] Change Task Status (custom dropdown)
+> > [x] Change Task Status (custom dropdown)
