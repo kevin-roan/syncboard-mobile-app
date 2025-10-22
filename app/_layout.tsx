@@ -67,7 +67,7 @@ const RootLayout = () => {
 
   if (loading) return null;
 
-  LogBox.ignoreAllLogs();
+  // LogBox.ignoreAllLogs();
 
   return (
     <Stack screenOptions={{ headerShown: false }}>

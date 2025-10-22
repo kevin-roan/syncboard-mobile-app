@@ -10,7 +10,7 @@
 
 -- API IMPLiMENATION
 
-- [] Update Task Status
+- [x] Update Task Status
 - [] Native Date Picker ( dark/light), Update Task Due Date.
 - [] People (Fetch actual data from supabase and show people who are working on the same task)
 

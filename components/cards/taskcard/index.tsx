@@ -10,6 +10,7 @@ import { Position } from '@/types/position';
 import AddUserDropdown from '@/components/dropdown/adduserdropdown';
 import TaskStatusDropdown from '@/components/dropdown/taskstatusdropdown';
 import { Status } from '@/types/status';
+import { statusList } from '@/constants/taskList';
 
 interface Task {
   title: string;
@@ -22,8 +23,6 @@ interface Props {
   status: Status;
   onStatusChange: (status: Status) => void;
 }
-
-const statusList = ['todo', 'in_progress', 'completed'];
 
 const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) => {
   const router = useRouter();
@@ -89,7 +88,7 @@ const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) =>
         animationType="fade"
         visible={statusDropdownVisible}
         onRequestClose={() => setStatusDropdownVisible(false)}>
-        <Pressable style={styles.modalOverlay} onPress={() => setVisible(false)}>
+        <Pressable style={styles.modalOverlay} onPress={() => setStatusDropdownVisible(false)}>
           <TaskStatusDropdown
             taskStatusList={statusList}
             position={progressPosition}
