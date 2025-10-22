@@ -1,20 +1,27 @@
 import React, { useRef } from 'react';
-import { View, FlatList, Text, RefreshControl } from 'react-native';
+import { Alert, FlatList, Text, RefreshControl } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import ScreenLayout from '@/provider/screenlayout';
 import TopNavigation from '@/components/topnavigation';
-import { useGetTasks } from '@/hooks/tasks/useGetTasks';
+import { useGetTasks, useUpdateTaskStatus } from '@/hooks/tasks/useTask';
 import { ActivityIndicator } from 'react-native-paper';
 import TaskCard from '@/components/cards/taskcard';
 import { Status } from '@/types/status';
+import { updateTaskStatus } from '@/services/task';
 
 const Projects = () => {
   const { id: projectId, projectName } = useLocalSearchParams();
   const router = useRouter();
 
   const { data, error, isLoading, isRefetching, refetch } = useGetTasks(projectId);
-  // create new task
+  const {
+    mutate: updateTaskStatus,
+    isPending,
+    isError,
+    error: updateTaskError,
+  } = useUpdateTaskStatus(projectId);
 
+  // create new task
   const handleCreateTask = async (formData) => {
     try {
       const payload = {
@@ -48,8 +55,19 @@ const Projects = () => {
     });
   };
 
-  const handleUpdateTaskStatus = (status: Status) => {
-    // make status update api call from jere
+  const handleUpdateTaskStatus = async (taskId: string, status: Status) => {
+    updateTaskStatus(
+      { taskId, status },
+      {
+        onSuccess: (updatedTask) => {
+          console.log('updated tasks status');
+        },
+        onError: (error) => {
+          Alert.alert('Error updating task status');
+          console.error('Error updating task status', error);
+        },
+      }
+    );
   };
 
   return (
@@ -62,7 +80,7 @@ const Projects = () => {
             task={item}
             onPress={() => handleTaskNavigation(item)}
             status={item.status}
-            onStatusChange={(status) => handleUpdateTaskStatus(status)}
+            onStatusChange={(status) => handleUpdateTaskStatus(item.id, status)}
           />
         )}
         ListEmptyComponent={<Text>No Tasks Yet</Text>}

@@ -27,7 +27,7 @@ const statusList = ['todo', 'in_progress', 'completed'];
 
 const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) => {
   const router = useRouter();
-  const [visible, setVisible] = useState(false);
+  const [statusDropdownVisible, setStatusDropdownVisible] = useState(false);
   const [progressPosition, setProgressPosition] = useState<Position>({ x: 0, y: 0, width: 0 });
 
   const [userDropdownVisible, setUserDropdownVisible] = useState<boolean>(false);
@@ -43,14 +43,15 @@ const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) =>
     if (triggerRef.current) {
       triggerRef.current.measureInWindow((x, y, width, height) => {
         setProgressPosition({ x: x + 30, y: y + height, width });
-        setVisible(true);
+        setStatusDropdownVisible(true);
       });
     } else {
-      setVisible(true);
+      setStatusDropdownVisible(true);
     }
   };
 
   const handleSetStatus = (status) => {
+    setStatusDropdownVisible(false);
     onStatusChange(status);
   };
 
@@ -59,7 +60,6 @@ const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) =>
     setUserDropDownPosition(position);
   };
 
-  console.log('json ', JSON.stringify(task, null, 2));
   return (
     <>
       <TouchableNativeFeedback
@@ -87,8 +87,8 @@ const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) =>
       <Modal
         transparent
         animationType="fade"
-        visible={visible}
-        onRequestClose={() => setVisible(false)}>
+        visible={statusDropdownVisible}
+        onRequestClose={() => setStatusDropdownVisible(false)}>
         <Pressable style={styles.modalOverlay} onPress={() => setVisible(false)}>
           <TaskStatusDropdown
             taskStatusList={statusList}
