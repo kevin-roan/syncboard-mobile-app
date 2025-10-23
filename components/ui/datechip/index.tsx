@@ -6,7 +6,7 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
 interface Props {
   date: string;
-  onPress?: () => void;
+  onPress?: (dateObj: { due: string }) => void;
 }
 
 const DateChip: React.FC<Props> = ({ date, onPress }) => {
@@ -14,6 +14,12 @@ const DateChip: React.FC<Props> = ({ date, onPress }) => {
 
   const onChange = (_event: any, newDate?: Date) => {
     if (newDate) setSelectedDate(newDate);
+    // @ts-ignore-next-line
+    if (newDate) {
+      const dateString = newDate.toISOString().split('T')[0];
+
+      onPress?.({ due: dateString });
+    }
   };
 
   const showDatepicker = () => {
@@ -28,7 +34,6 @@ const DateChip: React.FC<Props> = ({ date, onPress }) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        onPress?.();
         showDatepicker();
       }}
       className="flex-row items-center gap-2 rounded-full bg-input px-3 py-[2px]">

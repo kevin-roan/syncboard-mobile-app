@@ -6,20 +6,25 @@ import TopNavigation from '@/components/topnavigation';
 import { useGetTasks, useUpdateTaskStatus } from '@/hooks/tasks/useTask';
 import { ActivityIndicator } from 'react-native-paper';
 import TaskCard from '@/components/cards/taskcard';
-import { Status } from '@/types/status';
-import { updateTaskStatus } from '@/services/task';
+import { useUpdateTask } from '@/hooks/tasks/useTask';
+import { Task } from '@/types/task';
 
 const Projects = () => {
-  const { id: projectId, projectName } = useLocalSearchParams();
   const router = useRouter();
+  const { id, projectName } = useLocalSearchParams();
+  const projectId = Array.isArray(id) ? id[0] : id;
+
+  if (!projectId) {
+    router.push('/+not-found');
+  }
 
   const { data, error, isLoading, isRefetching, refetch } = useGetTasks(projectId);
   const {
-    mutate: updateTaskStatus,
+    mutate: updateTask,
     isPending,
     isError,
     error: updateTaskError,
-  } = useUpdateTaskStatus(projectId);
+  } = useUpdateTask(projectId);
 
   // create new task
   const handleCreateTask = async (formData) => {
@@ -55,12 +60,13 @@ const Projects = () => {
     });
   };
 
-  const handleUpdateTaskStatus = async (taskId: string, status: Status) => {
-    updateTaskStatus(
-      { taskId, status },
+  const handleUpdateTask = (taskId: string, updates: Partial<Task>) => {
+    console.log('updates', taskId, updates);
+    updateTask(
+      { taskId, updates },
       {
         onSuccess: (updatedTask) => {
-          console.log('updated tasks status');
+          console.log('updated tasks status', updatedTask);
         },
         onError: (error) => {
           Alert.alert('Error updating task status');
@@ -79,8 +85,7 @@ const Projects = () => {
           <TaskCard
             task={item}
             onPress={() => handleTaskNavigation(item)}
-            status={item.status}
-            onStatusChange={(status) => handleUpdateTaskStatus(item.id, status)}
+            onTaskChange={handleUpdateTask}
           />
         )}
         ListEmptyComponent={<Text>No Tasks Yet</Text>}

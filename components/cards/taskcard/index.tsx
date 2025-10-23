@@ -11,21 +11,15 @@ import AddUserDropdown from '@/components/dropdown/adduserdropdown';
 import TaskStatusDropdown from '@/components/dropdown/taskstatusdropdown';
 import { Status } from '@/types/status';
 import { statusList } from '@/constants/taskList';
-
-interface Task {
-  title: string;
-  dueDate: string;
-}
+import { Task } from '@/types/task';
 
 interface Props {
   task: Task;
   onPress: () => void;
-  status: Status;
-  onStatusChange: (status: Status) => void;
+  onTaskChange: (taskId: string, update: { [key: string]: any }) => void;
 }
 
-const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) => {
-  const router = useRouter();
+const TaskCard: React.FC<Props> = ({ task, onPress, onTaskChange }) => {
   const [statusDropdownVisible, setStatusDropdownVisible] = useState(false);
   const [progressPosition, setProgressPosition] = useState<Position>({ x: 0, y: 0, width: 0 });
 
@@ -49,9 +43,13 @@ const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) =>
     }
   };
 
-  const handleSetStatus = (status) => {
+  const handleSetStatus = (status: string) => {
     setStatusDropdownVisible(false);
-    onStatusChange(status);
+    onTaskChange(task.id, { status: status });
+  };
+
+  const handleSetDate = (dateObj: { date: string }) => {
+    onTaskChange(task.id, dateObj);
   };
 
   const handleShowUserDropdown = (position: Position) => {
@@ -76,8 +74,8 @@ const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) =>
           <View className="flex-row flex-wrap gap-2">
             <AvatarGroup title={'3 People'} onPress={handleShowUserDropdown} />
             <View className=" flex-row gap-2">
-              <DateChip date={moment(task.due).format('DD MMM')} />
-              <ProgressChip ref={triggerRef} status={status} onPress={toggleModal} />
+              <DateChip date={moment(task.due).format('DD MMM')} onPress={handleSetDate} />
+              <ProgressChip ref={triggerRef} status={task.status} onPress={toggleModal} />
             </View>
           </View>
         </View>
@@ -92,7 +90,7 @@ const TaskCard: React.FC<Props> = ({ task, onPress, onStatusChange, status }) =>
           <TaskStatusDropdown
             taskStatusList={statusList}
             position={progressPosition}
-            selectedStatus={status}
+            selectedStatus={task.status}
             onTaskUpdate={handleSetStatus}
           />
         </Pressable>

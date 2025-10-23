@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from '@/lib/supabase';
 
 export async function createTask(payload: {
   name: string;
@@ -16,21 +16,14 @@ export async function createTask(payload: {
     delete insertData.description;
   }
 
-  const { data, error } = await supabase
-    .from("tasks")
-    .insert([insertData])
-    .select()
-    .single();
+  const { data, error } = await supabase.from('tasks').insert([insertData]).select().single();
 
   if (error) throw error;
   return data;
 }
 
 export async function getTasks(projectId: string) {
-  const { data, error } = await supabase
-    .from("tasks")
-    .select()
-    .eq("project_id", projectId);
+  const { data, error } = await supabase.from('tasks').select().eq('project_id', projectId);
 
   if (error) throw error;
   return data;
@@ -38,46 +31,50 @@ export async function getTasks(projectId: string) {
 
 export async function getDueTaskCount(workspaceId: string) {
   const { count, error } = await supabase
-    .from("tasks")
+    .from('tasks')
     .select(`project:projects(id, workspace_id)`, {
-      count: "exact",
+      count: 'exact',
       head: true,
     })
-    .eq("status", "todo")
-    .eq("project.workspace_id", workspaceId);
+    .eq('status', 'todo')
+    .eq('project.workspace_id', workspaceId);
 
   if (error) throw error;
 
   return count || 0;
 }
 
-export async function updateTaskStatus(taskId: string, status: string) {
+export async function updateTask(
+  taskId: string,
+  updates: Partial<{
+    status: string;
+    due_date: string;
+    title: string;
+    description: string;
+  }>
+) {
   const { data, error } = await supabase
-    .from("tasks")
-    .update({ status })
-    .eq("id", taskId)
+    .from('tasks')
+    .update(updates)
+    .eq('id', taskId)
     .select()
     .single();
 
   if (error) throw error;
-
   return data;
 }
 
 export async function deleteTaskById(taskId: string) {
-  const { data, error } = await supabase
-    .from("tasks")
-    .delete()
-    .eq("id", taskId);
+  const { data, error } = await supabase.from('tasks').delete().eq('id', taskId);
   if (error) throw error;
   return data;
 }
 
 export async function getTaskInfoById(taskId: string) {
   const { data, error } = await supabase
-    .from("tasks_with_users")
-    .select("*")
-    .eq("id", taskId)
+    .from('tasks_with_users')
+    .select('*')
+    .eq('id', taskId)
     .single();
 
   if (error) throw error;

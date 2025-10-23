@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { MINUTE } from '@/constants/time';
-import { getTasks, updateTaskStatus } from '@/services/task';
+import { getTasks, updateTask } from '@/services/task';
 import { queryClient } from '@/utils/queryClient';
-import { Status } from '@/types/status';
+import { Task } from '@/types/task';
 
 const useGetTasks = (projectId?: string) =>
   useQuery({
@@ -14,10 +14,10 @@ const useGetTasks = (projectId?: string) =>
     gcTime: 1 * MINUTE,
   });
 
-const useUpdateTaskStatus = (projectId: string) => {
+const useUpdateTask = (projectId: string) => {
   return useMutation({
-    mutationFn: ({ taskId, status }: { taskId: string; status: Status }) =>
-      updateTaskStatus(taskId, status),
+    mutationFn: ({ taskId, updates }: { taskId: string; updates: Partial<Task> }) =>
+      updateTask(taskId, updates),
     onSuccess: (updatedTask) => {
       queryClient.setQueryData(['tasks', projectId], (oldData: any) => {
         if (!oldData) return oldData;
@@ -27,4 +27,4 @@ const useUpdateTaskStatus = (projectId: string) => {
   });
 };
 
-export { useGetTasks, useUpdateTaskStatus };
+export { useGetTasks, useUpdateTask };
