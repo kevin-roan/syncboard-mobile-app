@@ -56,7 +56,7 @@ const Projects = () => {
     router.push({
       pathname: `/task/${task.id}`,
       // hope this doesnt break on production ( or i might need to encode the string and then pass it. )
-      params: { taskName: task.name, taskStatus: task.status },
+      params: { taskName: task.name, taskStatus: task.status, projectId: projectId },
     });
   };
 
