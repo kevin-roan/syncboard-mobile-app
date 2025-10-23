@@ -1,20 +1,32 @@
 import React, { useRef } from 'react';
-import { View, FlatList, Text, RefreshControl } from 'react-native';
+import { Alert, FlatList, Text, RefreshControl } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import ScreenLayout from '@/provider/screenlayout';
 import TopNavigation from '@/components/topnavigation';
-import { useGetTasks } from '@/hooks/tasks/useGetTasks';
+import { useGetTasks, useUpdateTaskStatus } from '@/hooks/tasks/useTask';
 import { ActivityIndicator } from 'react-native-paper';
 import TaskCard from '@/components/cards/taskcard';
-import { Status } from '@/types/status';
+import { useUpdateTask } from '@/hooks/tasks/useTask';
+import { Task } from '@/types/task';
 
 const Projects = () => {
-  const { id: projectId, projectName } = useLocalSearchParams();
   const router = useRouter();
+  const { id, projectName } = useLocalSearchParams();
+  const projectId = Array.isArray(id) ? id[0] : id;
+
+  if (!projectId) {
+    router.push('/+not-found');
+  }
 
   const { data, error, isLoading, isRefetching, refetch } = useGetTasks(projectId);
-  // create new task
+  const {
+    mutate: updateTask,
+    isPending,
+    isError,
+    error: updateTaskError,
+  } = useUpdateTask(projectId);
 
+  // create new task
   const handleCreateTask = async (formData) => {
     try {
       const payload = {
@@ -44,12 +56,24 @@ const Projects = () => {
     router.push({
       pathname: `/task/${task.id}`,
       // hope this doesnt break on production ( or i might need to encode the string and then pass it. )
-      params: { taskName: task.name, taskStatus: task.status },
+      params: { taskName: task.name, taskStatus: task.status, projectId: projectId },
     });
   };
 
-  const handleUpdateTaskStatus = (status: Status) => {
-    // make status update api call from jere
+  const handleUpdateTask = (taskId: string, updates: Partial<Task>) => {
+    console.log('updates', taskId, updates);
+    updateTask(
+      { taskId, updates },
+      {
+        onSuccess: (updatedTask) => {
+          console.log('updated tasks status', updatedTask);
+        },
+        onError: (error) => {
+          Alert.alert('Error updating task status');
+          console.error('Error updating task status', error);
+        },
+      }
+    );
   };
 
   return (
@@ -61,8 +85,7 @@ const Projects = () => {
           <TaskCard
             task={item}
             onPress={() => handleTaskNavigation(item)}
-            status={item.status}
-            onStatusChange={(status) => handleUpdateTaskStatus(status)}
+            onTaskChange={handleUpdateTask}
           />
         )}
         ListEmptyComponent={<Text>No Tasks Yet</Text>}

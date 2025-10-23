@@ -62,6 +62,7 @@ export const THEME = {
     in_progress: 'rgba(102, 51, 0, 0.9)',
     completed: 'rgba(64, 83, 20, 1)',
     wont_do: 'rgba(123, 15, 15, 1)',
+    todo: 'rgba(153, 153, 153, 1)',
   },
 };
 

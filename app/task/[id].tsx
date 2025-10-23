@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Modal,
   View,
+  Alert,
   useColorScheme,
   Platform,
 } from 'react-native';
@@ -26,6 +27,7 @@ import { Position } from '@/types/position';
 import { Text } from '@/components/ui/text';
 import MinimalAlert from '@/components/alert';
 import { Status } from '@/types/status';
+import { useGetTasks, useUpdateTask } from '@/hooks/tasks/useTask';
 
 const UserList = [
   { username: 'Kevin Mihyaoan' },
@@ -45,14 +47,28 @@ const dummyMarkdown = `# h1 Heading 8-)
 const TaskInfo = () => {
   const scheme = useColorScheme();
 
-  const { id: taskId, taskName, taskStatus } = useLocalSearchParams();
+
+  const { id, taskName, taskStatus ,projectId:prId} = useLocalSearchParams();
+  const taskId= Array.isArray(id) ? id[0] :id 
+  const projectId = Array.isArray(prId) ? prId[0] : prId
+
+
+
+const { data: tasks } = useGetTasks(projectId);
+const task = tasks?.find(t => t.id === taskId);
+  console.log('task data from react query',task)
+
+  const {
+    mutate: updateTask,
+    isPending,
+    isError,
+    error: updateTaskError,
+  } = useUpdateTask(projectId);
   // console.log('screen params', taskId, taskName, taskStatus);
 
   const ref = useRef<EnrichedTextInputInstance>(null);
 
-  const [stylesState, setStylesState] = useState<OnChangeStateEvent | null>();
 
-  const [status,setStatus] = useState<Status>("todo")
   const [isEditing, setEditing] = useState<boolean>(true);
 
   const [deleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
@@ -87,22 +103,40 @@ const TaskInfo = () => {
 
   }
 
+  const handleUpdateTask = ( updates: Partial<Task>) => {
+    console.log('updates', taskId, updates);
+    updateTask(
+      { taskId, updates },
+      {
+        onSuccess: (updatedTask) => {
+          console.log('updated tasks status', updatedTask);
+        },
+        onError: (error) => {
+          Alert.alert('Error updating task status');
+          console.error('Error updating task status', error);
+        },
+      }
+    );
+  };
+
+
+
 
   return (
     <ScreenLayout style={{ flex: 1 }}>
       <LinearGradient
-        colors={[THEME[scheme][taskStatus], 'transparent']}
+        colors={[THEME[scheme][task.status ?? 'todo'], 'transparent']}
         style={styles.background}
         locations={[0.1, 0.6]}
       />
 
-      <TopNavigation title={taskName} onMenuButtonPress={triggerDeleteDropdown} />
+      <TopNavigation title={task.name} onMenuButtonPress={triggerDeleteDropdown} />
 
       <TaskInfoCard
         assignedUsers={UserList}
-        onStatusChange={(status) => {setStatus(status)}}
-        status={status}
-        dueDate="30/12/2002"
+        status={task.status}
+        onTaskChange={handleUpdateTask}
+        dueDate={task.due}
       />
       <View className="flex-row justify-end">
         {isEditing ? (
@@ -122,8 +156,8 @@ const TaskInfo = () => {
         <>
           <EnrichedTextInput
             ref={ref}
-            onChangeState={(e) => setStylesState(e.nativeEvent)}
-            style={styles.input}
+            // onChangeState={(e) => setStylesState(e.nativeEvent)}
+            // style={styles.input}
             onChangeText={handleChangeTaskInfo}
             defaultValue={markdownData}
           />

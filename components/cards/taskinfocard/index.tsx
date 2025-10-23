@@ -22,10 +22,10 @@ interface Props {
   assignedUsers: AssingedUsers[];
   dueDate: string;
   status: Status;
-  onStatusChange: (status: Status) => void;
+  onTaskChange: (updates: { [key: string]: any }) => void;
 }
 
-const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onStatusChange }) => {
+const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onTaskChange }) => {
   const [statusTriggerPosition, setStatusTriggerPosition] = React.useState<Position>({
     x: 0,
     y: 0,
@@ -50,6 +50,15 @@ const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onStatu
     }
   };
 
+  const handleSetStatus = (status: string) => {
+    setStatusDropdownVisible(false);
+    onTaskChange({ status: status });
+  };
+
+  const handleSetDate = (dateObj: { date: string }) => {
+    onTaskChange(dateObj);
+  };
+
   return (
     <View className="my-4 gap-2 rounded-xl bg-card p-3">
       <View className="gap-1">
@@ -67,7 +76,7 @@ const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onStatu
       <View className="flex-row justify-between">
         <View className="gap-1">
           <Label label="Due Date" />
-          <DateChip date={dueDate} />
+          <DateChip date={dueDate} onPress={handleSetDate} />
         </View>
         <View className="flex-row items-center gap-2 self-end">
           <Label label="Status" />
@@ -83,7 +92,7 @@ const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onStatu
         <Pressable style={{ flex: 1 }} onPress={() => setStatusDropdownVisible(false)}>
           <TaskStatusDropdown
             taskStatusList={['todo', 'in_progress', 'wont_do', 'completed']}
-            onTaskUpdate={onStatusChange}
+            onTaskUpdate={handleSetStatus}
             selectedStatus={status}
             position={statusTriggerPosition}
           />
