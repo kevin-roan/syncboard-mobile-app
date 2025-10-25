@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, View, TouchableOpacity, Alert } from 'react-native';
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Button,
+  Modal,
+  Pressable,
+  Alert,
+  KeyboardAvoidingView,
+} from 'react-native';
 
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/authctx';
@@ -21,6 +31,9 @@ import DashboardQuickActions from '@/components/cards/dashboard/quickaction';
 import { Text } from '@/components/ui/text';
 import { useGetProjects } from '@/hooks/projects/useGetProjects';
 import CustomDropdown from '@/components/dropdown';
+import CreateProjectModal from '@/components/cards/inputcard';
+import { BlurView } from 'expo-blur';
+import ModalContainer from '@/components/modal';
 
 const Dashboard = () => {
   const router = useRouter();
@@ -116,6 +129,12 @@ const Dashboard = () => {
 
   const toggleDrawer = () => setDrawerVisible(!drawerVisible);
 
+  const [workspaceModalVisible, setWorkspaceModalVisible] = useState(false);
+
+  const toggleCreateWorkspaceModal = () => {
+    setWorkspaceModalVisible(true);
+  };
+
   return (
     <ScreenLayout>
       <DashboardNavigation title={'Software Manson'} />
@@ -163,6 +182,14 @@ const Dashboard = () => {
         </TouchableOpacity>
       </View>
 
+      <Button onPress={toggleCreateWorkspaceModal} title="Create Worksapce"></Button>
+
+      <ModalContainer
+        visible={workspaceModalVisible}
+        onRequestClose={() => setWorkspaceModalVisible(false)}>
+        <CreateProjectModal />
+      </ModalContainer>
+
       <WorkspaceDrawerModal
         drawerVisible={drawerVisible}
         toggleDrawer={toggleDrawer}
@@ -182,5 +209,12 @@ const Dashboard = () => {
     </ScreenLayout>
   );
 };
+
+const styles = StyleSheet.create({
+  modalOverlay: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    flex: 1,
+  },
+});
 
 export default Dashboard;

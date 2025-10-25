@@ -10,7 +10,7 @@ interface Props {
   username: string;
 }
 
-const UserChip: React.FC<Props> = ({ avatarUrl, username }) => {
+const UserChip: React.FC<Props> = ({ username, avatarUrl }) => {
   const initials = getInitials(username);
   return (
     <TouchableOpacity className="flex-row items-center gap-3  rounded-full bg-input p-[1px] px-2">

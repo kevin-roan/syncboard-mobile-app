@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { MINUTE } from '@/constants/time';
-import { getTasks, updateTask } from '@/services/task';
+import { deleteTaskById, getTaskInfoById, getTasks, updateTask } from '@/services/task';
 import { queryClient } from '@/utils/queryClient';
 import { Task } from '@/types/task';
 
@@ -13,6 +13,16 @@ const useGetTasks = (projectId?: string) =>
     staleTime: 5 * MINUTE,
     gcTime: 1 * MINUTE,
   });
+
+const useGetTaskMetaData = (taskId?: string, projectId?: string) => {
+  return useQuery({
+    queryKey: ['task-metadata', taskId, projectId],
+    queryFn: () => getTaskInfoById(taskId!),
+    enabled: !!taskId && !!projectId,
+    staleTime: 1 * MINUTE,
+    gcTime: 1 * MINUTE,
+  });
+};
 
 const useUpdateTask = (projectId: string) => {
   return useMutation({
@@ -27,4 +37,10 @@ const useUpdateTask = (projectId: string) => {
   });
 };
 
-export { useGetTasks, useUpdateTask };
+const useDeleteTask = () => {
+  return useMutation({
+    mutationFn: ({ taskId }: { taskId: string }) => deleteTaskById(taskId),
+  });
+};
+
+export { useGetTasks, useUpdateTask, useGetTaskMetaData, useDeleteTask };

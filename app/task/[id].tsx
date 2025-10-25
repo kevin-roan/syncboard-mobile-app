@@ -22,12 +22,12 @@ import { THEME } from '@/lib/theme';
 
 import type { EnrichedTextInputInstance, OnChangeStateEvent } from 'react-native-enriched';
 import { EnrichedTextInput } from 'react-native-enriched';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Position } from '@/types/position';
 import { Text } from '@/components/ui/text';
 import MinimalAlert from '@/components/alert';
 import { Status } from '@/types/status';
-import { useGetTasks, useUpdateTask } from '@/hooks/tasks/useTask';
+import { useDeleteTask, useGetTaskMetaData, useGetTasks, useUpdateTask } from '@/hooks/tasks/useTask';
 
 const UserList = [
   { username: 'Kevin Mihyaoan' },
@@ -46,7 +46,7 @@ const dummyMarkdown = `# h1 Heading 8-)
 
 const TaskInfo = () => {
   const scheme = useColorScheme();
-
+  const router = useRouter()
 
   const { id, taskName, taskStatus ,projectId:prId} = useLocalSearchParams();
   const taskId= Array.isArray(id) ? id[0] :id 
@@ -56,7 +56,13 @@ const TaskInfo = () => {
 
 const { data: tasks } = useGetTasks(projectId);
 const task = tasks?.find(t => t.id === taskId);
-  console.log('task data from react query',task)
+
+  const {data:taskMetaData,error} = useGetTaskMetaData(taskId,projectId)
+  // console.log('task meta data',JSON.stringify(taskMetaData,null,2),'errror',error)
+
+  const {mutate:deleteTaskMutation} = useDeleteTask()
+
+
 
   const {
     mutate: updateTask,
@@ -101,6 +107,19 @@ const task = tasks?.find(t => t.id === taskId);
 
   const handleDeleteTask  = () =>{
 
+    deleteTaskMutation({taskId},{
+      onSuccess:() => {
+                settaskMenuDropdownVisible(false)
+              setDeleteModalVisible(!deleteModalVisible)
+        router.back();
+      },
+      onError:()=>{
+        console.error('error deleting task',error)
+        Alert.alert("Error deleting Task")
+      }
+    })
+
+
   }
 
   const handleUpdateTask = ( updates: Partial<Task>) => {
@@ -133,7 +152,17 @@ const task = tasks?.find(t => t.id === taskId);
       <TopNavigation title={task.name} onMenuButtonPress={triggerDeleteDropdown} />
 
       <TaskInfoCard
-        assignedUsers={UserList}
+ assignedUsers={[
+    taskMetaData?.created_by_username && {
+      username: taskMetaData.created_by_username,
+      avatarUrl: taskMetaData.created_by_avatar,
+    },
+    taskMetaData?.assigned_to_username && {
+      username: taskMetaData.assigned_to_username,
+      avatarUrl: taskMetaData.assigned_to_avatar,
+    },
+  ].filter(Boolean)}
+
         status={task.status}
         onTaskChange={handleUpdateTask}
         dueDate={task.due}
@@ -193,9 +222,7 @@ const task = tasks?.find(t => t.id === taskId);
 
             <TouchableOpacity
               className="flex-row items-center justify-between rounded-md p-1"
-              onPress={() => {
-                settaskMenuDropdownVisible(false)
-              setDeleteModalVisible(!deleteModalVisible)}}>
+              onPress={handleDeleteTask}>
               <Text className="text-sm text-muted">Delete</Text>
               <MaterialIcons name="delete" size={18} color="darkred" />
             </TouchableOpacity>

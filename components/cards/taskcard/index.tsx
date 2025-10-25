@@ -4,12 +4,9 @@ import { Text } from '@/components/ui/text';
 import AvatarGroup from '@/components/ui/avatargroup';
 import DateChip from '@/components/ui/datechip';
 import moment from 'moment';
-import { useRouter } from 'expo-router';
 import ProgressChip from '@/components/ui/progresschip';
 import { Position } from '@/types/position';
-import AddUserDropdown from '@/components/dropdown/adduserdropdown';
 import TaskStatusDropdown from '@/components/dropdown/taskstatusdropdown';
-import { Status } from '@/types/status';
 import { statusList } from '@/constants/taskList';
 import { Task } from '@/types/task';
 
@@ -72,7 +69,7 @@ const TaskCard: React.FC<Props> = ({ task, onPress, onTaskChange }) => {
             )}
           </View>
           <View className="flex-row flex-wrap gap-2">
-            <AvatarGroup title={'3 People'} onPress={handleShowUserDropdown} />
+            <AvatarGroup title={'2 People'} onPress={handleShowUserDropdown} />
             <View className=" flex-row gap-2">
               <DateChip date={moment(task.due).format('DD MMM')} onPress={handleSetDate} />
               <ProgressChip ref={triggerRef} status={task.status} onPress={toggleModal} />
@@ -113,7 +110,10 @@ const TaskCard: React.FC<Props> = ({ task, onPress, onTaskChange }) => {
                 borderRadius: 14,
               },
             ]}>
+            {/*
+
             <AddUserDropdown />
+          */}
           </View>
         </Pressable>
       </Modal>

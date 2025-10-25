@@ -78,5 +78,6 @@ export async function getTaskInfoById(taskId: string) {
     .single();
 
   if (error) throw error;
+  console.log('task info adfdfafd', data, error);
   return data;
 }

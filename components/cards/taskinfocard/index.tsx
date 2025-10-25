@@ -58,6 +58,7 @@ const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onTaskC
   const handleSetDate = (dateObj: { date: string }) => {
     onTaskChange(dateObj);
   };
+  console.log('assingedusers', assignedUsers);
 
   return (
     <View className="my-4 gap-2 rounded-xl bg-card p-3">
@@ -66,7 +67,13 @@ const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onTaskC
         <View className="flex-row gap-3 overflow-hidden">
           {assignedUsers.map((item, index) => {
             if (index >= 2) return null;
-            return <UserChip key={index} username={item.username} />;
+            return (
+              <UserChip
+                key={index}
+                username={item?.username ?? ''}
+                avatarUrl={item.avatarUrl ?? null}
+              />
+            );
           })}
           <TouchableOpacity className="rounded-full bg-input p-1">
             <Ionicons name="add-sharp" size={12} color={THEME[scheme].muted} className="m-auto" />
