@@ -12,16 +12,16 @@
 
 - [x] Update Task Status
 - [x] Native Date Picker ( dark/light), Update Task Due Date.
-- [] People (Fetch actual data from supabase and show people who are working on the same task)
+- [x] People (Fetch actual data from supabase and show people who are working on the same task)
 
 > > TASKS
 
 -- API IMPLiMENATION
 
-- [] Show assigned to , Assigned By Details
-- [] Change Due Date
-- [] Update Task Status
-- [] Delete Task
+- [x] Show assigned to , Assigned By Details
+- [x] Change Due Date
+- [x] Update Task Status
+- [x] Delete Task
 
 > > Dashboard
 
