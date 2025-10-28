@@ -1,16 +1,19 @@
-import React, { useRef } from 'react';
-import { Alert, FlatList, Text, RefreshControl } from 'react-native';
+import React from 'react';
+import { Alert, View, FlatList, Text, RefreshControl, useColorScheme } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import ScreenLayout from '@/provider/screenlayout';
 import TopNavigation from '@/components/topnavigation';
-import { useGetTasks, useUpdateTaskStatus } from '@/hooks/tasks/useTask';
 import { ActivityIndicator } from 'react-native-paper';
 import TaskCard from '@/components/cards/taskcard';
-import { useUpdateTask } from '@/hooks/tasks/useTask';
+import { useGetTasks, useUpdateTask } from '@/hooks/tasks/useTask';
 import { Task } from '@/types/task';
+import Feather from '@expo/vector-icons/Feather';
+import { THEME } from '@/lib/theme';
 
 const Projects = () => {
   const router = useRouter();
+  const scheme = useColorScheme();
+
   const { id, projectName } = useLocalSearchParams();
   const projectId = Array.isArray(id) ? id[0] : id;
 
@@ -88,7 +91,12 @@ const Projects = () => {
             onTaskChange={handleUpdateTask}
           />
         )}
-        ListEmptyComponent={<Text>No Tasks Yet</Text>}
+        ListEmptyComponent={
+          <View className="flex-1 items-center justify-center">
+            <Feather name="inbox" size={80} color={THEME[scheme].muted} />
+            <Text className=" text-center font-bold text-white">No Tasks Yet</Text>
+          </View>
+        }
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
         contentContainerStyle={{ gap: 8, marginVertical: 10, paddingBottom: 100 }}
       />

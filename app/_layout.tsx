@@ -14,6 +14,7 @@ import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-
 import { PortalHost } from '@rn-primitives/portal';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/utils/queryClient';
+import { InputModalProvider } from '@/provider/inputprovider';
 
 SplashScreen.setOptions({
   duration: 1000,
@@ -39,16 +40,18 @@ export default function Root() {
   return (
     <AuthProvider>
       <AppProvider>
-        <SafeAreaProvider>
-          <QueryClientProvider client={queryClient}>
-            <PaperProvider>
-              <ThemeProvider>
-                <RootLayout />
-                <PortalHost />
-              </ThemeProvider>
-            </PaperProvider>
-          </QueryClientProvider>
-        </SafeAreaProvider>
+        <InputModalProvider>
+          <SafeAreaProvider>
+            <QueryClientProvider client={queryClient}>
+              <PaperProvider>
+                <ThemeProvider>
+                  <RootLayout />
+                  <PortalHost />
+                </ThemeProvider>
+              </PaperProvider>
+            </QueryClientProvider>
+          </SafeAreaProvider>
+        </InputModalProvider>
       </AppProvider>
     </AuthProvider>
   );
@@ -67,7 +70,7 @@ const RootLayout = () => {
 
   if (loading) return null;
 
-  // LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
 
   return (
     <Stack screenOptions={{ headerShown: false }}>

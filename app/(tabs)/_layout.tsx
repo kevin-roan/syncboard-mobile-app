@@ -2,6 +2,7 @@ import { Tabs, router } from 'expo-router';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { useInputModal } from '@/provider/inputprovider';
 
 export default function Layout() {
   return (
@@ -18,6 +19,9 @@ export default function Layout() {
 function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const isHomeActive = state.index === 0;
   const isProfileActive = state.index === 1;
+
+  const { toggleModal } = useInputModal();
+
   return (
     <View className="flex-row items-center justify-around bg-neutral-800 pb-4 pt-2">
       <TabButton
@@ -28,7 +32,7 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps) {
         onPress={() => navigation.navigate(state.routes[0].name)}
       />
 
-      <ExtraButton label="Create Project" onPress={() => router.push('/(modal)/createworkspace')} />
+      <ExtraButton label="Create Project" onPress={() => toggleModal('project')} />
 
       <TabButton
         label="Profile"
