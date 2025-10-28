@@ -25,7 +25,7 @@
 
 > > Dashboard
 
-- [] Create Blured Modal For Creating both Creating Projects, Tasks, And Workspaces.
+- [x] Create Blured Modal For Creating both Creating Projects, Tasks, And Workspaces.
 - [] Assignee, Due Date, Priority Pickers.
 
 > > Comments

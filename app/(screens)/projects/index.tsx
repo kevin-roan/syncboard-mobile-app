@@ -86,7 +86,7 @@ const Projects = () => {
         <FlatList
           data={projects}
           keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={{ paddingVertical: 20 }}
+          contentContainerStyle={{ paddingVertical: 20, gap: 10 }}
           renderItem={({ item }) => (
             <ProjectCard key={item.id} project={item} onPress={() => handleProjectPress(item)} />
           )}

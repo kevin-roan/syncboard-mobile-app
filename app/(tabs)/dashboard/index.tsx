@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  FlatList,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Button,
-  Modal,
-  Pressable,
-  Alert,
-  KeyboardAvoidingView,
-} from 'react-native';
+import { FlatList, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/authctx';
@@ -19,8 +9,7 @@ import { getUserWorkspaces } from '@/services/workspace';
 import ProjectCard from '@/components/cards/projectcard';
 import WorkspaceDrawerModal from '@/components/ui/drawer/workspacedrawer';
 import { getDueTaskCount } from '@/services/task';
-// import InviteUserModal from '@/components/ui/modals/inviteuser';
-// import { createInvitation } from '@/services/invitation';
+
 import { getWorkspaceMemberCount, getWorkspaceUsers } from '@/services/workspace_members';
 import ScreenLayout from '@/provider/screenlayout';
 import DashboardNavigation from '@/components/ui/navbar/dashboard-header';
@@ -30,10 +19,9 @@ import TaskStatCard from '@/components/cards/dashboard/taskstat-card';
 import DashboardQuickActions from '@/components/cards/dashboard/quickaction';
 import { Text } from '@/components/ui/text';
 import { useGetProjects } from '@/hooks/projects/useGetProjects';
-import CustomDropdown from '@/components/dropdown';
 import CreateProjectModal from '@/components/cards/inputcard';
-import { BlurView } from 'expo-blur';
 import ModalContainer from '@/components/modal';
+import { useInputModal } from '@/provider/inputprovider';
 
 const Dashboard = () => {
   const router = useRouter();
@@ -42,16 +30,16 @@ const Dashboard = () => {
   const userId = session?.user?.id;
 
   const [selectedTab, setSelectedTab] = useState('projects');
-  const [projectformVisible, setProjectformVisible] = useState<boolean>(false);
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
   const [workspaces, setWorkspaces] = useState([]);
   const [workspaceMembers, setWorkspaceMembers] = useState([]);
-  const [inviteUserModalVisible, setInviteModalVisible] = useState<boolean>(false);
   const [dashboardInfo, setDashboardInfo] = useState({
     taskDue: 0,
     activeProjects: 0,
     teamMembers: 0,
   });
+
+  const { modals, toggleModal } = useInputModal();
 
   useEffect(() => {
     const fetchWorkspaceInfo = async () => {
@@ -109,8 +97,9 @@ const Dashboard = () => {
   const handleCreateProject = async (projectName: string) => {
     try {
       await createProject(projectName, workspace?.id);
-      setProjectformVisible(false);
+      setProjectModalVisible(false);
     } catch (error) {
+      console.log('error creating project', error);
       Alert.alert('Error creating a project.');
     }
   };
@@ -127,94 +116,98 @@ const Dashboard = () => {
     if (selectedWorkspace) setWorkspace(selectedWorkspace);
   };
 
+  const handleCreateWorkspace = (workspaceName: string) => {};
+
   const toggleDrawer = () => setDrawerVisible(!drawerVisible);
-
-  const [workspaceModalVisible, setWorkspaceModalVisible] = useState(false);
-
-  const toggleCreateWorkspaceModal = () => {
-    setWorkspaceModalVisible(true);
-  };
 
   return (
     <ScreenLayout>
-      <DashboardNavigation title={'Software Manson'} />
-      <WelcomeBoardCard />
+      <DashboardNavigation title={'Software Manson'} onDrawerButtonPress={toggleDrawer} />
+      <ScrollView nestedScrollEnabled>
+        <WelcomeBoardCard />
 
-      <View className="mb-3 flex-row gap-3">
-        <ProjectStatCard
-          memberCount={dashboardInfo.teamMembers}
-          completedCount={10}
-          activeCount={dashboardInfo.activeProjects}
-        />
-        <TaskStatCard
-          completedCount={0}
-          totalCount={dashboardInfo.activeProjects}
-          inProgressCount={dashboardInfo.taskDue}
-        />
-      </View>
+        <View className="mb-3 flex-row gap-3">
+          <ProjectStatCard
+            memberCount={dashboardInfo.teamMembers}
+            completedCount={10}
+            activeCount={dashboardInfo.activeProjects}
+          />
+          <TaskStatCard
+            completedCount={0}
+            totalCount={dashboardInfo.activeProjects}
+            inProgressCount={dashboardInfo.taskDue}
+          />
+        </View>
 
-      <DashboardQuickActions />
+        <DashboardQuickActions />
 
-      <View className="flex-row items-center justify-between">
-        <View className="my-4 flex flex-row gap-3">
+        <View className="flex-row items-center justify-between">
+          <View className="my-4 flex flex-row gap-3">
+            <TouchableOpacity
+              onPress={() => setSelectedTab('projects')}
+              disabled={selectedTab === 'projects'}>
+              <Text
+                variant={'h4'}
+                className={selectedTab === 'projects' ? 'text-white' : 'text-muted'}>
+                Projects
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setSelectedTab('tasks')}
+              disabled={selectedTab === 'tasks'}>
+              <Text
+                variant={'h4'}
+                className={selectedTab === 'tasks' ? 'text-white' : 'text-muted'}>
+                Tasks
+              </Text>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity
-            onPress={() => setSelectedTab('projects')}
-            disabled={selectedTab === 'projects'}>
-            <Text
-              variant={'h4'}
-              className={selectedTab === 'projects' ? 'text-white' : 'text-muted'}>
-              Projects
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setSelectedTab('tasks')}
-            disabled={selectedTab === 'tasks'}>
-            <Text variant={'h4'} className={selectedTab === 'tasks' ? 'text-white' : 'text-muted'}>
-              Tasks
-            </Text>
+            onPress={() =>
+              selectedTab === 'projects' ? router.push('/projects') : router.push('/tasks')
+            }>
+            <Text className="text-sm font-normal text-muted">View All</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={() =>
-            selectedTab === 'projects' ? router.push('/projects') : router.push('/tasks')
-          }>
-          <Text className="text-sm font-normal text-muted">View All</Text>
-        </TouchableOpacity>
-      </View>
+        <ModalContainer visible={modals['project']} onRequestClose={() => toggleModal('project')}>
+          <CreateProjectModal
+            buttonText="Project Name"
+            placeholder="Create Project"
+            onSubmit={handleCreateProject}
+          />
+        </ModalContainer>
 
-      <Button onPress={toggleCreateWorkspaceModal} title="Create Worksapce"></Button>
+        <ModalContainer
+          visible={modals['workspace']}
+          onRequestClose={() => toggleModal('workspace')}>
+          <CreateProjectModal
+            buttonText="Create Workspace"
+            placeholder="Workspace Name"
+            onSubmit={handleCreateWorkspace}
+          />
+        </ModalContainer>
 
-      <ModalContainer
-        visible={workspaceModalVisible}
-        onRequestClose={() => setWorkspaceModalVisible(false)}>
-        <CreateProjectModal />
-      </ModalContainer>
+        <WorkspaceDrawerModal
+          drawerVisible={drawerVisible}
+          toggleDrawer={toggleDrawer}
+          active={workspace?.id || 'default'}
+          setActive={handleWorkspaceChange}
+          router={router}
+          workspaces={workspaces}
+        />
 
-      <WorkspaceDrawerModal
-        drawerVisible={drawerVisible}
-        toggleDrawer={toggleDrawer}
-        active={workspace?.id || 'default'}
-        setActive={handleWorkspaceChange}
-        router={router}
-        workspaces={workspaces}
-      />
-
-      <FlatList
-        data={projects}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <ProjectCard key={item.id} project={item} onPress={() => handleProjectPress(item)} />
-        )}
-      />
+        <FlatList
+          data={projects}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <ProjectCard key={item.id} project={item} onPress={() => handleProjectPress(item)} />
+          )}
+          contentContainerStyle={{ gap: 10 }}
+          scrollEnabled={false}
+        />
+      </ScrollView>
     </ScreenLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  modalOverlay: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    flex: 1,
-  },
-});
 
 export default Dashboard;
