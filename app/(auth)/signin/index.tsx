@@ -1,24 +1,20 @@
-import React, { useState } from "react";
-import { Alert, Text, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { supabase } from "@/lib/supabase";
-import styles from "./styles";
+import React, { useState } from 'react';
+import { Alert, Text, View } from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { supabase } from '@/lib/supabase';
+import styles from './styles';
+import { validateEmail } from '@/utils/validateEmail';
 
 export default function Auth() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
 
   const isFormValid = (): boolean => {
     return validateEmail(email) && password.length >= 6;
@@ -27,8 +23,8 @@ export default function Auth() {
   async function signInWithEmail() {
     if (!isFormValid()) {
       Alert.alert(
-        "Invalid Input",
-        "Please enter a valid email and password (minimum 6 characters)",
+        'Invalid Input',
+        'Please enter a valid email and password (minimum 6 characters)'
       );
       return;
     }
@@ -40,7 +36,7 @@ export default function Auth() {
     });
 
     if (error) {
-      Alert.alert("Sign In Error", error.message);
+      Alert.alert('Sign In Error', error.message);
     }
     setLoading(false);
   }
@@ -57,11 +53,7 @@ export default function Auth() {
     <View style={styles.container}>
       {/* Logo Section */}
       <View style={styles.logoSection}>
-        <MaterialCommunityIcons
-          name="clipboard-check"
-          size={64}
-          style={styles.logoIcon}
-        />
+        <MaterialCommunityIcons name="clipboard-check" size={64} style={styles.logoIcon} />
         <Text style={styles.appTitle}>Planor.app</Text>
         <Text style={styles.appSubtitle}>Manage your projects efficiently</Text>
       </View>
@@ -102,7 +94,7 @@ export default function Auth() {
             left={<TextInput.Icon icon="lock-outline" />}
             right={
               <TextInput.Icon
-                icon={showPassword ? "eye-off" : "eye"}
+                icon={showPassword ? 'eye-off' : 'eye'}
                 onPress={() => setShowPassword(!showPassword)}
               />
             }
@@ -117,17 +109,13 @@ export default function Auth() {
           loading={loading}
           disabled={loading || !isFormValid()}
           onPress={signInWithEmail}
-          style={[
-            styles.signInButton,
-            (!isFormValid() || loading) && styles.signInButtonDisabled,
-          ]}
+          style={[styles.signInButton, (!isFormValid() || loading) && styles.signInButtonDisabled]}
           contentStyle={styles.signInButtonContent}
           labelStyle={[
             styles.signInButtonText,
             (!isFormValid() || loading) && styles.signInButtonTextDisabled,
-          ]}
-        >
-          {loading ? "Signing In..." : "Sign In"}
+          ]}>
+          {loading ? 'Signing In...' : 'Sign In'}
         </Button>
       </View>
 
@@ -143,11 +131,10 @@ export default function Auth() {
         <Text style={styles.signUpText}>Don't have an account?</Text>
         <Button
           mode="outlined"
-          onPress={() => router.push("/signup")}
+          onPress={() => router.push('/signup')}
           style={styles.signUpButton}
           contentStyle={styles.signUpButtonContent}
-          labelStyle={styles.signUpButtonText}
-        >
+          labelStyle={styles.signUpButtonText}>
           Create Account
         </Button>
       </View>
