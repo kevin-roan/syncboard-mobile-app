@@ -1,25 +1,19 @@
-import React from "react";
+import React from 'react';
 
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from 'react-native';
 
-import { Portal, Modal, Text } from "react-native-paper";
-import { MaterialIcons } from "@expo/vector-icons";
-import { styles } from "./styles";
-import { colors } from "./styles";
-
-interface Workspace {
-  id: string;
-  name: string;
-  // add other workspace properties as needed
-}
+import { Portal, Modal, Text } from 'react-native-paper';
+import { MaterialIcons } from '@expo/vector-icons';
+import { styles, colors } from './styles';
+import { Workspace } from '@/types/workspace';
 
 interface WorkspaceDrawerProps {
   drawerVisible: boolean;
   toggleDrawer: () => void;
-  active: Workspace | null; // Accept workspace object
-  setActive: (workspace: Workspace) => void; // Accept workspace object
+  active: Workspace | null;
+  setActive: (workspace: Workspace) => void;
   router: any;
-  workspaces: Workspace[]; // Array of all workspaces
+  workspaces: Workspace[];
 }
 
 const WorkspaceDrawerModal: React.FC<WorkspaceDrawerProps> = ({
@@ -35,13 +29,8 @@ const WorkspaceDrawerModal: React.FC<WorkspaceDrawerProps> = ({
       <Modal
         visible={drawerVisible}
         onDismiss={toggleDrawer}
-        contentContainerStyle={styles.modalContainer}
-      >
-        <TouchableOpacity
-          style={styles.backdrop}
-          onPress={toggleDrawer}
-          activeOpacity={1}
-        />
+        contentContainerStyle={styles.modalContainer}>
+        <TouchableOpacity style={styles.backdrop} onPress={toggleDrawer} activeOpacity={1} />
 
         <View style={styles.drawerContainer}>
           {/* Header */}
@@ -62,18 +51,13 @@ const WorkspaceDrawerModal: React.FC<WorkspaceDrawerProps> = ({
                 ]}
                 onPress={() => {
                   setActive(workspace);
-                  router.replace("/dashboard");
+                  router.replace('/dashboard');
                   toggleDrawer();
-                }}
-              >
+                }}>
                 <MaterialIcons
-                  name={index === 0 ? "work" : "work-outline"}
+                  name={index === 0 ? 'work' : 'work-outline'}
                   size={24}
-                  color={
-                    active?.id === workspace.id
-                      ? colors.primary
-                      : colors.onSurfaceVariant
-                  }
+                  color={active?.id === workspace.id ? colors.primary : colors.onSurfaceVariant}
                   style={styles.workspaceIcon}
                 />
                 <Text
@@ -82,8 +66,7 @@ const WorkspaceDrawerModal: React.FC<WorkspaceDrawerProps> = ({
                     active?.id === workspace.id
                       ? styles.workspaceTextActive
                       : styles.workspaceTextInactive,
-                  ]}
-                >
+                  ]}>
                   {workspace.name}
                 </Text>
               </TouchableOpacity>
@@ -94,10 +77,9 @@ const WorkspaceDrawerModal: React.FC<WorkspaceDrawerProps> = ({
               <TouchableOpacity
                 style={styles.workspaceItem}
                 onPress={() => {
-                  router.push("/(modal)/createworkspace");
+                  router.push('/(modal)/createworkspace');
                   toggleDrawer();
-                }}
-              >
+                }}>
                 <MaterialIcons
                   name="add"
                   size={24}
@@ -117,10 +99,9 @@ const WorkspaceDrawerModal: React.FC<WorkspaceDrawerProps> = ({
               style={styles.settingsItem}
               onPress={() => {
                 // Handle settings navigation
-                console.log("Settings pressed");
+                console.log('Settings pressed');
                 toggleDrawer();
-              }}
-            >
+              }}>
               <MaterialIcons
                 name="settings"
                 size={24}
