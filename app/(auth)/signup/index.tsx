@@ -1,274 +1,169 @@
-import React, { useState } from "react";
-import { Alert, View } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { supabase } from "@/lib/supabase";
-import { useRouter } from "expo-router";
-import styles from "./styles";
+import ScreenLayout from '@/provider/screenlayout';
+import { View, Text, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
-export default function SignUp() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [emailFocused, setEmailFocused] = useState(false);
-  const [passwordFocused, setPasswordFocused] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+const SignUp = () => {
+  const router = useRouter;
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-  const getPasswordRequirements = (password: string) => {
-    return {
-      length: password.length >= 8,
-      lowercase: /[a-z]/.test(password),
-      uppercase: /[A-Z]/.test(password),
-      number: /\d/.test(password),
-    };
-  };
+  const handleInputChange = (text: string, field: string) => {};
 
-  const isPasswordValid = (password: string): boolean => {
-    const requirements = getPasswordRequirements(password);
-    return (
-      requirements.length &&
-      requirements.lowercase &&
-      requirements.uppercase &&
-      requirements.number
-    );
-  };
-
-  const isFormValid = (): boolean => {
-    return validateEmail(email) && isPasswordValid(password);
-  };
-
-  async function signUpWithEmail() {
-    if (!isFormValid()) {
-      Alert.alert(
-        "Invalid Input",
-        "Please ensure your email is valid and password meets all requirements",
-      );
-      return;
-    }
-
-    setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email.trim(),
-      password: password,
-    });
-
-    if (error) {
-      Alert.alert("Sign Up Error", error.message);
-    } else if (!session) {
-      setShowSuccess(true);
-    }
-    setLoading(false);
-  }
-
-  const getEmailInputStyle = () => {
-    return emailFocused ? styles.textInputFocused : styles.textInput;
-  };
-
-  const getPasswordInputStyle = () => {
-    return passwordFocused ? styles.textInputFocused : styles.textInput;
-  };
-
-  const renderPasswordRequirement = (
-    label: string,
-    met: boolean,
-    icon: string,
-  ) => (
-    <View key={label} style={styles.requirementItem}>
-      <MaterialCommunityIcons
-        name={met ? "check-circle" : "circle-outline"}
-        size={14}
-        color={met ? "#4CAF50" : "#9E9E9E"}
-        style={styles.requirementIcon}
-      />
-      <Text
-        style={[
-          styles.requirementText,
-          met ? styles.requirementMet : styles.requirementNotMet,
-        ]}
-      >
-        {label}
-      </Text>
-    </View>
-  );
-
-  const requirements = getPasswordRequirements(password);
-
-  if (showSuccess) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.logoSection}>
-          <MaterialCommunityIcons
-            name="email-check"
-            size={80}
-            style={styles.logoIcon}
-          />
-          <Text style={styles.appTitle}>Check Your Email</Text>
-          <Text style={styles.appSubtitle}>
-            We've sent you a verification link
-          </Text>
-        </View>
-
-        <View style={styles.formCard}>
-          <View style={styles.successMessage}>
-            <Text style={styles.successText}>
-              Please check your inbox for email verification! Click the
-              verification link to activate your account.
-            </Text>
-          </View>
-
-          <Button
-            mode="outlined"
-            onPress={() => router.push("/signin")}
-            style={styles.signInButton}
-            contentStyle={styles.signInButtonContent}
-            labelStyle={styles.signInButtonText}
-          >
-            Back to Sign In
-          </Button>
-        </View>
-      </View>
-    );
-  }
+  const handleCreateAccount = () => {};
 
   return (
-    <View style={styles.container}>
-      {/* Logo Section */}
-      <View style={styles.logoSection}>
-        <MaterialCommunityIcons
-          name="clipboard-check"
-          size={64}
-          style={styles.logoIcon}
+    <ScreenLayout>
+      <View className="flex-1 justify-center gap-3">
+        <Text className="text-2xl font-medium text-white">Get Started </Text>
+        <Text className="text-muted">Enter Email Address</Text>
+        <TextInput
+          placeholder="Email/Username (e.g. johndeo@example.com)"
+          value={form.email}
+          onChangeText={(text) => handleInputChange(text, 'email')}
+          className="rounded-md bg-input p-4"
         />
-        <Text style={styles.appTitle}>Planor.app</Text>
-        <Text style={styles.appSubtitle}>
-          Create your account to get started
-        </Text>
-      </View>
-
-      {/* Form Card */}
-      <View style={styles.formCard}>
-        <Text style={styles.formTitle}>Create Account</Text>
-        <Text style={styles.formSubtitle}>
-          Join thousands of teams managing projects efficiently
-        </Text>
-
-        {/* Email Input */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            onFocus={() => setEmailFocused(true)}
-            onBlur={() => setEmailFocused(false)}
-            placeholder="email@address.com"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            mode="outlined"
-            left={<TextInput.Icon icon="email-outline" />}
-            style={getEmailInputStyle()}
-          />
-        </View>
-
-        {/* Password Input */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            onFocus={() => setPasswordFocused(true)}
-            onBlur={() => setPasswordFocused(false)}
-            placeholder="Create a strong password"
-            autoCapitalize="none"
-            secureTextEntry={!showPassword}
-            mode="outlined"
-            left={<TextInput.Icon icon="lock-outline" />}
-            right={
-              <TextInput.Icon
-                icon={showPassword ? "eye-off" : "eye"}
-                onPress={() => setShowPassword(!showPassword)}
-              />
-            }
-            style={getPasswordInputStyle()}
-          />
-
-          {/* Password Requirements */}
-          {password.length > 0 && (
-            <View style={styles.passwordRequirements}>
-              {renderPasswordRequirement(
-                "At least 8 characters",
-                requirements.length,
-                "check",
-              )}
-              {renderPasswordRequirement(
-                "One lowercase letter",
-                requirements.lowercase,
-                "check",
-              )}
-              {renderPasswordRequirement(
-                "One uppercase letter",
-                requirements.uppercase,
-                "check",
-              )}
-              {renderPasswordRequirement(
-                "One number",
-                requirements.number,
-                "check",
-              )}
-            </View>
-          )}
-        </View>
-
-        {/* Sign Up Button */}
-        <Button
-          icon="account-plus"
-          mode="contained"
-          loading={loading}
-          disabled={loading || !isFormValid()}
-          onPress={signUpWithEmail}
-          style={[
-            styles.signUpButton,
-            (!isFormValid() || loading) && styles.signUpButtonDisabled,
-          ]}
-          contentStyle={styles.signUpButtonContent}
-          labelStyle={[
-            styles.signUpButtonText,
-            (!isFormValid() || loading) && styles.signUpButtonTextDisabled,
-          ]}
-        >
-          {loading ? "Creating Account..." : "Create Account"}
+        <TextInput
+          placeholder="Password"
+          value={form.password}
+          onChangeText={(text) => handleInputChange(text, 'password')}
+          className="rounded-md bg-input p-4"
+        />
+        <TextInput
+          placeholder="Confirm Your Password"
+          value={form.password}
+          onChangeText={(text) => handleInputChange(text, 'confirmPassword')}
+          className="rounded-md bg-input p-4"
+        />
+        <Button className="bg-primary" onPress={handleCreateAccount}>
+          {loading && <ActivityIndicator size="small" color={THEME[scheme].foreground} />}
+          <Text className="text-white">Continue</Text>
         </Button>
-      </View>
-
-      {/* Divider */}
-      <View style={styles.divider}>
-        <View style={styles.dividerLine} />
-        <Text style={styles.dividerText}>OR</Text>
-        <View style={styles.dividerLine} />
-      </View>
-
-      {/* Sign In Section */}
-      <View style={styles.signInSection}>
-        <Text style={styles.signInText}>Already have an account?</Text>
-        <Button
-          mode="outlined"
-          onPress={() => router.push("/signin")}
-          style={styles.signInButton}
-          contentStyle={styles.signInButtonContent}
-          labelStyle={styles.signInButtonText}
-        >
-          Sign In
+        <Button variant={'outline'} className="border-1">
+          <Text className="text-white">Continue with Google</Text>
         </Button>
+        <View className="flex-row">
+          <View className="border-b-1 flex-1 border-white" />
+          <Text className="text-muted">OR</Text>
+          <View className="border-b-1 flex-1 border-white" />
+        </View>
+        <Button variant={'outline'} className="border-1 rounded-md border-white">
+          <Text className="text-white">Continue with SSO</Text>
+        </Button>
+        <View className="flex-row gap-2">
+          <Text className="text-white">Already have an account ?</Text>
+          <TouchableOpacity onPress={() => router.push('/sigin')}>
+            <Text className="text-primary">Log In</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ScreenLayout>
   );
-}
+};
+
+export default SignUp;
+
+// const router = useRouter();
+//   const [email, setEmail] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [loading, setLoading] = useState(false);
+//   const [emailFocused, setEmailFocused] = useState(false);
+//   const [passwordFocused, setPasswordFocused] = useState(false);
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [showSuccess, setShowSuccess] = useState(false);
+//
+//   const validateEmail = (email: string): boolean => {
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     return emailRegex.test(email);
+//   };
+//
+//   const getPasswordRequirements = (password: string) => {
+//     return {
+//       length: password.length >= 8,
+//       lowercase: /[a-z]/.test(password),
+//       uppercase: /[A-Z]/.test(password),
+//       number: /\d/.test(password),
+//     };
+//   };
+//
+//   const isPasswordValid = (password: string): boolean => {
+//     const requirements = getPasswordRequirements(password);
+//     return (
+//       requirements.length && requirements.lowercase && requirements.uppercase && requirements.number
+//     );
+//   };
+//
+//   const isFormValid = (): boolean => {
+//     return validateEmail(email) && isPasswordValid(password);
+//   };
+//
+//   async function signUpWithEmail() {
+//     if (!isFormValid()) {
+//       Alert.alert(
+//         'Invalid Input',
+//         'Please ensure your email is valid and password meets all requirements'
+//       );
+//       return;
+//     }
+//
+//     setLoading(true);
+//     const {
+//       data: { session },
+//       error,
+//     } = await supabase.auth.signUp({
+//       email: email.trim(),
+//       password: password,
+//     });
+//
+//     if (error) {
+//       Alert.alert('Sign Up Error', error.message);
+//     } else if (!session) {
+//       setShowSuccess(true);
+//     }
+//     setLoading(false);
+//   }
+//
+//   const getEmailInputStyle = () => {
+//     return emailFocused ? styles.textInputFocused : styles.textInput;
+//   };
+//
+//   const getPasswordInputStyle = () => {
+//     return passwordFocused ? styles.textInputFocused : styles.textInput;
+//   };
+//
+//
+//
+// //    const renderPasswordRequirement = (label: string, met: boolean, icon: string) => (
+//     <View key={label} style={styles.requirementItem}>
+//       <MaterialCommunityIcons
+//         name={met ? 'check-circle' : 'circle-outline'}
+//         size={14}
+//         color={met ? '#4CAF50' : '#9E9E9E'}
+//         style={styles.requirementIcon}
+//       />
+//       <Text
+//         style={[styles.requirementText, met ? styles.requirementMet : styles.requirementNotMet]}>
+//         {label}
+//       </Text>
+//     </View>
+//   );
+//
+//   const requirements = getPasswordRequirements(password);
+//
+//
+//
+//  {/* Password Requirements */}
+//           {password.length > 0 && (
+//             <View style={styles.passwordRequirements}>
+//               {renderPasswordRequirement('At least 8 characters', requirements.length, 'check')}
+//               {renderPasswordRequirement('One lowercase letter', requirements.lowercase, 'check')}
+//               {renderPasswordRequirement('One uppercase letter', requirements.uppercase, 'check')}
+//               {renderPasswordRequirement('One number', requirements.number, 'check')}
+//             </View>
+//           )}
