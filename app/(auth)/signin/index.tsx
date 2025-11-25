@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { validateEmail } from '@/utils/validateEmail';
 import InputError from '@/components/inputerror';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { FALLBACK_THEME } from '@/constants/fallback';
 
 interface FormData {
   email: string;
@@ -27,7 +28,7 @@ interface FormData {
 
 const SignIn = () => {
   const router = useRouter();
-  const scheme = useColorScheme();
+  const scheme = useColorScheme() ?? FALLBACK_THEME;
 
   const {
     control,
@@ -99,8 +100,8 @@ const SignIn = () => {
             rules={{
               required: 'Password is required',
               minLength: {
-                value: 6,
-                message: 'Password must be at least 6 characters',
+                value: 8,
+                message: 'Password must be at least 8 characters',
               },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -123,7 +124,7 @@ const SignIn = () => {
             name={showPassword ? 'eye-off' : 'eye'}
             style={{ position: 'absolute', right: 10, top: 14 }}
             size={20}
-            color={THEME[scheme!].muted}
+            color={THEME[scheme].muted}
             onPress={() => setShowpassword(!showPassword)}
           />
         </View>
@@ -131,7 +132,7 @@ const SignIn = () => {
           className={cn('bg-primary', hasFormErrors && 'bg-destructive')}
           onPress={handleSubmit(onSubmit)}
           disabled={loading || hasFormErrors}>
-          {loading && <ActivityIndicator size="small" color={THEME[scheme!].foreground} />}
+          {loading && <ActivityIndicator size="small" color={THEME[scheme].foreground} />}
           <Text className="text-white">Continue</Text>
         </Button>
         <Button variant={'outline'} className="border-1">
