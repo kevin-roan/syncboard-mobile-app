@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 
 const SignUp = () => {
-  const router = useRouter;
+  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
   const [form, setForm] = useState({
@@ -58,7 +58,7 @@ const SignUp = () => {
         </Button>
         <View className="flex-row gap-2">
           <Text className="text-white">Already have an account ?</Text>
-          <TouchableOpacity onPress={() => router.push('/sigin')}>
+          <TouchableOpacity onPress={() => router.replace('/signin')}>
             <Text className="text-primary">Log In</Text>
           </TouchableOpacity>
         </View>
