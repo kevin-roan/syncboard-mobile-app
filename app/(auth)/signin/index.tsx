@@ -53,11 +53,10 @@ const SignIn = () => {
       if (error) {
         throw new Error(error.message);
       }
-
-      setLoading(false);
     } catch (err: any) {
-      setLoading(false);
       Alert.alert('Error Logging in', err.message);
+    } finally {
+      setLoading(false);
     }
   };
 

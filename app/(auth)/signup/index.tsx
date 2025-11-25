@@ -62,12 +62,11 @@ const SignUp = () => {
         console.log(signUpData);
         router.push('/(auth)/signin');
       }
-
-      setLoading(false);
     } catch (error: any) {
-      setLoading(false);
       console.error('Error signing up:', error);
       Alert.alert('Failed to create account', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
