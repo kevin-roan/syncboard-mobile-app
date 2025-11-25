@@ -22,6 +22,7 @@ import { useGetProjects } from '@/hooks/projects/useGetProjects';
 import CreateProjectModal from '@/components/cards/inputcard';
 import ModalContainer from '@/components/modal';
 import { useInputModal } from '@/provider/inputprovider';
+import { Workspace } from '@/types/workspace';
 
 const Dashboard = () => {
   const router = useRouter();
@@ -31,7 +32,7 @@ const Dashboard = () => {
 
   const [selectedTab, setSelectedTab] = useState('projects');
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
-  const [workspaces, setWorkspaces] = useState([]);
+  const [workspaces, setWorkspaces] = useState<[Workspace] | []>([]);
   const [workspaceMembers, setWorkspaceMembers] = useState([]);
   const [dashboardInfo, setDashboardInfo] = useState({
     taskDue: 0,
@@ -46,13 +47,14 @@ const Dashboard = () => {
       try {
         if (!userId) return;
         const data = await getUserWorkspaces(userId);
-        setWorkspaces(data);
+        setWorkspaces(data as []);
         if (data?.length > 0) {
           setWorkspace(data[0]);
         } else {
           router.push('/(modal)/createworkspace');
         }
       } catch (error) {
+        console.error('Error fetching workspaces', error);
         Alert.alert('Error fetching workspaces');
       }
     };
@@ -106,6 +108,7 @@ const Dashboard = () => {
 
   const handleProjectPress = (project: Project) => {
     router.push({
+      // @ts-expect-error
       pathname: `/projects/${project.id}`,
       params: { projectName: project.name },
     });
@@ -136,6 +139,7 @@ const Dashboard = () => {
             completedCount={0}
             totalCount={dashboardInfo.activeProjects}
             inProgressCount={dashboardInfo.taskDue}
+            wontDoCount={4}
           />
         </View>
 
