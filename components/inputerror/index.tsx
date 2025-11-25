@@ -1,6 +1,6 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-const InputError = ({ error }: { error: string }) =>
+const InputError = ({ error }: { error: string | undefined }) =>
   error ? (
     <Animated.Text
       entering={FadeIn.duration(400)}
