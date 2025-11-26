@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Modal, Pressable, StyleSheet } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   visible: boolean;
@@ -9,8 +10,14 @@ interface Props {
 }
 
 const ModalContainer: React.FC<Props> = ({ visible, onRequestClose, children }) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <Modal style={styles.container} visible={visible} onRequestClose={onRequestClose}>
+    <Modal
+      style={styles.container}
+      visible={visible}
+      onRequestClose={onRequestClose}
+      animationType="slide">
       <BlurView
         intensity={3}
         style={{
@@ -20,7 +27,9 @@ const ModalContainer: React.FC<Props> = ({ visible, onRequestClose, children }) 
         }}
         tint="dark"
         experimentalBlurMethod="dimezisBlurView">
-        <Pressable style={styles.modalOverlay} onPress={onRequestClose}>
+        <Pressable
+          style={[styles.modalOverlay, { paddingTop: insets.top }]}
+          onPress={onRequestClose}>
           {children}
         </Pressable>
       </BlurView>

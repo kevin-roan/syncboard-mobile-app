@@ -12,7 +12,7 @@ interface Props {
 const InputCard: React.FC<Props> = ({ placeholder, onSubmit, buttonText }) => {
   const [text, setText] = React.useState('');
   return (
-    <View className="mx-4 my-10 bg-input pb-4" style={styles.container}>
+    <View className="mx-4 my-10 bg-input pb-4" style={styles.container} pointerEvents="box-only">
       <View className="m-4  ms-6 flex-row items-center">
         <View className="h-6 w-[1] bg-white" />
         <TextInput
