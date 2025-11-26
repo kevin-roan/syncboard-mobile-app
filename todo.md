@@ -7,8 +7,7 @@
 > > [x] Change Task Status (custom dropdown)
 
 > > PROJECTS
-
--- API IMPLiMENATION
+> > -- API IMPLiMENATION
 
 - [x] Update Task Status
 - [x] Native Date Picker ( dark/light), Update Task Due Date.
@@ -57,3 +56,5 @@
 - Roll Based Access Control
 - Animations with React Native ReAnimated
 - Push Notification with Firebase
+
+- React native skia Splashscreen

@@ -1,24 +1,24 @@
 {
   "expo": {
-    "name": "planor",
-    "slug": "planor",
+    "name": "syncboard",
+    "slug": "syncboard",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "planor",
+    "scheme": "syncboard",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kevinbpract.planor"
+      "bundleIdentifier": "com.kevinroan.syncboard"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.kevinbpract.planor"
+      "package": "com.kevinroan.syncboard"
     },
     "web": {
       "bundler": "metro",

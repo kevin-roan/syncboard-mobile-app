@@ -26,15 +26,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Position } from '@/types/position';
 import { Text } from '@/components/ui/text';
 import MinimalAlert from '@/components/alert';
-import { Status } from '@/types/status';
 import { useDeleteTask, useGetTaskMetaData, useGetTasks, useUpdateTask } from '@/hooks/tasks/useTask';
 
-const UserList = [
-  { username: 'Kevin Mihyaoan' },
-  { username: 'Sara Johnson' },
-  { username: 'Alex Kim' },
-  { username: 'Liam Chen' },
-];
 
 const dummyMarkdown = `# h1 Heading 8-)
 
@@ -58,11 +51,8 @@ const { data: tasks } = useGetTasks(projectId);
 const task = tasks?.find(t => t.id === taskId);
 
   const {data:taskMetaData,error} = useGetTaskMetaData(taskId,projectId)
-  // console.log('task meta data',JSON.stringify(taskMetaData,null,2),'errror',error)
 
   const {mutate:deleteTaskMutation} = useDeleteTask()
-
-
 
   const {
     mutate: updateTask,
@@ -70,7 +60,6 @@ const task = tasks?.find(t => t.id === taskId);
     isError,
     error: updateTaskError,
   } = useUpdateTask(projectId);
-  // console.log('screen params', taskId, taskName, taskStatus);
 
   const ref = useRef<EnrichedTextInputInstance>(null);
 

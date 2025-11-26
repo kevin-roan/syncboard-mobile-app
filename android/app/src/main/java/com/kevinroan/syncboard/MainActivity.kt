@@ -1,4 +1,4 @@
-package com.kevinbpract.planor
+package com.kevinroan.syncboard
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

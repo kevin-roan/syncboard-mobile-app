@@ -24,8 +24,8 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="planor"/>
-        <data android:scheme="exp+planor"/>
+        <data android:scheme="syncboard"/>
+        <data android:scheme="exp+syncboard"/>
       </intent-filter>
     </activity>
   </application>

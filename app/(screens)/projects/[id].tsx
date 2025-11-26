@@ -9,10 +9,11 @@ import { useGetTasks, useUpdateTask } from '@/hooks/tasks/useTask';
 import { Task } from '@/types/task';
 import Feather from '@expo/vector-icons/Feather';
 import { THEME } from '@/lib/theme';
+import { FALLBACK_THEME } from '@/constants/fallback';
 
 const Projects = () => {
   const router = useRouter();
-  const scheme = useColorScheme();
+  const scheme = useColorScheme() ?? FALLBACK_THEME;
 
   const { id, projectName } = useLocalSearchParams();
   const projectId = Array.isArray(id) ? id[0] : id;

@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.kevinbpract.planor'
+    namespace 'com.kevinroan.syncboard'
     defaultConfig {
-        applicationId 'com.kevinbpract.planor'
+        applicationId 'com.kevinroan.syncboard'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

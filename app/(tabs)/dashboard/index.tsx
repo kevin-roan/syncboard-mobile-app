@@ -40,6 +40,7 @@ const Dashboard = () => {
     teamMembers: 0,
   });
 
+  // the same modal is used for creating project and workspace, visibility handled by global context
   const { modals, toggleModal } = useInputModal();
 
   useEffect(() => {
@@ -175,7 +176,7 @@ const Dashboard = () => {
         </View>
         <ModalContainer visible={modals['project']} onRequestClose={() => toggleModal('project')}>
           <CreateProjectModal
-            buttonText="Project Name"
+            buttonText="Create Project"
             placeholder="Create Project"
             onSubmit={handleCreateProject}
           />

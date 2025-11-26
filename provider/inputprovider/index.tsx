@@ -14,7 +14,11 @@ interface InputModalContextProps {
 const InputModalContext = createContext<InputModalContextProps | undefined>(undefined);
 
 export const InputModalProvider = ({ children }: { children: ReactNode }) => {
-  const [modals, setModals] = useState<ModalState>({});
+  const [modals, setModals] = useState<ModalState>({
+    project: false,
+    workspace: false,
+    task: false,
+  });
 
   const showModal = (key: string) => setModals((prev) => ({ ...prev, [key]: true }));
   const hideModal = (key: string) => setModals((prev) => ({ ...prev, [key]: false }));

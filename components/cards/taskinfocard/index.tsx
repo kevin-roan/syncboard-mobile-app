@@ -41,7 +41,9 @@ const TaskInfoCard: React.FC<Props> = ({ assignedUsers, dueDate, status, onTaskC
   /// can refactor this by moving this into the progresschip and just passing the position.
   const toggleModal = () => {
     if (triggerRef.current) {
-      triggerRef.current.measureInWindow((x, y, width, height) => {
+      triggerRef.current.measureInWindow((...args) => {
+        const [x, y, width, height] = args as [number, number, number, number];
+        console.log('x', x, y, width, height);
         setStatusTriggerPosition({ x, y: y + height, width });
         setStatusDropdownVisible(true);
       });
