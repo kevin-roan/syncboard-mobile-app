@@ -100,7 +100,7 @@ const Dashboard = () => {
   const handleCreateProject = async (projectName: string) => {
     try {
       await createProject(projectName, workspace?.id);
-      setProjectModalVisible(false);
+      toggleModal('project');
     } catch (error) {
       console.log('error creating project', error);
       Alert.alert('Error creating a project.');
